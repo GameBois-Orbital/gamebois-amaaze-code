@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "695405269883",
+    "firebase_url": "https://amaaze-6da22.firebaseio.com",
+    "project_id": "amaaze-6da22",
+    "storage_bucket": "amaaze-6da22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695405269883:android:6fa920d9c012eabfab63de",
+        "android_client_info": {
+          "package_name": "com.gamebois.amaaze"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "695405269883-dt1sm63frirpilgpnkhqvj134m659er1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gamebois.amaaze",
+            "certificate_hash": "a18e88cca698ceab39675e803b3ba789492be2ea"
+          }
+        },
+        {
+          "client_id": "695405269883-v7r37rb3ognrj74fllngpdim2l4shjmg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXWHA-Wl6XhLoeE9jPmeCwaMjzbXck9kY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "695405269883-v7r37rb3ognrj74fllngpdim2l4shjmg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
