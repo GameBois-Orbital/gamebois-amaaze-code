@@ -17,7 +17,9 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
@@ -129,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private static String TAG = "MainActivity";
     CameraBridgeViewBase cameraBridgeViewBase;
     Mat frame;
-    Mat gray;
     Mat filtered;
 
     BaseLoaderCallback mLoaderCallBack = new BaseLoaderCallback(this) {
@@ -156,9 +157,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         frame = inputFrame.rgba();
-        Imgproc.cvtColor(frame, gray, Imgproc.COLOR_RGBA2GRAY);
-        Imgproc.bilateralFilter(gray, filtered, 3, 170, 170);
-        Imgproc.Canny(filtered, frame, 100, 80);
+        Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2GRAY);
+        Imgproc.bilateralFilter(frame, filtered, 5, 170, 5);
+
+        //Imgproc.GaussianBlur(frame, frame, new Size(5,5), 2,2);
+        Imgproc.adaptiveThreshold(filtered, frame, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 9, 9);
+        //Imgproc.dilate(frame, frame, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(13, 13), new Point(0,0)));
+        //Imgproc.erode(frame, frame, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(11, 11), new Point(0,0)));
+        //Imgproc.Canny(frame, frame, 200, 80);
 
         return frame;
     }
@@ -166,15 +172,14 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public void onCameraViewStarted(int width, int height) {
         frame = new Mat(height, width, CvType.CV_8UC4);
-        gray = new Mat(height, width, CvType.CV_8UC2);
-        filtered = new Mat(height, width, CvType.CV_8UC1);
+        filtered = new Mat(height, width, CvType.CV_8UC3);
     }
 
 
     @Override
     public void onCameraViewStopped() {
         frame.release();
-        gray.release();
+        //gray.release();
         filtered.release();
     }
 
