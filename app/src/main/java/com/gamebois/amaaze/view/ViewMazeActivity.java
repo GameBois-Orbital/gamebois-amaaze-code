@@ -50,24 +50,7 @@ public class ViewMazeActivity extends AppCompatActivity {
         }
     }
 
-    private class ViewMazePagerAdapter extends FragmentStateAdapter {
-        public ViewMazePagerAdapter(FragmentActivity fa) {
-            super(fa);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            return new ViewMazeFragment();
-        }
-
-        @Override
-        public int getItemCount() {
-            return NUM_PAGES;
-        }
-    }
-
-    private class MazeTabConfiguration implements TabLayoutMediator.TabConfigurationStrategy {
+    private static class MazeTabConfiguration implements TabLayoutMediator.TabConfigurationStrategy {
 
         @Override
         public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
@@ -76,6 +59,27 @@ public class ViewMazeActivity extends AppCompatActivity {
             } else if (position == 1) {
                 tab.setText(R.string.title_public_tab);
             }
+        }
+    }
+
+    private class ViewMazePagerAdapter extends FragmentStateAdapter {
+        public ViewMazePagerAdapter(FragmentActivity fa) {
+            super(fa);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            if (position == 0) {
+                return ViewMazeFragment.newInstance(false);
+            } else {
+                return ViewMazeFragment.newInstance(true);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return NUM_PAGES;
         }
     }
 
