@@ -22,6 +22,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jni {
+                srcDirs 'src/main/jni', 'src/main/jniLibs/'
+            }
+        }
+    }
 
 }
 
@@ -56,4 +63,5 @@ dependencies {
 
     //Support Libraries
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation project(path: ':openCVLibrary342')
 }
