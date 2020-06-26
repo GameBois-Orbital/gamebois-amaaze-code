@@ -47,15 +47,20 @@ public class CaptureMazeActivity extends AppCompatActivity implements CameraBrid
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         frame = inputFrame.rgba();
         Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2GRAY);
+        Imgproc.Canny(frame, frame, 200, 80);
         Imgproc.bilateralFilter(frame, filtered, 5, 170, 5);
+        /*
 
+        Imgproc.dilate(filtered, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15), new Point(0,0)));
+        Imgproc.erode(processed, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15), new Point(0,0)));
 
-        //Imgproc.GaussianBlur(frame, frame, new Size(5,5), 2,2);
-        Imgproc.adaptiveThreshold(filtered, frame, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 9, 9);
-        Imgproc.dilate(frame, frame, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(13, 13), new Point(0, 0)));
-        //Imgproc.erode(frame, frame, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(11, 11), new Point(0,0)));
-        //Imgproc.Canny(frame, frame, 200, 80);
-
+        Imgproc.findContours(processed, contours, new Mat(), Imgproc.RETR_EXTERNAL,Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.drawContours(frame, contours,-1, new Scalar( 0, 255, 0));
+         */
+        //Imgproc.GaussianBlur(frame, frame, new Size(7,7), 2, 2); // perform gaussian blur to remove noise
+        //Imgproc.adaptiveThreshold(filtered, frame,255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY_INV,3, 3); // apply adaptive thresolding to blured frame
+        Imgproc.dilate(filtered, frame, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(9, 9), new Point(-1, -1))); // dilate the frame to fill gaps
+        Imgproc.erode(frame, frame, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(9, 9), new Point(-1, -1)));
         return frame;
     }
 
