@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final int RC_SIGN_IN = 2323;
     private Toolbar mToolbar;
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchCameraCaptureActivity(View view) {
+        Log.d(LOG_TAG, "Create maze click");
         Intent intent = new Intent(this, CameraCaptureActivity.class);
         startActivity(intent);
     }
