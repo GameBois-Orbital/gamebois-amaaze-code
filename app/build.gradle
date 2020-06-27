@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.gamebois.amaaze"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -20,6 +20,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jni {
+                srcDirs 'src/main/jni', 'src/main/jniLibs/'
+            }
         }
     }
 
@@ -56,4 +63,5 @@ dependencies {
 
     //Support Libraries
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation project(path: ':openCVLibrary342')
 }
