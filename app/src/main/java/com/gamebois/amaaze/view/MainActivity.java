@@ -15,7 +15,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.viewmodel.MainActivityViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 
@@ -24,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 2323;
     private Toolbar mToolbar;
     private MainActivityViewModel mViewModel;
-    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +33,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         //View model
         mViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        initFirestore();
     }
 
-    private void initFirestore() {
-        mFirestore = FirebaseFirestore.getInstance();
-    }
 
     @Override
     protected void onStart() {
