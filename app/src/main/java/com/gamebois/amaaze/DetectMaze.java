@@ -17,7 +17,6 @@ class DetectMaze {
 
     private Mat processed;
     private Mat filtered;
-    private Mat hierarchy;
     private Size unhole;
     private Scalar color;
     private List<MatOfPoint> contours;
@@ -27,18 +26,17 @@ class DetectMaze {
     float xoffset;
     float yoffset;
 
-    public DetectMaze(int screen_width,int screen_height, int mat_width, int mat_height) {
+    public DetectMaze(){//int screen_width,int screen_height, int mat_width, int mat_height) {
         processed = new Mat();
         filtered = new Mat();
-        hierarchy = new Mat();
         unhole = new Size(15,15);
         color = new Scalar(0, 255, 0);
         List<MatOfPoint> contours = new ArrayList<>();
         maxContourArea = 0;
         maxContourIdx = 0;
-        scale= Math.min( (float)screen_width/mat_width, (float)screen_height/mat_height );
-        xoffset= (float) ((screen_width-scale*mat_width)/2.0); //shift the points X coordiante by xoffset (defined in opencv CameraBridgeViewBase.java at line 420)
-        yoffset=(float) ((screen_height-scale*mat_height)/2.0);
+        //scale= Math.min( (float)screen_width/mat_width, (float)screen_height/mat_height );
+        //xoffset= (float) ((screen_width-scale*mat_width)/2.0); //shift the points X coordiante by xoffset (defined in opencv CameraBridgeViewBase.java at line 420)
+        //yoffset=(float) ((screen_height-scale*mat_height)/2.0);
     }
 
     public List<PointF> getMazePoints() {
@@ -56,6 +54,29 @@ class DetectMaze {
     
 
     public void process(Mat frame) {
+        contours.clear();
+        Mat hierarchy = new Mat();
+        Imgproc.cvtColor(frame, processed, Imgproc.COLOR_RGBA2GRAY);
+        Imgproc.bilateralFilter(processed, filtered, 3, 170, 3);
+        Imgproc.adaptiveThreshold(filtered, processed, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 7, 7); // apply adaptive thresolding to blured frame
+        Imgproc.dilate(processed, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(17, 17), new Point(0, 0)));
+        Imgproc.erode(processed, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(17, 17), new Point(0, 0)));
+        Imgproc.findContours(processed, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+        double maxVal = 0;
+        int hello = 0;
+        for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
+            double contourArea = Imgproc.contourArea(contours.get(contourIdx));
+            if (maxVal < contourArea) {
+                maxVal = contourArea;
+                hello = contourIdx;
+            }
+        }
+        if( hello >=0) {
+            Imgproc.drawContours(frame, contours, hello, new Scalar(0, 255, 0), 2, Core.LINE_8, hierarchy, 0, new Point());
+        }
+        /*return frame;
+        contours.clear();
+        Mat hierarchy = new Mat();
         Imgproc.cvtColor(frame, processed, Imgproc.COLOR_RGBA2GRAY);
         Imgproc.bilateralFilter(processed, filtered, 3, 170, 3);
         Imgproc.adaptiveThreshold(filtered, processed, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 7, 7); // apply adaptive thresolding to blured frame
@@ -73,6 +94,6 @@ class DetectMaze {
             }
         }
 
-        Imgproc.drawContours(frame, contours, maxContourIdx, color, 2, Core.LINE_8, hierarchy, 0, new Point());
+        Imgproc.drawContours(frame, contours, maxContourIdx, color, 2, Core.LINE_8, hierarchy, 0, new Point());   */
     }
 }

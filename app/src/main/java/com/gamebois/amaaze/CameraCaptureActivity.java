@@ -31,8 +31,8 @@ import java.util.List;
 
 public class CameraCaptureActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    int mat_width = 1280;
-    int mat_height = 960;
+    //int mat_width = 1280;
+   // int mat_height = 960;
 
 
     private static String TAG = "OpenCVCamera";
@@ -42,7 +42,7 @@ public class CameraCaptureActivity extends AppCompatActivity implements CameraBr
     Mat filtered;
     Mat processed;
     List<MatOfPoint> contours = new ArrayList<>();
-    DetectMaze detectMaze;
+    //DetectMaze detectMaze;
     BaseLoaderCallback mLoaderCallBack = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -78,16 +78,16 @@ public class CameraCaptureActivity extends AppCompatActivity implements CameraBr
         Imgproc.erode(processed, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(17, 17), new Point(0, 0)));
         Imgproc.findContours(processed, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
         double maxVal = 0;
-        int hello = 0;
+        int max_index = -1;
         for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
             double contourArea = Imgproc.contourArea(contours.get(contourIdx));
             if (maxVal < contourArea) {
                 maxVal = contourArea;
-                hello = contourIdx;
+                max_index = contourIdx;
             }
         }
-        if( hello >=0) {
-            Imgproc.drawContours(frame, contours, hello, new Scalar(0, 255, 0), 2, Core.LINE_8, hierarchy, 0, new Point());
+        if( max_index >=0) {
+            Imgproc.drawContours(frame, contours, max_index, new Scalar(0, 255, 0), 2, Core.LINE_8, hierarchy, 0, new Point());
         }
         return frame;
     }
