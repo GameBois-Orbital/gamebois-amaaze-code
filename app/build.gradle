@@ -64,4 +64,5 @@ dependencies {
     //Support Libraries
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation project(path: ':openCVLibrary342')
+    implementation project(path: ':jbox2d-library-2.2.1-ds')
 }

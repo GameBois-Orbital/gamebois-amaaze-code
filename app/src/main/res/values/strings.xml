@@ -5,4 +5,5 @@
     <string name="action_settings">Settings</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="activity_camera_capture_name">Camera Capture Activity</string>
+    <string name="set_button_text">Set!</string>
 </resources>
