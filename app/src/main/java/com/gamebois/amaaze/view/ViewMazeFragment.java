@@ -25,13 +25,13 @@ public class ViewMazeFragment extends Fragment {
     //Default number of columns is 1
     private int mColumnCount = 1;
     private boolean mIsPublic = false;
+    private ViewMazesAdapter mAdapter;
     private MazeViewModel mViewModel;
 
     public ViewMazeFragment() {
         // Required empty public constructor
     }
 
-    @SuppressWarnings("unused")
     public static ViewMazeFragment newInstance(boolean isPublic) {
         ViewMazeFragment fragment = new ViewMazeFragment();
         Bundle args = new Bundle();
@@ -69,10 +69,28 @@ public class ViewMazeFragment extends Fragment {
         return listView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAdapter != null) {
+            mAdapter.stopListening();
+        }
+    }
+
     public void initRecyclerView(RecyclerView view) {
+//        view.setHasFixedSize(true);
+        view.setItemViewCacheSize(15);
         Context activityContext = view.getContext();
         //Pass in the values from ViewModel into the adapter
-        ViewMazesAdapter mAdapter = new ViewMazesAdapter(activityContext, mViewModel.getMazes().getValue());
+        mAdapter = new ViewMazesAdapter(activityContext);
         view.setAdapter(mAdapter);
         //Set linear or grid layout based on number of columns defined
         if (mColumnCount <= 1) {
