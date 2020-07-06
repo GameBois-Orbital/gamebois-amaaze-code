@@ -48,6 +48,7 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     protected int mPreviewFormat = RGBA;
     protected int mCameraIndex = CAMERA_ID_ANY;
     protected boolean mEnabled;
+    protected boolean mCameraPermissionGranted = false;
     protected FpsMeter mFpsMeter = null;
 
     public static final int CAMERA_ID_ANY   = -1;
@@ -215,6 +216,20 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     public void surfaceDestroyed(SurfaceHolder holder) {
         synchronized(mSyncObject) {
             mSurfaceExist = false;
+            checkCurrentState();
+        }
+    }
+
+
+    /**
+     * Manually Added by Shion
+     * This method is provided for clients, so they can signal camera permission has been granted.
+     * The actual onCameraViewStarted callback will be delivered only after setCameraPermissionGranted
+     * and enableView have been called and surface is available
+     */
+    public void setCameraPermissionGranted() {
+        synchronized(mSyncObject) {
+            mCameraPermissionGranted = true;
             checkCurrentState();
         }
     }
@@ -491,5 +506,17 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         }
 
         return new Size(calcWidth, calcHeight);
+    }
+
+    public int getMatWidth() {
+        return mCacheBitmap.getWidth();
+    }
+
+    public int getMatHeight() {
+        return mCacheBitmap.getHeight();
+    }
+
+    public float getmScale() {
+        return mScale;
     }
 }

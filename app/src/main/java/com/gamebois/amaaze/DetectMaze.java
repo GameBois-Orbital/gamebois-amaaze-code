@@ -1,6 +1,7 @@
 package com.gamebois.amaaze;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -14,44 +15,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 class DetectMaze {
+    private static String LOG = DetectMaze.class.getSimpleName();
+
+    private int MIN_CONTOUR_AREA = 200;
+
     private Mat processed = new Mat();
     private Mat filtered = new Mat();
-    private Size unhole = new Size(15,15);
+    private Size unhole = new Size(15, 15);
     private Scalar color = new Scalar(0, 255, 0);
-    public List<MatOfPoint> contours;
-    public ArrayList<PointF> android ;
+    private List<MatOfPoint> contours;
+    public ArrayList<PointF> contourShifted;
+    public double biggest;
+    public ArrayList<ArrayList<PointF>> rigidSurfaces;
+
 
     float scale;
     float xoffset;
     float yoffset;
 
-    public DetectMaze(int screen_width,int screen_height, int mat_width, int mat_height) {
-        List<MatOfPoint> contours = new ArrayList<>();
-        android = new ArrayList<>();
+    public DetectMaze(int screen_width, int screen_height, int mat_width, int mat_height, float scale) {
+        contours = new ArrayList<>();
+        contourShifted = new ArrayList<>();
+        rigidSurfaces = new ArrayList<>();
+        this.scale = scale;
 
-        scale= Math.min( (float)screen_width/mat_width, (float)screen_height/mat_height );
-        xoffset= (float) ((screen_width-scale*mat_width)/2.0); //shift the points X coordiante by xoffset (defined in opencv CameraBridgeViewBase.java at line 420)
-        yoffset=(float) ((screen_height-scale*mat_height)/2.0);
+        xoffset = (float) ((screen_width - scale * mat_width) / 2.0); //shift the points X coordiante by xoffset (defined in opencv CameraBridgeViewBase.java at line 420)
+        yoffset = (float) ((screen_height - scale * mat_height) / 2.0);
     }
 
-    public void makeMazePoints(List<MatOfPoint> contours, int max_index) {
-        List<Point> cvContour = contours.get(max_index).toList();
-
-        for (int j = 0; j < cvContour.size(); j++) {
-            Point p = cvContour.get(j);
-            android.add(new PointF((float) p.x*scale + xoffset, (float) (p.y*scale+yoffset)));
-        }
+    public ArrayList<ArrayList<PointF>> getRigidSurfaces() {
+        return rigidSurfaces;
     }
-
-    public ArrayList<PointF> getMazePoints(){
-        return android;
-    }
-    
 
     public void process(Mat frame) {
-        contours.clear();
-        processed.release();
-        filtered.release();
         Mat hierarchy = new Mat();
         Imgproc.cvtColor(frame, processed, Imgproc.COLOR_RGBA2GRAY);
         Imgproc.bilateralFilter(processed, filtered, 3, 170, 3);
@@ -59,20 +55,57 @@ class DetectMaze {
         Imgproc.dilate(processed, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, unhole, new Point(0, 0)));
         Imgproc.erode(processed, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, unhole, new Point(0, 0)));
         Imgproc.findContours(processed, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+        rigidSurfaces.clear();
 
-        double maxVal = 0;
-        int max_index = -1;
+
+        for (int i = 0; i < contours.size(); i++) {    // for every set of contours detected, decide whether to draw
+            double contourArea = Imgproc.contourArea(contours.get(i));
+            if (MIN_CONTOUR_AREA < contourArea) {
+                Imgproc.drawContours(frame, contours, i, color, 2, Core.LINE_8, hierarchy, 0, new Point()); // for every contour drawn, add contourshifted to rigidsurfaces
+                List<Point> contour = contours.get(i).toList();
+                contourShifted.clear();
+                for (int j = 0; j < contour.size(); j++) {  // convert contour to contourshifted
+                    Point p = contour.get(j);
+                    contourShifted.add(new PointF((float) p.x * this.scale + this.xoffset, (float) p.y * this.scale + this.yoffset));
+                }
+                rigidSurfaces.add(contourShifted);
+            } else {
+                continue;
+            }
+           // Log.d(LOG, "Number of contours drawn: " + Integer.toString(rigidSurfaces.size()));   // tells number of contours drawn
+        }
+    }
+}
+
+        /*rigidSurfaces.clear();
 
         for (int i = 0; i < contours.size(); i++) {
+            double contourArea = Imgproc.contourArea(contours.get(i));
+            if (MIN_CONTOUR_AREA < contourArea) {
+                Imgproc.drawContours(frame, contours, i, color, 2, Core.LINE_8, hierarchy, 0, new Point());
+
+                contourShifted.clear();
+                List<Point> contour = contours.get(i).toList();
+                for (int j = 0; j < contour.size(); j++) {
+                    Point p = contour.get(j);
+                    contourShifted.add(new PointF((float) p.x * this.scale + this.xoffset, (float) p.y * this.scale + this.yoffset));
+                    rigidSurfaces.add(contourShifted);
+                }
+            } else {
+                continue;
+            }
+        }     */
+
+//double maxVal = 0;
+//int max_index = -1;
+
+        /*for (int i = 0; i < contours.size(); i++) {
             double contourArea = Imgproc.contourArea(contours.get(i));
             if (maxVal < contourArea) {
                 maxVal = contourArea;
                 max_index = i;
             }
-        }
-        if( max_index >=0) {
-            Imgproc.drawContours(frame, contours, max_index, color, 2, Core.LINE_8, hierarchy, 0, new Point());
-            makeMazePoints(contours, max_index);
-        }
-    }
-}
+        }            */
+
+
+

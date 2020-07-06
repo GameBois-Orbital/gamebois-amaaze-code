@@ -2,19 +2,25 @@ package com.gamebois.amaaze;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.CameraActivity;
 import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.JavaCamera2View;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -25,58 +31,53 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CameraCaptureActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class CameraCaptureActivity extends CameraActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
    // public static final String EXTRA_MAZE_LIST = "com.gamebois.ammaze.EXTRA_MAZE_LIST";
 
-    int mat_width = 1280;
-    int mat_height = 960;
-
-
+    private String LOG_TAG = CameraCaptureActivity.class.getSimpleName();
     private static String TAG = "OpenCVCamera";
-    private int CAMERA_REQ = 10;
-    CameraBridgeViewBase cameraBridgeviewbase;
-    public Mat frame;
 
+    CameraBridgeViewBase mOpenCVCameraView;
+    public Mat frame;
     DetectMaze dm;
-    ArrayList<PointF> androidPts = new ArrayList<PointF>();
+    ArrayList<ArrayList<PointF>> rigidsurfaces;
 
     BaseLoaderCallback mLoaderCallBack = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             super.onManagerConnected(status);
             if (status == BaseLoaderCallback.SUCCESS){
-                cameraBridgeviewbase.enableView();
+                mOpenCVCameraView.enableView();
             } else {
                 super.onManagerConnected(status);
             }
         }
     };
 
-    private String LOG_TAG = CameraCaptureActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_camera_capture);
-        cameraBridgeviewbase = (JavaCameraView) findViewById(R.id.my_camera_view);
-        cameraBridgeviewbase.setVisibility(SurfaceView.VISIBLE);
-        cameraBridgeviewbase.setCvCameraViewListener(this);
-
+        mOpenCVCameraView = findViewById(R.id.my_camera_view);
+        mOpenCVCameraView.setVisibility(SurfaceView.VISIBLE);
+        mOpenCVCameraView.setCvCameraViewListener(this);
+       
     }
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         frame = inputFrame.rgba();
-        dm = new DetectMaze(1920, 1080, 1920, 720);
+        dm = new DetectMaze(mOpenCVCameraView.getWidth(), mOpenCVCameraView.getHeight(), mOpenCVCameraView.getMatWidth(), mOpenCVCameraView.getMatHeight(), mOpenCVCameraView.getmScale());
         dm.process(frame);
+        rigidsurfaces = dm.getRigidSurfaces();
+        //Log.d(LOG_TAG, "Number of Contours (in rigidSurfaces)" + Integer.toString(rigidsurfaces.size()));
         return frame;
     }
 
     @Override
     public void onCameraViewStarted(int width, int height) {
-        frame = new Mat();
-
+        frame = new Mat(height, width, CvType.CV_8UC4);
     }
 
 
@@ -100,8 +101,8 @@ public class CameraCaptureActivity extends AppCompatActivity implements CameraBr
     @Override
     protected void onPause() {
         super.onPause();
-        if (cameraBridgeviewbase != null) {
-            cameraBridgeviewbase.disableView();
+        if (mOpenCVCameraView != null) {
+            mOpenCVCameraView.disableView();
         }
 
     }
@@ -110,20 +111,28 @@ public class CameraCaptureActivity extends AppCompatActivity implements CameraBr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (cameraBridgeviewbase != null) {
-            cameraBridgeviewbase.disableView();
+        if (mOpenCVCameraView != null) {
+            mOpenCVCameraView.disableView();
         }
     }
 
 
 
     public void launchSetBallActivity(View view) {
-        cameraBridgeviewbase.disableView();
-        androidPts = dm.getMazePoints();
+        mOpenCVCameraView.disableView();
         Log.d(LOG_TAG, "Set Clicked");
         Intent intent = new Intent(this, SetBallActivity.class);
-        intent.putParcelableArrayListExtra("maze", androidPts);
+        Bundle bundle = new Bundle();
+        bundle.putInt("size", rigidsurfaces.size());
+        for (int i = 0; i < rigidsurfaces.size(); i++) {
+            bundle.putParcelableArrayList("item"+i, rigidsurfaces.get(i));
+        }
+        intent.putExtras(bundle);
+        Log.d(LOG_TAG, "Number of Contours (to bundle): " + intent.getExtras().getInt("size"));
+
+
         startActivity(intent);
+
     }
 }
 
