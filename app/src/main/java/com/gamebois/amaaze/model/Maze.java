@@ -1,18 +1,20 @@
 package com.gamebois.amaaze.model;
 
+import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class Maze {
-    private String uniqueID = UUID.randomUUID().toString();
+    @DocumentId
+    private String uniqueID;
     private String title;
     private String imageURL;
     @ServerTimestamp
     private Date timeCreated;
-    private boolean isPublic = false;
-    private int numLikes;
+    private boolean isPublic;
+    private long wormholeDifficulty;
+    private long numLikes;
 
     public Maze() {
     }
@@ -24,11 +26,11 @@ public class Maze {
         numLikes = 0;
     }
 
-    public boolean isPublic() {
+    public boolean getIsPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean isPublic) {
+    public void setIsPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
 
@@ -48,7 +50,7 @@ public class Maze {
         this.imageURL = imageURL;
     }
 
-    public int getNumLikes() {
+    public long getNumLikes() {
         return numLikes;
     }
 
@@ -60,12 +62,15 @@ public class Maze {
         return uniqueID;
     }
 
-    public Date getTime() {
+    public Date getTimeCreated() {
         return timeCreated;
     }
 
-    //Testing
-//    public static Maze genNewMaze(int i) {
-//        return new Maze("Default " + i, "https://via.placeholder.com/300.png");
-//    }
+    public long getWormholeDifficulty() {
+        return wormholeDifficulty;
+    }
+
+    public void setWormholeDifficulty(long wormholeDifficulty) {
+        this.wormholeDifficulty = wormholeDifficulty;
+    }
 }

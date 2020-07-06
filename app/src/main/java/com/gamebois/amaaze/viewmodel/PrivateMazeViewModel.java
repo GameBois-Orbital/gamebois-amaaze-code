@@ -1,24 +1,22 @@
 package com.gamebois.amaaze.viewmodel;
 
-import android.util.Log;
-
-import com.gamebois.amaaze.livedata.MazeLiveData;
-import com.gamebois.amaaze.model.Maze;
-import com.gamebois.amaaze.repository.MazeRepository;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 public class PrivateMazeViewModel extends MazeViewModel {
 
-    private MazeRepository mRepository = MazeRepository.getInstance();
+    //TODO: Currently database logic is found in the viewmodel AND adapter classes. Need to refactor.
+
+    private FirebaseFirestore mFirestore;
 
     public PrivateMazeViewModel() {
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
-    public void add(Maze maze) {
-        mRepository.addMaze(maze);
-    }
-
-    public MazeLiveData getMazes() {
-        Log.d("LIVEDATA", "CALLED from VM");
-        return mRepository.getPrivateByDate();
+    @Override
+    public Query getQuery() {
+        return mFirestore.collection("mazes")
+                .whereEqualTo("isPublic", false)
+                .orderBy("numLikes", Query.Direction.DESCENDING);
     }
 }

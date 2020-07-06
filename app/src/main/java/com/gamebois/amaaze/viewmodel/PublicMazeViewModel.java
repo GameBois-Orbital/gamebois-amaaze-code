@@ -1,22 +1,21 @@
 package com.gamebois.amaaze.viewmodel;
 
-import com.gamebois.amaaze.livedata.MazeLiveData;
-import com.gamebois.amaaze.model.Maze;
-import com.gamebois.amaaze.repository.MazeRepository;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 public class PublicMazeViewModel extends MazeViewModel {
 
-    private MazeRepository mRepository = MazeRepository.getInstance();
+    private FirebaseFirestore mFirestore;
 
     public PublicMazeViewModel() {
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
-    public void add(Maze maze) {
-        mRepository.addMaze(maze);
-    }
-
-    public MazeLiveData getMazes() {
-        return mRepository.getPublicByDate();
+    @Override
+    public Query getQuery() {
+        return mFirestore.collection("mazes")
+                .whereEqualTo("isPublic", true)
+                .orderBy("numLikes", Query.Direction.DESCENDING);
     }
 
 }

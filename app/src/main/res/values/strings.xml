@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Amaaze</string>
     <string name="create_button_text">Create New Game</string>
     <string name="view_button_text">View Saved Games</string>
     <string name="action_settings">Settings</string>
@@ -9,4 +9,10 @@
     <string name="view_maze_title">Mazes</string>
     <string name="title_private_tab">My Creations</string>
     <string name="title_public_tab">Public</string>
+    <string name="maze_title_hint">Maze Title</string>
+    <string name="wormhole_text">Number of Wormholes</string>
+    <string name="mazify_activity_title">Create Your Maze</string>
+    <string name="save_button_cd">Save Button</string>
+    <string name="save_button_text">Save</string>
+    <string name="play_button_text">Play</string>
 </resources>

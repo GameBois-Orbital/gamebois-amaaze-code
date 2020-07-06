@@ -14,9 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.model.Maze;
+import com.gamebois.amaaze.view.GlideApp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -34,25 +34,24 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
 
     private static final String TAG = "ViewMazesAdapter";
     //Inflate the card layouts
-    private LayoutInflater mInflater;
     private final FirebaseFirestore mFirestore;
+    private final LayoutInflater mInflater;
     private List<DocumentSnapshot> mSnapshots = new ArrayList<>();
     private Query mQuery;
     private ListenerRegistration mRegistration;
 
-    public ViewMazesAdapter(Context context) {
+    public ViewMazesAdapter(Context context, Query mQuery) {
         mFirestore = FirebaseFirestore.getInstance();
         mInflater = LayoutInflater.from(context);
-        mQuery = mFirestore.collection("mazes")
-                .whereEqualTo("isPublic", true)
-                .orderBy("numLikes", Query.Direction.DESCENDING);
+        this.mQuery = mQuery;
+
     }
 
     @Override
     public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
         //TODO: Handle errors
         if (e != null) {
-            Log.w(TAG, "onEvent:error", e);
+            Log.w(TAG, e.getMessage());
             return;
         }
         if (documentSnapshots != null) {
@@ -123,8 +122,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
 
     @Override
     public void onBindViewHolder(@NonNull MazeViewHolder holder, int position) {
-        DocumentSnapshot mazeSnapshot = mSnapshots.get(position);
-        holder.setMazeAttributes(mazeSnapshot);
+        Maze maze = mSnapshots.get(position).toObject(Maze.class);
+        holder.setMazeAttributes(maze);
     }
 
     @Override
@@ -146,12 +145,10 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
             this.mAdapter = adapter;
         }
 
-        public void setMazeAttributes(DocumentSnapshot mazeSnapshot) {
-            Maze mCurrent = mazeSnapshot.toObject(Maze.class);
-            Log.d("Maze attributes", mCurrent.toString());
-            mazeTitle.setText(mCurrent.getTitle());
-            Glide.with(mazeImage.getContext())
-                    .load(mCurrent.getImageURL())
+        public void setMazeAttributes(Maze maze) {
+            mazeTitle.setText(maze.getTitle());
+            GlideApp.with(mazeImage.getContext())
+                    .load(maze.getImageURL())
                     .placeholder(new ColorDrawable(Color.BLACK))
                     .error(new ColorDrawable(Color.RED))
                     .into(mazeImage);
