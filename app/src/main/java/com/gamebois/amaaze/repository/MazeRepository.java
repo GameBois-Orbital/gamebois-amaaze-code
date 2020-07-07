@@ -2,108 +2,114 @@ package com.gamebois.amaaze.repository;
 
 import android.util.Log;
 
-import com.gamebois.amaaze.livedata.MazeLiveData;
-import com.gamebois.amaaze.model.Maze;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
+import androidx.annotation.Nullable;
 
-import java.util.EnumMap;
+import com.gamebois.amaaze.model.Maze;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MazeRepository {
 
     private static final String TAG = "Maze Repository";
-    private static MazeRepository singletonInstance;
-    private final FirebaseFirestore firestore;
-    private EnumMap<Filter, MazeLiveData> mazeLiveDataMap;
-    private EnumMap<Filter, Query> querySupplyMap;
+    private static final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private OnFirestoreTaskComplete firestoreTaskComplete;
+    private ListenerRegistration mRegistration;
+    private Query mQuery;
 
-    private MazeRepository() {
-        firestore = FirebaseFirestore.getInstance();
-        mazeLiveDataMap = new EnumMap<Filter, MazeLiveData>(Filter.class);
-        querySupplyMap = new EnumMap<Filter, Query>(Filter.class);
-        generateQueries();
+    public MazeRepository(OnFirestoreTaskComplete firestoreTaskComplete) {
+        this.firestoreTaskComplete = firestoreTaskComplete;
     }
 
-    public static MazeRepository getInstance() {
-        if (singletonInstance == null) {
-            singletonInstance = new MazeRepository();
+    public static void addMaze(Maze m) {
+
+    }
+
+    public static void updateMaze(Maze m) {
+
+    }
+
+    public static Task<Void> deleteMaze(Maze m) {
+        return firestore.collection("mazes").document(m.getUniqueID()).delete();
+    }
+
+    public static void likeMaze(Maze m) {
+
+    }
+
+    public void setQuery(Query mQuery) {
+        stopListening();
+        this.mQuery = mQuery;
+        startListening();
+    }
+
+    public void startListening() {
+        if (mQuery != null && mRegistration == null) {
+            mRegistration = mQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w(TAG, e.getMessage());
+                        return;
+                    }
+                    if (documentSnapshots != null) {
+                        for (DocumentChange change : documentSnapshots.getDocumentChanges()) {
+                            DocumentSnapshot snapshot = change.getDocument();
+
+                            switch (change.getType()) {
+                                case ADDED:
+                                    onDocumentAdded(change);
+                                    break;
+                                case MODIFIED:
+                                    onDocumentModified(change);
+                                    break;
+                                case REMOVED:
+                                    onDocumentRemoved(change);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            });
         }
-        return singletonInstance;
     }
 
-    private void generateQueries() {
-
-        //TODO: Finish remaining queries
-
-        Query publicPopularityQuery = firestore.collection("mazes")
-                .whereEqualTo("isPublic", true)
-                .orderBy("numLikes", Query.Direction.DESCENDING);
-        querySupplyMap.put(Filter.PUBLIC_BY_POPULARITY, publicPopularityQuery);
-
-        Query privatePopularityQuery = firestore.collection("mazes")
-                .whereEqualTo("isPublic", false)
-                .orderBy("numLikes", Query.Direction.DESCENDING);
-        querySupplyMap.put(Filter.PRIVATE_BY_POPULARITY, privatePopularityQuery);
-
-        Query privateDateQuery = firestore.collection("mazes")
-                .whereEqualTo("isPublic", false)
-                .orderBy("timeCreated", Query.Direction.DESCENDING);
-        querySupplyMap.put(Filter.PRIVATE_BY_DATE, privateDateQuery);
-
-        Query publicDateQuery = firestore.collection("mazes")
-                .whereEqualTo("isPublic", true)
-                .orderBy("timeCreated", Query.Direction.DESCENDING);
-        querySupplyMap.put(Filter.PUBLIC_BY_DATE, publicDateQuery);
-    }
-
-    public MazeLiveData getPublicByPopularity() {
-        return getFromFilter(Filter.PUBLIC_BY_POPULARITY);
-    }
-
-    public MazeLiveData getPrivateByPopularity() {
-        return getFromFilter(Filter.PRIVATE_BY_POPULARITY);
-    }
-
-    public MazeLiveData getPublicByDate() {
-        return getFromFilter(Filter.PUBLIC_BY_DATE);
-    }
-
-    public MazeLiveData getPrivateByDate() {
-        return getFromFilter(Filter.PRIVATE_BY_DATE);
-    }
-
-    public void addMaze(Maze maze) {
-        firestore.collection("mazes")
-                .document(maze.getUniqueID())
-                .set(maze);
-    }
-
-    public void updateMaze(Maze maze) {
-        //TODO
-    }
-
-    public void deleteMaze(Maze maze) {
-        //TODO
-    }
-
-    //Check for null and instantiate
-    public MazeLiveData getFromFilter(Filter filter) {
-        MazeLiveData requested = mazeLiveDataMap.get(filter);
-        if (requested == null) {
-            requested = new MazeLiveData(querySupplyMap.get(filter));
-            mazeLiveDataMap.put(filter, requested);
-            Log.d(TAG, "Requested");
+    public void stopListening() {
+        if (mRegistration != null) {
+            mRegistration.remove();
+            mRegistration = null;
         }
-        return requested;
+
+        firestoreTaskComplete.cleanupData();
     }
 
-    enum Filter {
-        PUBLIC_BY_DATE,
-        PUBLIC_BY_POPULARITY,
-        PUBLIC_BY_LIKED,
-        PRIVATE_BY_DATE,
-        PRIVATE_BY_POPULARITY
+    private void onDocumentRemoved(DocumentChange change) {
+        firestoreTaskComplete.documentRemoved(change.getOldIndex());
+    }
+
+    private void onDocumentModified(DocumentChange change) {
+        firestoreTaskComplete.documentUpdated(change.getOldIndex(), change.getNewIndex(), change.getDocument().toObject(Maze.class));
+    }
+
+    private void onDocumentAdded(DocumentChange change) {
+        firestoreTaskComplete.documentAdded(change.getNewIndex(), change.getDocument().toObject(Maze.class));
     }
 
 
+    public interface OnFirestoreTaskComplete {
+
+        void documentAdded(int index, Maze m);
+
+        void documentUpdated(int oldIndex, int newIndex, Maze m);
+
+        void documentRemoved(int index);
+
+        void cleanupData();
+    }
 }

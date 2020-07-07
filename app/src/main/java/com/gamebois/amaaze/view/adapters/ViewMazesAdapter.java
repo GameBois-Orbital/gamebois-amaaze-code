@@ -3,114 +3,39 @@ package com.gamebois.amaaze.view.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.model.Maze;
+import com.gamebois.amaaze.repository.MazeRepository;
 import com.gamebois.amaaze.view.GlideApp;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.MazeViewHolder>
-        implements EventListener<QuerySnapshot> {
+        implements MazeRepository.OnFirestoreTaskComplete {
 
+    private MazeRepository mRepository;
     private static final String TAG = "ViewMazesAdapter";
     //Inflate the card layouts
-    private final FirebaseFirestore mFirestore;
     private final LayoutInflater mInflater;
-    private List<DocumentSnapshot> mSnapshots = new ArrayList<>();
-    private Query mQuery;
-    private ListenerRegistration mRegistration;
+    private List<Maze> mazeList = new ArrayList<>();
+    private Context context;
 
-    public ViewMazesAdapter(Context context, Query mQuery) {
-        mFirestore = FirebaseFirestore.getInstance();
+    public ViewMazesAdapter(Context context) {
+        this.context = context;
         mInflater = LayoutInflater.from(context);
-        this.mQuery = mQuery;
-
-    }
-
-    @Override
-    public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
-        //TODO: Handle errors
-        if (e != null) {
-            Log.w(TAG, e.getMessage());
-            return;
-        }
-        if (documentSnapshots != null) {
-            for (DocumentChange change : documentSnapshots.getDocumentChanges()) {
-                DocumentSnapshot snapshot = change.getDocument();
-
-                switch (change.getType()) {
-                    case ADDED:
-                        onDocumentAdded(change);
-                        break;
-                    case MODIFIED:
-                        onDocumentModified(change);
-                        break;
-                    case REMOVED:
-                        onDocumentRemoved(change);
-                        break;
-                }
-
-            }
-        }
-    }
-
-    public void startListening() {
-        if (mQuery != null && mRegistration == null) {
-            mRegistration = mQuery.addSnapshotListener(this);
-        }
-    }
-
-    public void stopListening() {
-        if (mRegistration != null) {
-            mRegistration.remove();
-            mRegistration = null;
-        }
-
-        mSnapshots.clear();
-        notifyDataSetChanged();
-    }
-
-    private void onDocumentRemoved(DocumentChange change) {
-        mSnapshots.remove(change.getOldIndex());
-        notifyItemRemoved(change.getOldIndex());
-    }
-
-    private void onDocumentModified(DocumentChange change) {
-        if (change.getOldIndex() == change.getNewIndex()) {
-            // Item changed but remained in same position
-            mSnapshots.set(change.getOldIndex(), change.getDocument());
-            notifyItemChanged(change.getOldIndex());
-        } else {
-            // Item changed and changed position
-            mSnapshots.remove(change.getOldIndex());
-            mSnapshots.add(change.getNewIndex(), change.getDocument());
-            notifyItemMoved(change.getOldIndex(), change.getNewIndex());
-        }
-    }
-
-    private void onDocumentAdded(DocumentChange change) {
-        mSnapshots.add(change.getNewIndex(), change.getDocument());
-        notifyItemInserted(change.getNewIndex());
     }
 
     @NonNull
@@ -122,13 +47,65 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
 
     @Override
     public void onBindViewHolder(@NonNull MazeViewHolder holder, int position) {
-        Maze maze = mSnapshots.get(position).toObject(Maze.class);
+        Maze maze = mazeList.get(position);
         holder.setMazeAttributes(maze);
     }
 
     @Override
     public int getItemCount() {
-        return this.mSnapshots.size();
+        return this.mazeList.size();
+    }
+
+    public void startListening(Query q) {
+        mRepository = new MazeRepository(this);
+        mRepository.setQuery(q);
+    }
+
+    public void stopListening() {
+        mRepository.stopListening();
+    }
+
+    @Override
+    public void documentAdded(int index, Maze m) {
+        mazeList.add(index, m);
+        notifyItemInserted(index);
+    }
+
+    @Override
+    public void documentUpdated(int oldIndex, int newIndex, Maze m) {
+        if (oldIndex == newIndex) {
+            // Item changed but remained in same position
+            mazeList.set(oldIndex, m);
+            notifyItemChanged(oldIndex);
+        } else {
+            // Item changed and changed position
+            mazeList.remove(oldIndex);
+            mazeList.add(newIndex, m);
+            notifyItemMoved(oldIndex, newIndex);
+        }
+    }
+
+    @Override
+    public void documentRemoved(int index) {
+        mazeList.remove(index);
+        notifyItemRemoved(index);
+    }
+
+    @Override
+    public void cleanupData() {
+        mazeList.clear();
+        notifyDataSetChanged();
+
+    }
+
+    public void deleteMaze(int position) {
+        MazeRepository.deleteMaze(mazeList.get(position))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(context, "Deleted Maze", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public class MazeViewHolder extends RecyclerView.ViewHolder {

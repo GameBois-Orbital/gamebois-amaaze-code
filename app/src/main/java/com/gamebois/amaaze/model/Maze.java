@@ -8,10 +8,10 @@ import java.util.Date;
 public class Maze {
     @DocumentId
     private String uniqueID;
-    private String title;
-    private String imageURL;
     @ServerTimestamp
     private Date timeCreated;
+    private String title;
+    private String imageURL;
     private boolean isPublic;
     private long wormholeDifficulty;
     private long numLikes;

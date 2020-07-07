@@ -1,13 +1,17 @@
 package com.gamebois.amaaze.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +20,8 @@ import com.gamebois.amaaze.view.adapters.ViewMazesAdapter;
 import com.gamebois.amaaze.viewmodel.MazeViewModel;
 import com.gamebois.amaaze.viewmodel.PrivateMazeViewModel;
 import com.gamebois.amaaze.viewmodel.PublicMazeViewModel;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class ViewMazeFragment extends Fragment {
 
@@ -63,13 +69,29 @@ public class ViewMazeFragment extends Fragment {
         return listView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mAdapter != null) {
-            mAdapter.startListening();
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
         }
-    }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            if (direction == ItemTouchHelper.LEFT) {
+                mAdapter.deleteMaze(viewHolder.getAdapterPosition());
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addBackgroundColor(ContextCompat.getColor(ViewMazeFragment.this.getActivity(), R.color.warning))
+                    .addActionIcon(R.drawable.ic_delete)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    };
 
     @Override
     public void onStop() {
@@ -79,14 +101,25 @@ public class ViewMazeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mAdapter != null && mViewModel != null) {
+            mAdapter.startListening(mViewModel.getQuery());
+        }
+    }
+
     public void initRecyclerView(RecyclerView view) {
         Context activityContext = view.getContext();
         //Pass in the values from ViewModel into the adapter
         view.setLayoutManager(new LinearLayoutManager(activityContext));
-        mAdapter = new ViewMazesAdapter(activityContext, mViewModel.getQuery());
+        mAdapter = new ViewMazesAdapter(activityContext);
         view.setAdapter(mAdapter);
         view.setHasFixedSize(true);
         view.setItemViewCacheSize(15);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(view);
 
     }
 
