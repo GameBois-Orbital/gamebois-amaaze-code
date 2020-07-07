@@ -114,12 +114,12 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
         if (mOpenCVCameraView != null) {
             mOpenCVCameraView.disableView();
         }
+        Log.d(LOG_TAG, "onDestroy called");
     }
 
 
 
     public void launchSetBallActivity(View view) {
-        mOpenCVCameraView.disableView();
         Log.d(LOG_TAG, "Set Clicked");
         Intent intent = new Intent(this, SetBallActivity.class);
         Bundle bundle = new Bundle();
@@ -130,8 +130,8 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
         intent.putExtras(bundle);
         Log.d(LOG_TAG, "Number of Contours (to bundle): " + intent.getExtras().getInt("size"));
 
-
         startActivity(intent);
+        finish();
 
     }
 }
