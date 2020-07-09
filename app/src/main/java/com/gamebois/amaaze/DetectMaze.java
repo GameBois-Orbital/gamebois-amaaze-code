@@ -1,7 +1,6 @@
 package com.gamebois.amaaze;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -69,8 +68,6 @@ class DetectMaze {
                     contourShifted.add(new PointF((float) p.x * this.scale + this.xoffset, (float) p.y * this.scale + this.yoffset));
                 }
                 rigidSurfaces.add(contourShifted);
-            } else {
-                continue;
             }
            // Log.d(LOG, "Number of contours drawn: " + Integer.toString(rigidSurfaces.size()));   // tells number of contours drawn
         }
