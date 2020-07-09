@@ -55,8 +55,10 @@ public class DrawMazeView extends View {
                 for (int i = 0; i < rigidSurfaces.size(); i++) {
                     ArrayList<PointF> polyPoints = rigidSurfaces.get(i);
                     Path wallPath = new Path();
-                    for (PointF p : polyPoints) {
-                        wallPath.moveTo(p.x, p.y);
+                    wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
+                    for (int j = 1; j < polyPoints.size(); j++) {
+                        PointF p = polyPoints.get(j);
+                        wallPath.lineTo(p.x, p.y);
                     }
                     wallPath.close();
                     paths.add(wallPath);
