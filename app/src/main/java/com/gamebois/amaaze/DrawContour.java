@@ -39,7 +39,7 @@ public class DrawContour extends Drawable {
         wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
         for (int i = 1; i < polyPoints.size(); i++) {
             PointF p = polyPoints.get(i);
-            wallPath.moveTo(p.x, p.y);
+            wallPath.lineTo(p.x, p.y);
         }
         wallPath.close();
         canvas.drawPath(wallPath, polyPaint);
