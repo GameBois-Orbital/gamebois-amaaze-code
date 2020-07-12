@@ -22,12 +22,6 @@ public class SetBallActivity extends AppCompatActivity {
         drawMazeView = new DrawMazeView(this);
         drawMazeView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         setContentView(drawMazeView);
-
-        /*for (ArrayList<PointF> surface : rigidsurfaces) {
-            DrawContour mazeDrawing = new DrawContour(surface);
-            ImageView image = findViewById(R.id.my_image_view);
-            image.setImageDrawable(mazeDrawing);
-        } */
     }
 
     private void setRigidSurfaces() {

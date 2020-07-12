@@ -74,5 +74,8 @@ public class DrawMazeView extends View {
         for (Path path : paths) {
             canvas.drawPath(path, paint);
         }
+        /*Every time, you draw something new on the canvas , you need to refresh it. Your entire canvas is re-drawn. And hence you need to perform minimal operations in onDraw().
+        Ideally shouldn't loop. An expensive call.
+         */
     }
 }
