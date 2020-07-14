@@ -6,13 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class DrawMazeView extends View {
     private Paint paint;
@@ -20,9 +20,8 @@ public class DrawMazeView extends View {
     private int mDrawColour;
     private Canvas mExtraCanvas;
     private Bitmap mExtraContourBitmap;
-    //Iffy methods, do something
-    private ArrayList<ArrayList<PointF>> rigidSurfaces = new ArrayList<>();
-    private ArrayList<Path> paths = new ArrayList<>(rigidSurfaces.size());
+    private List<Path> paths;
+    public static final String DRAW_MAZE_LOGTAG = DrawMazeView.class.getSimpleName();
 
     DrawMazeView(Context context) {
         this(context, null);
@@ -31,7 +30,6 @@ public class DrawMazeView extends View {
     public DrawMazeView(Context context, AttributeSet attributeSet) {
         super(context);
         mDrawColour = ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, null);
-        path = new Path();
         paint = new Paint();
         paint.setColor(mDrawColour);
         paint.setAntiAlias(true);
@@ -39,6 +37,7 @@ public class DrawMazeView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeWidth(5);
     }
 
     //This method is called when a view changes size (such as when it is created), so can
@@ -48,23 +47,13 @@ public class DrawMazeView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         mExtraContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mExtraCanvas = new Canvas(mExtraContourBitmap);
-        mExtraCanvas.drawColor(Color.RED);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < rigidSurfaces.size(); i++) {
-                    ArrayList<PointF> polyPoints = rigidSurfaces.get(i);
-                    Path wallPath = new Path();
-                    wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
-                    for (int j = 1; j < polyPoints.size(); j++) {
-                        PointF p = polyPoints.get(j);
-                        wallPath.lineTo(p.x, p.y);
-                    }
-                    wallPath.close();
-                    paths.add(wallPath);
-                }
-            }
-        }).start();
+        mExtraCanvas.drawColor(Color.WHITE);
+        Log.d(DRAW_MAZE_LOGTAG, paths.toString());
+
+    }
+
+    public void setPaths(List<Path> paths) {
+        this.paths = paths;
     }
 
     @Override
