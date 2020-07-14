@@ -2,6 +2,8 @@ package com.gamebois.amaaze;
 
 import android.graphics.PointF;
 
+import com.gamebois.amaaze.model.ContourList;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -25,7 +27,7 @@ class DetectMaze {
     private List<MatOfPoint> contours;
     public ArrayList<PointF> contourShifted;
     public double biggest;
-    public ArrayList<ArrayList<PointF>> rigidSurfaces;
+    public ArrayList<ContourList> rigidSurfaces;
 
 
     float scale;
@@ -42,7 +44,7 @@ class DetectMaze {
         yoffset = (float) ((screen_height - scale * mat_height) / 2.0);
     }
 
-    public ArrayList<ArrayList<PointF>> getRigidSurfaces() {
+    public ArrayList<ContourList> getRigidSurfaces() {
         return rigidSurfaces;
     }
 
@@ -67,7 +69,7 @@ class DetectMaze {
                     Point p = contour.get(j);
                     contourShifted.add(new PointF((float) p.x * this.scale + this.xoffset, (float) p.y * this.scale + this.yoffset));
                 }
-                rigidSurfaces.add(contourShifted);
+                rigidSurfaces.add(new ContourList(contourShifted));
             }
            // Log.d(LOG, "Number of contours drawn: " + Integer.toString(rigidSurfaces.size()));   // tells number of contours drawn
         }

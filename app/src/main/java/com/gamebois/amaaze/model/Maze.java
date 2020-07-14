@@ -1,12 +1,9 @@
 package com.gamebois.amaaze.model;
 
-import android.graphics.PointF;
-
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
-import java.util.List;
 
 public class Maze {
     @DocumentId
@@ -18,8 +15,7 @@ public class Maze {
     private boolean isPublic;
     private long wormholeDifficulty;
     private long numLikes;
-    private int colour;
-    private List<List<PointF>> contours;
+    private PathList paths;
 
     public Maze() {
     }
@@ -31,12 +27,12 @@ public class Maze {
         numLikes = 0;
     }
 
-    public boolean getIsPublic() {
-        return isPublic;
+    public String getUniqueID() {
+        return uniqueID;
     }
 
-    public void setIsPublic(boolean isPublic) {
-        this.isPublic = isPublic;
+    public Date getTimeCreated() {
+        return timeCreated;
     }
 
     public String getTitle() {
@@ -55,20 +51,12 @@ public class Maze {
         this.imageURL = imageURL;
     }
 
-    public long getNumLikes() {
-        return numLikes;
+    public boolean getIsPublic() {
+        return isPublic;
     }
 
-    public void setNumLikes(int numLikes) {
-        this.numLikes = numLikes;
-    }
-
-    public String getUniqueID() {
-        return uniqueID;
-    }
-
-    public Date getTimeCreated() {
-        return timeCreated;
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public long getWormholeDifficulty() {
@@ -77,5 +65,21 @@ public class Maze {
 
     public void setWormholeDifficulty(long wormholeDifficulty) {
         this.wormholeDifficulty = wormholeDifficulty;
+    }
+
+    public long getNumLikes() {
+        return numLikes;
+    }
+
+    public void setNumLikes(int numLikes) {
+        this.numLikes = numLikes;
+    }
+
+    public PathList getPaths() {
+        return paths;
+    }
+
+    public void setPaths(PathList paths) {
+        this.paths = paths;
     }
 }
