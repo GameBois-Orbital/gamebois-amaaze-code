@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.MazifyActivity">
+
+    <include
+        android:id="@+id/mazify_toolbar"
+        layout="@layout/toolbar"
+        android:elevation="4dp"
+        app:title="@string/mazify_activity_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/maze_title_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/maze_title_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:paddingTop="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingVertical="16dp"
+            android:text="@string/wormhole_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <NumberPicker
+            android:id="@+id/wormhole_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp" />
+
+        <Switch
+            android:id="@+id/public_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Public" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/save_button_cd"
+            android:enabled="false"
+            android:onClick="saveMaze"
+            android:text="@string/save_button_text" />
+
+    </LinearLayout>
+
+</LinearLayout>
