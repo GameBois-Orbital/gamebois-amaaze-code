@@ -94,11 +94,13 @@ public class SetBallActivity extends AppCompatActivity {
                 }
                 wallPath.close();
                 paths.add(wallPath);
+                Log.d(LOG_TAG, paths.toString());
             }
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mViewModel.setPaths(paths);
+                    Log.d(LOG_TAG, paths.toString());
                     configureMazeView();
                 }
             });

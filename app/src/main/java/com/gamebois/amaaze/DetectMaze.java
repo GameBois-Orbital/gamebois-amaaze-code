@@ -25,7 +25,6 @@ class DetectMaze {
     private Size unhole = new Size(15, 15);
     private Scalar color = new Scalar(0, 255, 0);
     private List<MatOfPoint> contours;
-    public ArrayList<PointF> contourShifted;
     public double biggest;
     public ArrayList<ContourList> rigidSurfaces;
 
@@ -36,7 +35,6 @@ class DetectMaze {
 
     public DetectMaze(int screen_width, int screen_height, int mat_width, int mat_height, float scale) {
         contours = new ArrayList<>();
-        contourShifted = new ArrayList<>();
         rigidSurfaces = new ArrayList<>();
         this.scale = scale;
 
@@ -64,7 +62,7 @@ class DetectMaze {
             if (MIN_CONTOUR_AREA < contourArea) {
                 Imgproc.drawContours(frame, contours, i, color, 2, Core.LINE_8, hierarchy, 0, new Point()); // for every contour drawn, add contourshifted to rigidsurfaces
                 List<Point> contour = contours.get(i).toList();
-                contourShifted.clear();
+                ArrayList<PointF> contourShifted = new ArrayList<>();
                 for (int j = 0; j < contour.size(); j++) {  // convert contour to contourshifted
                     Point p = contour.get(j);
                     contourShifted.add(new PointF((float) p.x * this.scale + this.xoffset, (float) p.y * this.scale + this.yoffset));

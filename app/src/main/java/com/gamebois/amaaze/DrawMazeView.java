@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
@@ -20,6 +21,7 @@ public class DrawMazeView extends View {
     private Canvas mExtraCanvas;
     private Bitmap mExtraContourBitmap;
     private List<Path> paths;
+    public static final String DRAW_MAZE_LOGTAG = DrawMazeView.class.getSimpleName();
 
     DrawMazeView(Context context) {
         this(context, null);
@@ -46,6 +48,7 @@ public class DrawMazeView extends View {
         mExtraContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mExtraCanvas = new Canvas(mExtraContourBitmap);
         mExtraCanvas.drawColor(Color.WHITE);
+        Log.d(DRAW_MAZE_LOGTAG, paths.toString());
 
     }
 
