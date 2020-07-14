@@ -1,8 +1,4 @@
-package com.gamebois.amaaze;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
+package com.gamebois.amaaze.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +8,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.firebase.ui.auth.AuthUI;
+import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.viewmodel.MainActivityViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 
@@ -25,23 +25,18 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 2323;
     private Toolbar mToolbar;
     private MainActivityViewModel mViewModel;
-    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Sets up a toolbar at the top of the screen
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
         //View model
         mViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        initFirestore();
     }
 
-    private void initFirestore() {
-        mFirestore = FirebaseFirestore.getInstance();
-    }
 
     @Override
     protected void onStart() {
@@ -104,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void selectViewMazes(View v) {
+        Intent viewMazeIntent = new Intent(this, ViewMazeActivity.class);
+        startActivity(viewMazeIntent);
+    }
+
     private void showTodoToast() {
         Toast.makeText(this, "TODO: Implement", Toast.LENGTH_SHORT).show();
     }
@@ -113,4 +113,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CameraCaptureActivity.class);
         startActivity(intent);
     }
+
 }
