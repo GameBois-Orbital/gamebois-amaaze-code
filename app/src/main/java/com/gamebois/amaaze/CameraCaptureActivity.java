@@ -175,7 +175,8 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
 
     public void launchSetBallActivityWithIntent(String mazeID) {
         Toast.makeText(this, "Maze saved", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, SetBallActivity.class);
+        //Intent intent = new Intent(this, SetBallActivity.class);
+        Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(ID_TAG, mazeID);
         startActivity(intent);
         finish();
