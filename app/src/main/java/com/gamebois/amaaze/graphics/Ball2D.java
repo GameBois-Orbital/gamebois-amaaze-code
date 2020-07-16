@@ -3,6 +3,9 @@ package com.gamebois.amaaze.graphics;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
+
+import com.gamebois.amaaze.GameActivity;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.common.Vec2;
@@ -12,6 +15,7 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
 public class Ball2D {
+    private String LOG_TAG = Ball2D.class.getSimpleName();
 
     private float x,y,radius;
     private Createbox2d box2d;
@@ -21,11 +25,13 @@ public class Ball2D {
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.box2d = box2d;
 
         BodyDef bd = new BodyDef();  // define dynamic body with initial ball center
         bd.type = BodyType.DYNAMIC;
         bd.position.set(box2d.coordPixelsToWorld(this.x, this.y));
         b1 = box2d.createBody(bd);
+
 
         CircleShape cs = new CircleShape();
         cs.m_radius = box2d.scalarPixelsToWorld(this.radius);
@@ -38,8 +44,10 @@ public class Ball2D {
 
         b1.createFixture(fd); //add properties to body
         b1.setUserData(this);
-        
+
+
     }
+
 
     public void addforce(float x, float y) {  // create then apply force on ball center
         Vec2 force = new Vec2(b1.getMass()*y/2,-b1.getMass()*x/2);

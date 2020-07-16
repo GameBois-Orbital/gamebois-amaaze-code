@@ -36,7 +36,9 @@ public class SetBallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(SetBallViewModel.class);
+    }
+}
+        /*mViewModel = new ViewModelProvider(this).get(SetBallViewModel.class);
         mazeID = getIntent().getStringExtra(CameraCaptureActivity.ID_TAG);
         drawMazeView = new DrawMazeView(this);
         if (mViewModel.checkIfPathsAreSet()) {
@@ -138,5 +140,4 @@ public class SetBallActivity extends AppCompatActivity {
                         if (workInfo != null && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
 
                     }
-                });
-     */
+                });         */

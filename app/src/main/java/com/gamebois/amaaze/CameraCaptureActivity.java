@@ -2,25 +2,11 @@ package com.gamebois.amaaze;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-
-import com.gamebois.amaaze.model.ContourList;
-import com.gamebois.amaaze.model.Maze;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.WriteBatch;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraActivity;
@@ -34,24 +20,21 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class CameraCaptureActivity extends CameraActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+    // public static final String EXTRA_MAZE_LIST = "com.gamebois.ammaze.EXTRA_MAZE_LIST";
 
-    public static final String ID_TAG = "Maze ID";
     private String LOG_TAG = CameraCaptureActivity.class.getSimpleName();
     private static String TAG = "OpenCVCamera";
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     CameraBridgeViewBase mOpenCVCameraView;
     public Mat frame;
     DetectMaze dm;
-    Button setButton;
-    ProgressBar pBar;
-    ArrayList<ContourList> rigidsurfaces;
+    ArrayList<ArrayList<PointF>> rigidsurfaces;
 
     BaseLoaderCallback mLoaderCallBack = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             super.onManagerConnected(status);
-            if (status == BaseLoaderCallback.SUCCESS) {
+            if (status == BaseLoaderCallback.SUCCESS){
                 mOpenCVCameraView.enableView();
             } else {
                 super.onManagerConnected(status);
@@ -64,12 +47,10 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_capture);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         mOpenCVCameraView = findViewById(R.id.my_camera_view);
         mOpenCVCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCVCameraView.setCvCameraViewListener(this);
-        setButton = findViewById(R.id.set_button);
-        pBar = findViewById(R.id.camera_progress_bar);
+
     }
 
     @Override
@@ -111,6 +92,7 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
         if (mOpenCVCameraView != null) {
             mOpenCVCameraView.disableView();
         }
+
     }
 
 
@@ -123,76 +105,21 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
         Log.d(LOG_TAG, "onDestroy called");
     }
 
-    public void saveMazeDetails() {
-        Maze maze = new Maze();
-        db.collection("mazes")
-                .add(maze)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        executeBatchWrite(documentReference.getId());
-                    }
 
-                    private void executeBatchWrite(final String id) {
-                        WriteBatch batch = db.batch();
-                        CollectionReference contours = db
-                                .collection("mazes")
-                                .document(id)
-                                .collection("contours");
-                        for (ContourList contourInstance : CameraCaptureActivity.this.rigidsurfaces) {
-                            DocumentReference newDoc = contours.document();
-                            batch.set(newDoc, contourInstance, SetOptions.merge());
-                        }
-                        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                launchSetBallActivityWithIntent(id);
-                            }
-                        })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(LOG_TAG, Objects.requireNonNull(e.getMessage()));
-                                    }
-                                });
-                        Log.d(LOG_TAG, "Contours set");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(LOG_TAG, "Uploading empty maze to Firestore failed");
-                    }
-                });
-    }
 
     public void launchSetBallActivity(View view) {
         Log.d(LOG_TAG, "Set Clicked");
-        setButton.setEnabled(false);
-        pBar.setVisibility(View.VISIBLE);
-        saveMazeDetails();
-    }
-
-    public void launchSetBallActivityWithIntent(String mazeID) {
-        Toast.makeText(this, "Maze saved", Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(this, SetBallActivity.class);
         Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra(ID_TAG, mazeID);
-        startActivity(intent);
-        finish();
-    }
-}
-
-/*
- Bundle bundle = new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putInt("size", rigidsurfaces.size());
         for (int i = 0; i < rigidsurfaces.size(); i++) {
             bundle.putParcelableArrayList("item"+i, rigidsurfaces.get(i));
         }
         intent.putExtras(bundle);
         Log.d(LOG_TAG, "Number of Contours (to bundle): " + intent.getExtras().getInt("size"));
- */
 
-/*
+        startActivity(intent);
+        finish();
 
- */
+    }
+}

@@ -26,7 +26,7 @@ class DetectMaze {
     private Scalar color = new Scalar(0, 255, 0);
     private List<MatOfPoint> contours;
     public double biggest;
-    public ArrayList<ContourList> rigidSurfaces;
+    public ArrayList<ArrayList<PointF>> rigidSurfaces;
 
 
     float scale;
@@ -42,7 +42,7 @@ class DetectMaze {
         yoffset = (float) ((screen_height - scale * mat_height) / 2.0);
     }
 
-    public ArrayList<ContourList> getRigidSurfaces() {
+    public ArrayList<ArrayList<PointF>> getRigidSurfaces() {
         return rigidSurfaces;
     }
 
@@ -67,7 +67,7 @@ class DetectMaze {
                     Point p = contour.get(j);
                     contourShifted.add(new PointF((float) p.x * this.scale + this.xoffset, (float) p.y * this.scale + this.yoffset));
                 }
-                rigidSurfaces.add(new ContourList(contourShifted));
+                rigidSurfaces.add(contourShifted);
             }
            // Log.d(LOG, "Number of contours drawn: " + Integer.toString(rigidSurfaces.size()));   // tells number of contours drawn
         }

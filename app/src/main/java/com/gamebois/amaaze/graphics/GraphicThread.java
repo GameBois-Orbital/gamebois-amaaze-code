@@ -16,10 +16,7 @@ public class GraphicThread extends Thread {
 
     private boolean running = false;
     private final int refresh_rate = 6;
-
-    static {
-        System.loadLibrary("process");
-    }
+    
 
     private GraphicSurface gs;
 
@@ -60,11 +57,11 @@ public class GraphicThread extends Thread {
         previousTime = System.currentTimeMillis();
 
         //border surfaces so that ball won't go out of the screen
-        s1 = new Surface2D(0, 0, screen_width, 0, box2d);
+      /*  s1 = new Surface2D(0, 0, screen_width, 0, box2d);
         s2 = new Surface2D(screen_width, 0, screen_width, screen_height, box2d);
         s3 = new Surface2D(screen_width, screen_height, 0, screen_height, box2d);
         s4 = new Surface2D(0, screen_height, 0, 0, box2d);
-
+                                                                            */
         setMazes();
         setBall();
 
@@ -87,10 +84,10 @@ public class GraphicThread extends Thread {
                     c.drawColor(Color.TRANSPARENT);
                     c.drawColor(0, PorterDuff.Mode.CLEAR);
                     //display border
-                    s1.display(c);
+                   /* s1.display(c);
                     s2.display(c);
                     s3.display(c);
-                    s4.display(c);
+                    s4.display(c);   */
                     for (Maze2D maze2D : mazes) {
                         maze2D.display(c);  //display maze
                     }
@@ -114,14 +111,14 @@ public class GraphicThread extends Thread {
     }
 
     public void destroyAll() {
-        if(s1 != null)
+       /* if(s1 != null)
             s1.destroy();
         if(s2 != null)
             s2.destroy();
         if(s3 != null)
             s3.destroy();
         if(s4 != null)
-            s4.destroy();
+            s4.destroy();       */
 
         for(Maze2D maze2D : mazes) {
             maze2D.destroy();  //destroy maze
