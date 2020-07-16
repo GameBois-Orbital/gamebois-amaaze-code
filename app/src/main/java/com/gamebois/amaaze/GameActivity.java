@@ -2,6 +2,7 @@ package com.gamebois.amaaze;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.hardware.Sensor;
@@ -49,6 +50,9 @@ public class GameActivity extends AppCompatActivity {
         setRigidSurfaces();  //just for now
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
 
 
 

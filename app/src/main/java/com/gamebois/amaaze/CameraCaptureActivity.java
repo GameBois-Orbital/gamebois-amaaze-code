@@ -2,6 +2,7 @@ package com.gamebois.amaaze;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -45,7 +46,8 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
     DetectMaze dm;
     Button setButton;
     ProgressBar pBar;
-    ArrayList<ContourList> rigidsurfaces;
+    ArrayList<ArrayList<PointF>> rigidsurfaces;
+    //ArrayList<ContourList> rigidsurfaces;
 
     BaseLoaderCallback mLoaderCallBack = new BaseLoaderCallback(this) {
         @Override
@@ -123,7 +125,7 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
         Log.d(LOG_TAG, "onDestroy called");
     }
 
-    public void saveMazeDetails() {
+    /*public void saveMazeDetails() {
         Maze maze = new Maze();
         db.collection("mazes")
                 .add(maze)
@@ -164,9 +166,9 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
                         Log.d(LOG_TAG, "Uploading empty maze to Firestore failed");
                     }
                 });
-    }
+    }   */
 
-    public void launchSetBallActivity(View view) {
+    /*public void launchSetBallActivity(View view) {
         Log.d(LOG_TAG, "Set Clicked");
         setButton.setEnabled(false);
         pBar.setVisibility(View.VISIBLE);
@@ -175,9 +177,21 @@ public class CameraCaptureActivity extends CameraActivity implements CameraBridg
 
     public void launchSetBallActivityWithIntent(String mazeID) {
         Toast.makeText(this, "Maze saved", Toast.LENGTH_SHORT).show();
+
         //Intent intent = new Intent(this, SetBallActivity.class);
-        Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(ID_TAG, mazeID);
+    }     */
+    public void launchSetBallActivity(View view) {
+        Log.d(LOG_TAG, "Set Clicked");
+        Intent intent = new Intent(this, GameActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("size", rigidsurfaces.size());
+        for (int i = 0; i < rigidsurfaces.size(); i++) {
+            bundle.putParcelableArrayList("item" + i, rigidsurfaces.get(i));
+        }
+        intent.putExtras(bundle);
+        Log.d(LOG_TAG, "Number of Contours (to bundle): " + intent.getExtras().getInt("size"));
+
         startActivity(intent);
         finish();
     }

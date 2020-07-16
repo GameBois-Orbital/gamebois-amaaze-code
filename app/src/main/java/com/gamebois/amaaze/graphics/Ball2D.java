@@ -21,6 +21,7 @@ public class Ball2D {
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.box2d = box2d;
 
         BodyDef bd = new BodyDef();  // define dynamic body with initial ball center
         bd.type = BodyType.DYNAMIC;
