@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Maze {
     @DocumentId
@@ -15,20 +16,16 @@ public class Maze {
     private boolean isPublic;
     private long wormholeDifficulty;
     private long numLikes;
-    private PathList paths;
 
     public Maze() {
     }
 
-    public Maze(String title, String imageURL, boolean isPublic) {
-        this.title = title;
-        this.imageURL = imageURL;
-        this.isPublic = isPublic;
-        numLikes = 0;
-    }
-
     public String getUniqueID() {
         return uniqueID;
+    }
+
+    public void setUniqueID() {
+        this.uniqueID = UUID.randomUUID().toString();
     }
 
     public Date getTimeCreated() {
@@ -75,11 +72,4 @@ public class Maze {
         this.numLikes = numLikes;
     }
 
-    public PathList getPaths() {
-        return paths;
-    }
-
-    public void setPaths(PathList paths) {
-        this.paths = paths;
-    }
 }
