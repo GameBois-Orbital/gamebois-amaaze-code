@@ -25,7 +25,7 @@ import java.util.List;
 public class MazeRepository {
 
     private static final String TAG = "Maze Repository";
-    private static final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private OnFirestoreTaskComplete firestoreTaskComplete;
     private ListenerRegistration mRegistration;
     private Query mQuery;
@@ -35,13 +35,14 @@ public class MazeRepository {
     }
 
     public static Task<Void> addMaze(Maze m) {
-        return firestore
+        return FirebaseFirestore.getInstance()
                 .collection("mazes")
                 .document(m.getUniqueID())
                 .set(m);
     }
 
     public static Task<Void> addMaze(Maze m, List<ContourList> rigidSurfaces) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         WriteBatch batch = firestore.batch();
         DocumentReference newMaze = firestore
                 .collection("mazes")
@@ -56,12 +57,23 @@ public class MazeRepository {
         return batch.commit();
     }
 
+    public static List<ContourList> getMazeContours(String documentID) {
+        return FirebaseFirestore.getInstance()
+                .collection("mazes")
+                .document(documentID)
+                .collection("contours")
+                .get()
+                .getResult()
+                .toObjects(ContourList.class);
+    }
+
     public static void updateMaze(Maze m) {
 
     }
 
     public static Task<Void> deleteMaze(Maze m) {
-        return firestore.collection("mazes").document(m.getUniqueID()).delete();
+        return FirebaseFirestore.getInstance()
+                .collection("mazes").document(m.getUniqueID()).delete();
     }
 
     public static void likeMaze(Maze m) {
