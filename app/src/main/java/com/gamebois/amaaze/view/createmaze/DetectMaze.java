@@ -1,4 +1,4 @@
-package com.gamebois.amaaze;
+package com.gamebois.amaaze.view.createmaze;
 
 import android.graphics.PointF;
 

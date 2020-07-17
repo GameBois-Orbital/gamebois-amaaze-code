@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/cameraCaptureFragment">
+    <fragment
+        android:id="@+id/cameraCaptureFragment"
+        android:name="com.gamebois.amaaze.view.createmaze.CameraCaptureFragment"
+        android:label="fragment_camera_capture"
+        tools:layout="@layout/fragment_camera_capture">
+        <action
+            android:id="@+id/action_cameraCaptureFragment_to_setBallFragment"
+            app:destination="@id/setBallFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setBallFragment"
+        android:name="com.gamebois.amaaze.view.createmaze.SetBallFragment"
+        android:label="fragment_set_ball"
+        tools:layout="@layout/fragment_set_ball">
+        <action
+            android:id="@+id/action_setBallFragment_to_addInfoFragment"
+            app:destination="@id/addInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addInfoFragment"
+        android:name="com.gamebois.amaaze.view.createmaze.AddInfoFragment"
+        android:label="fragment_add_info"
+        tools:layout="@layout/fragment_add_info">
+        <action
+            android:id="@+id/action_addInfoFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.gamebois.amaaze.view.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+</navigation>

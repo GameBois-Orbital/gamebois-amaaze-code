@@ -1,4 +1,4 @@
-package com.gamebois.amaaze;
+package com.gamebois.amaaze.view.createmaze;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,10 +7,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
+
+import com.gamebois.amaaze.R;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class DrawMazeView extends View {
     }
 
     public DrawMazeView(Context context, AttributeSet attributeSet) {
-        super(context);
+        super(context, attributeSet);
         mDrawColour = ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, null);
         paint = new Paint();
         paint.setColor(mDrawColour);
@@ -48,20 +49,21 @@ public class DrawMazeView extends View {
         mExtraContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mExtraCanvas = new Canvas(mExtraContourBitmap);
         mExtraCanvas.drawColor(Color.WHITE);
-        Log.d(DRAW_MAZE_LOGTAG, paths.toString());
-
     }
 
     public void setPaths(List<Path> paths) {
         this.paths = paths;
+        invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(mExtraContourBitmap, 0, 0, null);
-        for (Path path : paths) {
-            canvas.drawPath(path, paint);
+        if (paths != null) {
+            for (Path path : paths) {
+                canvas.drawPath(path, paint);
+            }
         }
     }
 }

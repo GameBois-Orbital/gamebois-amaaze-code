@@ -4,6 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.front" />
+    <uses-feature android:name="android.hardware.camera.front.autofocus" />
 
     <application
         android:allowBackup="true"
@@ -17,10 +23,14 @@
             android:label="@string/view_maze_title"
             android:parentActivityName=".view.MainActivity" />
         <activity
-            android:name=".view.MazifyActivity"
-            android:label="@string/mazify_activity_title"
-            android:parentActivityName=".view.ViewMazeActivity" />
-        <activity android:name=".view.MainActivity">
+            android:name=".view.createmaze.MazifyActivity"
+            android:label="@string/activity_camera_capture_name"
+            android:parentActivityName=".view.MainActivity"
+            android:screenOrientation="sensorLandscape"></activity>
+
+        <activity
+            android:name=".view.MainActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

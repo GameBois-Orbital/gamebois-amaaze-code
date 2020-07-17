@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.firebase.ui.auth.AuthUI;
 import com.gamebois.amaaze.R;
+import com.gamebois.amaaze.view.createmaze.MazifyActivity;
 import com.gamebois.amaaze.viewmodel.MainActivityViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchCameraCaptureActivity(View view) {
         Log.d(LOG_TAG, "Create maze click");
-        Intent intent = new Intent(this, CameraCaptureActivity.class);
+        Intent intent = new Intent(this, MazifyActivity.class);
         startActivity(intent);
     }
 

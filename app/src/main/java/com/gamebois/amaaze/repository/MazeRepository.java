@@ -4,9 +4,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -14,6 +17,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
+
+import java.util.List;
 
 public class MazeRepository {
 
@@ -27,8 +34,26 @@ public class MazeRepository {
         this.firestoreTaskComplete = firestoreTaskComplete;
     }
 
-    public static void addMaze(Maze m) {
+    public static Task<Void> addMaze(Maze m) {
+        return firestore
+                .collection("mazes")
+                .document(m.getUniqueID())
+                .set(m);
+    }
 
+    public static Task<Void> addMaze(Maze m, List<ContourList> rigidSurfaces) {
+        WriteBatch batch = firestore.batch();
+        DocumentReference newMaze = firestore
+                .collection("mazes")
+                .document(m.getUniqueID());
+        CollectionReference newMazeContours = newMaze
+                .collection("contours");
+        batch.set(newMaze, m);
+        for (ContourList contourInstance : rigidSurfaces) {
+            DocumentReference newDoc = newMazeContours.document();
+            batch.set(newDoc, contourInstance, SetOptions.merge());
+        }
+        return batch.commit();
     }
 
     public static void updateMaze(Maze m) {

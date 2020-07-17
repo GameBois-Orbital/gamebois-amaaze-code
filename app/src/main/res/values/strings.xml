@@ -18,4 +18,6 @@
     <string name="save_button_cd">Save Button</string>
     <string name="save_button_text">Save</string>
     <string name="play_button_text">Play</string>
+    <string name="proceed_button_text">Next</string>
+    <string name="maze_title">Maze Title</string>
 </resources>
