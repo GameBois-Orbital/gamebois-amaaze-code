@@ -6,10 +6,11 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-
 import com.gamebois.amaaze.GameActivity;
+import com.gamebois.amaaze.model.ContourList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callback {
     private String LOG_TAG = GameActivity.class.getSimpleName();
@@ -20,7 +21,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     private float pitch = 0.0f;
     private float roll = 0.0f;
 
-    private ArrayList<ArrayList<PointF>> mazeArrayList;
+    private List<ContourList> mazeArrayList;
     private ArrayList<PointF> ballArrayList;
 
     public GraphicSurface(Context context) {
@@ -80,7 +81,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
         Log.d(LOG_TAG,"GraphicSurface: graphics stopped");
     }
 
-    public ArrayList<ArrayList<PointF>> getMazeArrayList() {
+    public List<ContourList> getMazeArrayList() {
         return mazeArrayList;
     }
 
@@ -88,7 +89,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
         return ballArrayList;
     }
 
-    public void setMazeArrayList(ArrayList<ArrayList<PointF>> mazeArrayList) {
+    public void setMazeArrayList(List<ContourList> mazeArrayList) {
         this.mazeArrayList = mazeArrayList;
     }
 

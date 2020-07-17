@@ -8,8 +8,10 @@ import android.graphics.PorterDuff;
 import android.util.Log;
 
 import com.gamebois.amaaze.GameActivity;
+import com.gamebois.amaaze.model.ContourList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GraphicThread extends Thread {
     private String LOG_TAG = GameActivity.class.getSimpleName();
@@ -74,7 +76,7 @@ public class GraphicThread extends Thread {
 
             box2d.step(); //box2d step
 
-            Log.d(LOG_TAG, String.valueOf("force gs roll " + limit(gs.getRoll()) + " , gs picth " + limit(gs.getRoll())));
+            Log.d(LOG_TAG, "force gs roll " + limit(gs.getRoll()) + " , gs picth " + limit(gs.getRoll()));
             ball.addforce(-limit(gs.getRoll()), -limit(gs.getPitch())); // add force on ball and limit it
 
             try {
@@ -128,10 +130,10 @@ public class GraphicThread extends Thread {
 
 
     private void setMazes() {
-        ArrayList<ArrayList<PointF>> mazeArrayList = gs.getMazeArrayList();
+        List<ContourList> mazeArrayList = gs.getMazeArrayList();
         if (mazeArrayList != null)
             for (int i = 0; i < mazeArrayList.size(); i++) {
-                mazes.add(new Maze2D(mazeArrayList.get(i), box2d)); //add maze points to maze for creating box2d body
+                mazes.add(new Maze2D(mazeArrayList.get(i).getContourList(), box2d)); //add maze points to maze for creating box2d body
             }
 
     }
