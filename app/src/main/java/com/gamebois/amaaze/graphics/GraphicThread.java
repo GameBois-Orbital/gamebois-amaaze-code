@@ -31,6 +31,9 @@ public class GraphicThread extends Thread {
     private float MIN = -3.8f;
     private float MAX = 3.8f;
 
+    List<ContourList> mazeArrayList;
+    private float scale, xoffset, yoffset;
+
     public GraphicThread(GraphicSurface gs, Context context) {
         this.gs = gs;
         box2d = new Createbox2d();// create box2d world
@@ -63,8 +66,8 @@ public class GraphicThread extends Thread {
         s3 = new Surface2D(screen_width, screen_height, 0, screen_height, box2d);
         s4 = new Surface2D(0, screen_height, 0, 0, box2d);
                                                                       */
-        setMazes();
-        setBall();
+       setMazes(gs.getMazeArrayList());
+       setBall();
 
 
         while (running) {
@@ -128,13 +131,24 @@ public class GraphicThread extends Thread {
         ball.destroy(); //destroy ball
     }
 
+//    private void setResizeValues() {
+//        List<ContourList> mazeArr
+//    }
 
-    private void setMazes() {
-        List<ContourList> mazeArrayList = gs.getMazeArrayList();
-        if (mazeArrayList != null)
-            for (int i = 0; i < mazeArrayList.size(); i++) {
-                mazes.add(new Maze2D(mazeArrayList.get(i).getContourList(), box2d)); //add maze points to maze for creating box2d body
+    private void setMazes(List<ContourList> mazeArrayList) {
+
+        if (mazeArrayList != null) {
+            PointF sizeData = mazeArrayList.get(0).getContourList().get(0);
+            Log.d(LOG_TAG, "sizeData is" + sizeData.toString());
+            scale = Math.min(screen_width/sizeData.x, screen_height/sizeData.y);
+            Log.d(LOG_TAG, "SCALE SIZE" + scale + "sizeData.x" + sizeData.x);
+            xoffset = (float) ((screen_width - sizeData.x*scale) / 2.0);
+            yoffset = (float) ((screen_height - sizeData.y*scale) / 2.0);
+
+            for (int i = 1; i < mazeArrayList.size() ; i++) {
+                mazes.add(new Maze2D(mazeArrayList.get(i).getContourList(), scale, xoffset, yoffset, box2d)); //add maze points to maze for creating box2d body
             }
+        }
 
     }
 

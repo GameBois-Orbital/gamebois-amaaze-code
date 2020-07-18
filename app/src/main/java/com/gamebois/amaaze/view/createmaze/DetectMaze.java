@@ -1,6 +1,7 @@
 package com.gamebois.amaaze.view.createmaze;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.gamebois.amaaze.model.ContourList;
 
@@ -27,18 +28,27 @@ class DetectMaze {
     private List<MatOfPoint> contours;
     public double biggest;
     public ArrayList<ContourList> rigidSurfaces;
+    int screen_width, screen_height;
 
     float scale;
     float xoffset;
     float yoffset;
+
+    ArrayList<PointF> sizeData = new ArrayList<>();
+
 
     public DetectMaze(int screen_width, int screen_height, int mat_width, int mat_height, float scale) {
         contours = new ArrayList<>();
         rigidSurfaces = new ArrayList<>();
         this.scale = scale;
 
+        this.screen_width = screen_width;
+        this.screen_height = screen_height;
+
         xoffset = (float) ((screen_width - scale * mat_width) / 2.0); //shift the points X coordiante by xoffset (defined in opencv CameraBridgeViewBase.java at line 420)
         yoffset = (float) ((screen_height - scale * mat_height) / 2.0);
+
+        sizeData.add(new PointF((float) screen_width, (float) screen_height));
     }
 
     // public ArrayList<ContourList> getRigidSurfaces() {
@@ -58,6 +68,7 @@ class DetectMaze {
         Imgproc.findContours(processed, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
         rigidSurfaces.clear();
 
+        rigidSurfaces.add(new ContourList(sizeData));
 
         for (int i = 0; i < contours.size(); i++) {    // for every set of contours detected, decide whether to draw
             double contourArea = Imgproc.contourArea(contours.get(i));
@@ -71,8 +82,8 @@ class DetectMaze {
                 }
                 rigidSurfaces.add(new ContourList(contourShifted));
             }
-           // Log.d(LOG, "Number of contours drawn: " + Integer.toString(rigidSurfaces.size()));   // tells number of contours drawn
         }
+        Log.d(LOG, "myData per process " + rigidSurfaces.get(0).getContourList().toString());   // checks adding of my data
     }
 }
 

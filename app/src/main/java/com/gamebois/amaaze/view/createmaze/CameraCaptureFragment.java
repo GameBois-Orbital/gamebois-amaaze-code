@@ -27,7 +27,7 @@ import org.opencv.core.Mat;
 import java.util.ArrayList;
 
 
-public class CameraCaptureFragment extends Fragment implements CameraBridgeViewBase.CvCameraViewListener2, View.OnClickListener {
+public class  CameraCaptureFragment extends Fragment implements CameraBridgeViewBase.CvCameraViewListener2, View.OnClickListener {
 
     public static final String ID_TAG = "Maze ID";
     private static String TAG = "OpenCVCamera";
@@ -107,6 +107,8 @@ public class CameraCaptureFragment extends Fragment implements CameraBridgeViewB
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         frame = inputFrame.rgba();
         dm = new DetectMaze(mOpenCVCameraView.getWidth(), mOpenCVCameraView.getHeight(), mOpenCVCameraView.getMatWidth(), mOpenCVCameraView.getMatHeight(), mOpenCVCameraView.getmScale());
+        Log.d(TAG, "screen: "+ mOpenCVCameraView.getWidth() + "x" + mOpenCVCameraView.getHeight() +
+                "Mat: " + mOpenCVCameraView.getMatWidth() + "x" + mOpenCVCameraView.getMatHeight() + "Scale:" + mOpenCVCameraView.getmScale());
         dm.process(frame);
         rigidSurfaces = dm.getRigidSurfaces();
         //Log.d(LOG_TAG, "Number of Contours (in rigidSurfaces)" + Integer.toString(rigidsurfaces.size()));

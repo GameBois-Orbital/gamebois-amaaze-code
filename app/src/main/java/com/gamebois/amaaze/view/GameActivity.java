@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.FrameLayout;
 
@@ -41,6 +42,10 @@ public class GameActivity extends AppCompatActivity {
     private float azimuth = 0.0f;
     private float pitch = 0.0f;
     private float roll = 0.0f;
+
+    String ID;
+
+    private FrameLayout layout;
 
     final SensorEventListener sensorEventListener = new SensorEventListener() {
 
@@ -82,7 +87,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String ID = getIntent().getStringExtra(ViewMazeFragment.MAZE_ID_TAG);
+        ID = getIntent().getStringExtra(ViewMazeFragment.MAZE_ID_TAG);
 
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
@@ -90,18 +95,24 @@ public class GameActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 
-        final FrameLayout layout = new FrameLayout(this);
+        layout = new FrameLayout(this);
         layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         setContentView(layout);
-
         gs = new GraphicSurface(this); // create graphic surface
 
         gs.getHolder().setFormat(PixelFormat.TRANSPARENT); //set graphic surface to transparent
         gs.setZOrderOnTop(true); //graphic surface as top layer
         gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int heightyo = displayMetrics.heightPixels;
+        int widthyo = displayMetrics.widthPixels;
+        Log.d(LOG_TAG, "LayoutParams" + widthyo + "x" + heightyo);
+
         layout.addView(gs); //FEED HERE DATA);
         gs.setBallArrayList(ballPoints);//FEED HERE DATA);
-        gs.setScreenSize(layout.getWidth(), layout.getHeight());  // or getMeasured???? TODO log to check if same as CamCapture
+        gs.setScreenSize(widthyo, heightyo);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometerSensor = Sensor.TYPE_ACCELEROMETER; //accelerometer
@@ -109,6 +120,7 @@ public class GameActivity extends AppCompatActivity {
 
         setRigidSurfaces(ID);
     }
+
 
     private void setRigidSurfaces(String mazeID) {
         final DocumentReference maze = FirebaseFirestore.getInstance()
