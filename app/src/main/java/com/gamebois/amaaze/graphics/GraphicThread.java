@@ -7,8 +7,8 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.util.Log;
 
-import com.gamebois.amaaze.GameActivity;
 import com.gamebois.amaaze.model.ContourList;
+import com.gamebois.amaaze.view.GameActivity;
 
 import java.util.ArrayList;
 import java.util.List;

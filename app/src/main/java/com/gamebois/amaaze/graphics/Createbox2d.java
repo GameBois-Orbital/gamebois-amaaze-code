@@ -3,7 +3,7 @@ package com.gamebois.amaaze.graphics;
 import android.graphics.Canvas;
 import android.util.Log;
 
-import com.gamebois.amaaze.GameActivity;
+import com.gamebois.amaaze.view.GameActivity;
 
 import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
@@ -37,7 +37,7 @@ public class Createbox2d {
     public void setScreenSize(float screen_width, float screen_height) {
         width = screen_width;
         height = screen_height;
-        Log.d(LOG_TAG,"Createbox2d screen size: "+String.valueOf(width)+" , "+String.valueOf(height));
+        Log.d(LOG_TAG, "Createbox2d screen size: " + width + " , " + height);
     }
 
     /**

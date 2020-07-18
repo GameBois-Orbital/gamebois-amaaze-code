@@ -1,4 +1,4 @@
-package com.gamebois.amaaze;
+package com.gamebois.amaaze.view;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
@@ -82,8 +82,8 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String ID = getIntent().getStringExtra(ViewMazeFragment.MAZE_ID_TAG);
 
-        setRigidSurfaces();  //just for now
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
 
@@ -95,6 +95,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(layout);
 
         gs = new GraphicSurface(this); // create graphic surface
+
         gs.getHolder().setFormat(PixelFormat.TRANSPARENT); //set graphic surface to transparent
         gs.setZOrderOnTop(true); //graphic surface as top layer
         gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -106,14 +107,13 @@ public class GameActivity extends AppCompatActivity {
         accelerometerSensor = Sensor.TYPE_ACCELEROMETER; //accelerometer
         magneticSensor = Sensor.TYPE_MAGNETIC_FIELD; //magnetic sensor
 
-        startGame();
-
+        setRigidSurfaces(ID);
     }
 
-    private void setRigidSurfaces() {
+    private void setRigidSurfaces(String mazeID) {
         final DocumentReference maze = FirebaseFirestore.getInstance()
                 .collection("mazes")
-                .document("7fa2f3e0-a7a4-46e7-abdc-527ccbbfd336");
+                .document(mazeID);
         Task<QuerySnapshot> retrievalTask = maze.collection("contours")
                 .get();
         retrievalTask.addOnSuccessListener(
@@ -121,6 +121,8 @@ public class GameActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
                         rigidsurfaces = documentSnapshots.toObjects(ContourList.class);
+                        gs.setMazeArrayList(rigidsurfaces);
+                        startGame();
                     }
                 });
 //        Bundle bundle = getIntent().getExtras();

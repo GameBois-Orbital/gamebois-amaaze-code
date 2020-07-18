@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.gamebois.amaaze.GameActivity;
 import com.gamebois.amaaze.model.ContourList;
+import com.gamebois.amaaze.view.GameActivity;
 
 import java.util.ArrayList;
 import java.util.List;

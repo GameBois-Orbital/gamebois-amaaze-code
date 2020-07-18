@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.gamebois.amaaze">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,7 +22,7 @@
             android:name=".view.ViewMazeActivity"
             android:label="@string/view_maze_title"
             android:parentActivityName=".view.MainActivity" />
-        <activity android:name=".GameActivity"></activity>
+        <activity android:name=".view.GameActivity"></activity>
         <activity
             android:name=".view.createmaze.MazifyActivity"
             android:label="@string/activity_camera_capture_name"

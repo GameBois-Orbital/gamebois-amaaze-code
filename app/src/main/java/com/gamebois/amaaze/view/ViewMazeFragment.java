@@ -1,6 +1,7 @@
 package com.gamebois.amaaze.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,8 +24,9 @@ import com.gamebois.amaaze.viewmodel.PublicMazeViewModel;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
-public class ViewMazeFragment extends Fragment {
+public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPlayListener {
 
+    public static final String MAZE_ID_TAG = "Maze ID Tag";
     private static final String ARG_PUBLIC = "public-bool";
     private boolean mIsPublic = false;
     private ViewMazesAdapter mAdapter;
@@ -113,7 +115,7 @@ public class ViewMazeFragment extends Fragment {
         Context activityContext = view.getContext();
         //Pass in the values from ViewModel into the adapter
         view.setLayoutManager(new LinearLayoutManager(activityContext));
-        mAdapter = new ViewMazesAdapter(activityContext);
+        mAdapter = new ViewMazesAdapter(activityContext, this);
         view.setAdapter(mAdapter);
         view.setHasFixedSize(true);
         view.setItemViewCacheSize(15);
@@ -124,4 +126,10 @@ public class ViewMazeFragment extends Fragment {
     }
 
 
+    @Override
+    public void onPlayClick(String mazeID) {
+        Intent intent = new Intent(getActivity(), GameActivity.class);
+        intent.putExtra(MAZE_ID_TAG, mazeID);
+        startActivity(intent);
+    }
 }

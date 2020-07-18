@@ -53,7 +53,6 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="likeMaze"
                     android:paddingEnd="8dp"
                     android:text="@string/play_button_text"
                     android:textAllCaps="true" />
