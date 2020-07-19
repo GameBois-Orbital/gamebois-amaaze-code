@@ -21,13 +21,13 @@ public class GraphicThread extends Thread {
 
     private GraphicSurface gs;
 
-
     private Canvas c = null;
     private Createbox2d box2d;
     private Ball2D ball;
     private ArrayList<Maze2D> mazes = new ArrayList<Maze2D>();
     private Surface2D s1, s2, s3, s4;
     private float screen_height, screen_width;
+    private float creatorHeight, creatorWidth;
     private float MIN = -3.8f;
     private float MAX = 3.8f;
 
@@ -138,14 +138,11 @@ public class GraphicThread extends Thread {
     private void setMazes(List<ContourList> mazeArrayList) {
 
         if (mazeArrayList != null) {
-            PointF sizeData = mazeArrayList.get(0).getContourList().get(0);
-            Log.d(LOG_TAG, "sizeData is" + sizeData.toString());
-            scale = Math.min(screen_width/sizeData.x, screen_height/sizeData.y);
-            Log.d(LOG_TAG, "SCALE SIZE" + scale + "sizeData.x" + sizeData.x);
-            xoffset = (float) ((screen_width - sizeData.x*scale) / 2.0);
-            yoffset = (float) ((screen_height - sizeData.y*scale) / 2.0);
-
-            for (int i = 1; i < mazeArrayList.size() ; i++) {
+            scale = Math.min(screen_width / creatorWidth, screen_height / creatorHeight);
+            xoffset = (float) ((screen_width - creatorWidth * scale) / 2.0);
+            yoffset = (float) ((screen_height - creatorHeight * scale) / 2.0);
+            Log.d(LOG_TAG, "Hello" + creatorWidth + " " + creatorHeight);
+            for (int i = 0; i < mazeArrayList.size(); i++) {
                 mazes.add(new Maze2D(mazeArrayList.get(i).getContourList(), scale, xoffset, yoffset, box2d)); //add maze points to maze for creating box2d body
             }
         }
@@ -157,6 +154,22 @@ public class GraphicThread extends Thread {
         if (ballArrayList != null) {
             ball = new Ball2D(ballArrayList.get(0).x, ballArrayList.get(0).y, ballArrayList.get(1).x, box2d);
         }
+    }
+
+    public float getCreatorHeight() {
+        return creatorHeight;
+    }
+
+    public void setCreatorHeight(float creatorHeight) {
+        this.creatorHeight = creatorHeight;
+    }
+
+    public float getCreatorWidth() {
+        return creatorWidth;
+    }
+
+    public void setCreatorWidth(float creatorWidth) {
+        this.creatorWidth = creatorWidth;
     }
 }
 

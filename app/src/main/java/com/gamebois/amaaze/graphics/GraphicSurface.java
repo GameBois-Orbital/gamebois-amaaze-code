@@ -30,6 +30,14 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
         getHolder().addCallback(this);
     }
 
+    public void setHeight(float height) {
+        graphicThread.setCreatorHeight(height);
+    }
+
+    public void setWidth(float width) {
+        graphicThread.setCreatorWidth(width);
+    }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -144,6 +152,5 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     {
         return roll;
     }
-
 
 }

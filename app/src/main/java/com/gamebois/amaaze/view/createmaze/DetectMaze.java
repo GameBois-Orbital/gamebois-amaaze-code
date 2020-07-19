@@ -34,8 +34,6 @@ class DetectMaze {
     float xoffset;
     float yoffset;
 
-    ArrayList<PointF> sizeData = new ArrayList<>();
-
 
     public DetectMaze(int screen_width, int screen_height, int mat_width, int mat_height, float scale) {
         contours = new ArrayList<>();
@@ -47,8 +45,6 @@ class DetectMaze {
 
         xoffset = (float) ((screen_width - scale * mat_width) / 2.0); //shift the points X coordiante by xoffset (defined in opencv CameraBridgeViewBase.java at line 420)
         yoffset = (float) ((screen_height - scale * mat_height) / 2.0);
-
-        sizeData.add(new PointF((float) screen_width, (float) screen_height));
     }
 
     // public ArrayList<ContourList> getRigidSurfaces() {
@@ -67,8 +63,6 @@ class DetectMaze {
         Imgproc.erode(processed, processed, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, unhole, new Point(0, 0)));
         Imgproc.findContours(processed, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
         rigidSurfaces.clear();
-
-        rigidSurfaces.add(new ContourList(sizeData));
 
         for (int i = 0; i < contours.size(); i++) {    // for every set of contours detected, decide whether to draw
             double contourArea = Imgproc.contourArea(contours.get(i));

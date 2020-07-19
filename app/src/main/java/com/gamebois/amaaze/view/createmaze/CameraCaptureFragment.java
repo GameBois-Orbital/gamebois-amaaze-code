@@ -131,6 +131,9 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
         switch (v.getId()) {
             case R.id.set_button:
                 setButton.setEnabled(false);
+                mViewModel.setHeight(mOpenCVCameraView.getHeight());
+                mViewModel.setWidth(mOpenCVCameraView.getWidth());
+                mOpenCVCameraView.disableView();
                 mViewModel.setRigidSurfaces(this.rigidSurfaces);
                 Navigation.findNavController(v).navigate(R.id.action_cameraCaptureFragment_to_setBallFragment);
         }

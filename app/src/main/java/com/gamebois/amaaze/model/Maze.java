@@ -16,6 +16,8 @@ public class Maze {
     private boolean isPublic;
     private long wormholeDifficulty;
     private long numLikes;
+    private float height;
+    private float width;
 
     public Maze() {
     }
@@ -72,4 +74,19 @@ public class Maze {
         this.numLikes = numLikes;
     }
 
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
 }

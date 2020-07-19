@@ -23,6 +23,8 @@ public class MazifyActivityViewModel extends ViewModel {
     private String title;
     private MutableLiveData<List<Path>> pathLiveData;
     private List<ContourList> rigidSurfaces;
+    private float height;
+    private float width;
 
     public MazifyActivityViewModel() {
         pathLiveData = new MutableLiveData<>();
@@ -58,6 +60,8 @@ public class MazifyActivityViewModel extends ViewModel {
         if (title != null) {
             maze.setTitle(title);
         }
+        maze.setHeight(height);
+        maze.setWidth(width);
         maze.setIsPublic(isPublic);
         if (rigidSurfaces != null) {
             MazeRepository.addMaze(maze, rigidSurfaces);
@@ -76,6 +80,22 @@ public class MazifyActivityViewModel extends ViewModel {
     private void setPaths() {
         PathGeneratorRunnable runnable = new PathGeneratorRunnable();
         new Thread(runnable).start();
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
     }
 
     class PathGeneratorRunnable implements Runnable {

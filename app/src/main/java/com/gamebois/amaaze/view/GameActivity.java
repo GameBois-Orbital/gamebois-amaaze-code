@@ -12,13 +12,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
+import com.gamebois.amaaze.model.Maze;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -126,8 +130,17 @@ public class GameActivity extends AppCompatActivity {
         final DocumentReference maze = FirebaseFirestore.getInstance()
                 .collection("mazes")
                 .document(mazeID);
-        Task<QuerySnapshot> retrievalTask = maze.collection("contours")
-                .get();
+        Task<DocumentSnapshot> getTask = maze.get();
+        Task<QuerySnapshot> retrievalTask = getTask.continueWithTask(new Continuation<DocumentSnapshot, Task<QuerySnapshot>>() {
+            @Override
+            public Task<QuerySnapshot> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
+                Maze m = task.getResult().toObject(Maze.class);
+                gs.setHeight(m.getHeight());
+                gs.setWidth(m.getWidth());
+                return maze.collection("contours")
+                        .get();
+            }
+        });
         retrievalTask.addOnSuccessListener(
                 new OnSuccessListener<QuerySnapshot>() {
                     @Override
