@@ -24,19 +24,22 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     private List<ContourList> mazeArrayList;
     private ArrayList<PointF> ballArrayList;
 
+    float screen_width, screen_height;
+
     public GraphicSurface(Context context) {
         super(context);
         graphicThread = new GraphicThread(this, context); //create game thread;
         getHolder().addCallback(this);
     }
 
-    public void setHeight(float height) {
+    public void setCreatorHeight(float height) {
         graphicThread.setCreatorHeight(height);
     }
 
-    public void setWidth(float width) {
+    public void setCreatorWidth(float width) {
         graphicThread.setCreatorWidth(width);
     }
+
 
 
     @Override
@@ -54,11 +57,18 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
 
     }
 
-    public void setScreenSize(int screen_width, int screen_height) {
-        graphicThread.setScreenSize(screen_width, screen_height);
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        screen_width = getWidth();
+        screen_height = getHeight();
+        Log.d(LOG_TAG, "OnSizeChanged " + screen_width + " x " + screen_height);
     }
 
+
     public void startGraphics() {
+        graphicThread.setScreenSize(screen_width, screen_height);  // passes ScreenSize i.e. View size information to graphicThread
         graphicThread.setRunning(true);
         graphicThread.start(); //start game thread
         toggle = true;

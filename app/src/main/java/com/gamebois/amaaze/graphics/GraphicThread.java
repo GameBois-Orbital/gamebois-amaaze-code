@@ -25,7 +25,7 @@ public class GraphicThread extends Thread {
     private Createbox2d box2d;
     private Ball2D ball;
     private ArrayList<Maze2D> mazes = new ArrayList<Maze2D>();
-    private Surface2D s1, s2, s3, s4;
+    private Surface2D surfaceBoundary;
     private float screen_height, screen_width;
     private float creatorHeight, creatorWidth;
     private float MIN = -3.8f;
@@ -61,11 +61,8 @@ public class GraphicThread extends Thread {
         previousTime = System.currentTimeMillis();
 
         //border surfaces so that ball won't go out of the screen
-       /* s1 = new Surface2D(0, 0, screen_width, 0, box2d);
-        s2 = new Surface2D(screen_width, 0, screen_width, screen_height, box2d);
-        s3 = new Surface2D(screen_width, screen_height, 0, screen_height, box2d);
-        s4 = new Surface2D(0, screen_height, 0, 0, box2d);
-                                                                      */
+        surfaceBoundary = new Surface2D(screen_width, screen_height, box2d);
+
        setMazes(gs.getMazeArrayList());
        setBall();
 
@@ -87,11 +84,7 @@ public class GraphicThread extends Thread {
                 synchronized (gs.getHolder()) {
                     c.drawColor(Color.TRANSPARENT);
                     c.drawColor(0, PorterDuff.Mode.CLEAR);
-                    //display border
-                  /*  s1.display(c);
-                    s2.display(c);
-                    s3.display(c);
-                    s4.display(c);           */
+
                     for (Maze2D maze2D : mazes) {
                         maze2D.display(c);  //display maze
                     }
@@ -115,14 +108,9 @@ public class GraphicThread extends Thread {
     }
 
     public void destroyAll() {
-       /* if(s1 != null)
-            s1.destroy();
-        if(s2 != null)
-            s2.destroy();
-        if(s3 != null)
-            s3.destroy();
-        if(s4 != null)
-            s4.destroy();     */
+        if (surfaceBoundary !=null) {
+            surfaceBoundary.destroy();
+    }
 
         for(Maze2D maze2D : mazes) {
             maze2D.destroy();  //destroy maze
@@ -130,10 +118,6 @@ public class GraphicThread extends Thread {
 
         ball.destroy(); //destroy ball
     }
-
-//    private void setResizeValues() {
-//        List<ContourList> mazeArr
-//    }
 
     private void setMazes(List<ContourList> mazeArrayList) {
 

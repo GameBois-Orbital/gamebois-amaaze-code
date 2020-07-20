@@ -59,15 +59,17 @@ public class Maze2D {
 
     public void display(Canvas c) {
         Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setColor(Color.RED);
+
         Path path = new Path();
         path.moveTo(contour.get(0).x*scale + xoffset, contour.get(0).y*scale + yoffset); //join lines
-        for (int j = 1; j < contour.size(); j++) {
+        for (int j = 0; j < contour.size(); j++) {
             path.lineTo(contour.get(j).x*scale + xoffset, contour.get(j).y*scale + yoffset);  //join lines
         }
+        path.lineTo(contour.get(0).x*scale + xoffset,contour.get(0).y*scale + yoffset);
         c.drawPath(path, paint);
     }
 

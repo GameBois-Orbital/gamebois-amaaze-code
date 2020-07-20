@@ -3,24 +3,33 @@ package com.gamebois.amaaze.view;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
+import android.graphics.drawable.LayerDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.graph.Graph;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,7 +58,8 @@ public class GameActivity extends AppCompatActivity {
 
     String ID;
 
-    private FrameLayout layout;
+    float layoutWidth, layoutHeight;
+
 
     final SensorEventListener sensorEventListener = new SensorEventListener() {
 
@@ -98,31 +108,21 @@ public class GameActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-
-        layout = new FrameLayout(this);
-        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        setContentView(layout);
-        gs = new GraphicSurface(this); // create graphic surface
-
-        gs.getHolder().setFormat(PixelFormat.TRANSPARENT); //set graphic surface to transparent
-        gs.setZOrderOnTop(true); //graphic surface as top layer
-        gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int heightyo = displayMetrics.heightPixels;
-        int widthyo = displayMetrics.widthPixels;
-        Log.d(LOG_TAG, "LayoutParams" + widthyo + "x" + heightyo);
-
-        layout.addView(gs); //FEED HERE DATA);
-        gs.setBallArrayList(ballPoints);//FEED HERE DATA);
-        gs.setScreenSize(widthyo, heightyo);
+        setContentView(R.layout.activity_game);
+        final FrameLayout layout = findViewById(R.id.my_frameLayout);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometerSensor = Sensor.TYPE_ACCELEROMETER; //accelerometer
         magneticSensor = Sensor.TYPE_MAGNETIC_FIELD; //magnetic sensor
 
+        gs = new GraphicSurface(this); // create graphic surface
+        gs.getHolder().setFormat(PixelFormat.TRANSPARENT); //set graphic surface to transparent
+        gs.setZOrderOnTop(true); //graphic surface as top layer
+        gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        gs.setBallArrayList(ballPoints);//FEED HERE DATA);
         setRigidSurfaces(ID);
+        layout.addView(gs);
+
     }
 
 
@@ -135,8 +135,8 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public Task<QuerySnapshot> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
                 Maze m = task.getResult().toObject(Maze.class);
-                gs.setHeight(m.getHeight());
-                gs.setWidth(m.getWidth());
+                gs.setCreatorHeight(m.getHeight());
+                gs.setCreatorWidth(m.getWidth());
                 return maze.collection("contours")
                         .get();
             }
@@ -150,17 +150,6 @@ public class GameActivity extends AppCompatActivity {
                         startGame();
                     }
                 });
-//        Bundle bundle = getIntent().getExtras();
-//        int size = bundle.getInt("size");
-//        for (int i = 0; i < size; i++) {
-//            rigidsurfaces.add(bundle.<PointF>getParcelableArrayList("item" + i));
-//        }
-//        String s = "";
-//        for (PointF p : rigidsurfaces.get(0)) {
-//            s += p.toString();
-//        }
-//        Log.d(LOG_TAG, "Number of Contours (from bundle): " + rigidsurfaces.size() + "n" + rigidsurfaces.get(0).size() + s);
-
     }
 
     private void startGame() {

@@ -77,7 +77,6 @@ class DetectMaze {
                 rigidSurfaces.add(new ContourList(contourShifted));
             }
         }
-        Log.d(LOG, "myData per process " + rigidSurfaces.get(0).getContourList().toString());   // checks adding of my data
     }
 }
 
