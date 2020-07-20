@@ -57,7 +57,7 @@ public class GraphicThread extends Thread {
     }
 
     public void run() {
-        long previousTime, currentTime;
+        long previousTime, currentTime, startTime;
         previousTime = System.currentTimeMillis();
 
         //border surfaces so that ball won't go out of the screen
@@ -65,7 +65,6 @@ public class GraphicThread extends Thread {
 
        setMazes(gs.getMazeArrayList());
        setBall();
-
 
         while (running) {
             currentTime = System.currentTimeMillis();

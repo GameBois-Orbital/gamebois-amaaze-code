@@ -1,8 +1,10 @@
 package com.gamebois.amaaze.view;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
+import android.graphics.Typeface;
 import android.graphics.drawable.LayerDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,22 +12,31 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
+import com.gamebois.amaaze.viewmodel.MazifyActivityViewModel;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -41,11 +52,18 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity {
     private String LOG_TAG = GameActivity.class.getSimpleName();
 
+    FrameLayout layout;
     GraphicSurface gs;
+    CustomChronometer chronometer;
+
+    private boolean chronometerRunning = false;
+
 
     private int accelerometerSensor;
     private int magneticSensor;
     private SensorManager sensorManager;
+
+
 
     private float[] InR = new float[16];
     private float[] I = new float[16];
@@ -108,8 +126,9 @@ public class GameActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        setContentView(R.layout.activity_game);
-        final FrameLayout layout = findViewById(R.id.my_frameLayout);
+        layout = new FrameLayout(this);
+        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        setContentView(layout);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometerSensor = Sensor.TYPE_ACCELEROMETER; //accelerometer
@@ -122,9 +141,62 @@ public class GameActivity extends AppCompatActivity {
         gs.setBallArrayList(ballPoints);//FEED HERE DATA);
         setRigidSurfaces(ID);
         layout.addView(gs);
+        gs.getGameOver().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean gameOver) {
+                if (gameOver) {
+                    GameActivity.this.launchResultActivity();
+                }
+            }
+        });
 
+        chronometer = new CustomChronometer(this); // create Chronometer
+        chronometer.setTextSize(20);
+        FrameLayout.LayoutParams lp_chronometer = new FrameLayout.LayoutParams(
+                200, // Width in pixel
+                300, // Height in pixel
+                Gravity.RIGHT|Gravity.TOP);
+        lp_chronometer.setMargins(0, 30, 10, 10);
+        chronometer.setLayoutParams(lp_chronometer);
+        layout.addView(chronometer);
+        
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!chronometerRunning){
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.start();
+            chronometerRunning = true;
+        }
+    }
+
+    private void launchResultActivity() {
+        chronometer.stop();
+        chronometerRunning = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        chronometer.stop();
+        chronometerRunning = false;
+        sensorManager.unregisterListener(sensorEventListener);
+        if(gs!=null) {
+            gs.surfaceDestroyed(gs.holder);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        launchResultActivity();
+        super.onDestroy();
+        sensorManager.unregisterListener(sensorEventListener);
+        if(gs!=null) {
+            gs.surfaceDestroyed(gs.holder);
+        }
+    }
 
     private void setRigidSurfaces(String mazeID) {
         final DocumentReference maze = FirebaseFirestore.getInstance()
@@ -165,6 +237,7 @@ public class GameActivity extends AppCompatActivity {
         else {
             recreate();
         }
+        
     }
 
 

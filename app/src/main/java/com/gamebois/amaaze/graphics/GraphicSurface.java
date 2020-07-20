@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.view.GameActivity;
 
@@ -15,6 +17,9 @@ import java.util.List;
 public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callback {
     private String LOG_TAG = GameActivity.class.getSimpleName();
 
+    MutableLiveData<Boolean> gameOver;
+
+    public SurfaceHolder holder;
     private GraphicThread graphicThread;
     private boolean toggle = false;
     private float azimuth = 0.0f;
@@ -29,7 +34,10 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     public GraphicSurface(Context context) {
         super(context);
         graphicThread = new GraphicThread(this, context); //create game thread;
-        getHolder().addCallback(this);
+        holder = getHolder();
+        holder.addCallback(this);
+        gameOver = new MutableLiveData<Boolean>();
+        gameOver.setValue(false);
     }
 
     public void setCreatorHeight(float height) {
@@ -54,7 +62,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        stopGraphics();
     }
 
 
@@ -161,6 +169,10 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     public float getRoll()
     {
         return roll;
+    }
+
+    public MutableLiveData<Boolean> getGameOver() {
+        return gameOver;
     }
 
 }
