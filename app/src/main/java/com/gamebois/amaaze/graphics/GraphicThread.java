@@ -24,19 +24,21 @@ public class GraphicThread extends Thread {
     private Canvas c = null;
     private Createbox2d box2d;
     private Ball2D ball;
+
+    private End2D endHole;
     private ArrayList<Maze2D> mazes = new ArrayList<Maze2D>();
-    private Surface2D s1, s2, s3, s4;
+    private Surface2D surfaceBoundary;
     private float screen_height, screen_width;
     private float creatorHeight, creatorWidth;
     private float MIN = -3.8f;
     private float MAX = 3.8f;
 
-    List<ContourList> mazeArrayList;
     private float scale, xoffset, yoffset;
 
     public GraphicThread(GraphicSurface gs, Context context) {
         this.gs = gs;
         box2d = new Createbox2d();// create box2d world
+        box2d.listenForCollisions(context);
     }
 
     public void setScreenSize(float screen_width, float screen_height) {
@@ -57,17 +59,14 @@ public class GraphicThread extends Thread {
     }
 
     public void run() {
-        long previousTime, currentTime;
+        long previousTime, currentTime, startTime;
         previousTime = System.currentTimeMillis();
 
         //border surfaces so that ball won't go out of the screen
-       /* s1 = new Surface2D(0, 0, screen_width, 0, box2d);
-        s2 = new Surface2D(screen_width, 0, screen_width, screen_height, box2d);
-        s3 = new Surface2D(screen_width, screen_height, 0, screen_height, box2d);
-        s4 = new Surface2D(0, screen_height, 0, 0, box2d);
-                                                                      */
+        surfaceBoundary = new Surface2D(screen_width, screen_height, box2d);
+
        setMazes(gs.getMazeArrayList());
-       setBall();
+       setBallAndEnd();
 
 
         while (running) {
@@ -76,6 +75,11 @@ public class GraphicThread extends Thread {
                 currentTime = System.currentTimeMillis();
             }
             previousTime = currentTime;
+
+            if (box2d.isGameOver()){
+                gs.getGameOver().postValue(true);
+                running = false;
+            }
 
             box2d.step(); //box2d step
 
@@ -87,14 +91,12 @@ public class GraphicThread extends Thread {
                 synchronized (gs.getHolder()) {
                     c.drawColor(Color.TRANSPARENT);
                     c.drawColor(0, PorterDuff.Mode.CLEAR);
-                    //display border
-                  /*  s1.display(c);
-                    s2.display(c);
-                    s3.display(c);
-                    s4.display(c);           */
+
                     for (Maze2D maze2D : mazes) {
                         maze2D.display(c);  //display maze
                     }
+
+                    endHole.display(c); //display endHole
 
                     ball.display(c); //display ball
                 }
@@ -114,14 +116,9 @@ public class GraphicThread extends Thread {
     }
 
     public void destroyAll() {
-       /* if(s1 != null)
-            s1.destroy();
-        if(s2 != null)
-            s2.destroy();
-        if(s3 != null)
-            s3.destroy();
-        if(s4 != null)
-            s4.destroy();     */
+        if (surfaceBoundary !=null) {
+            surfaceBoundary.destroy();
+    }
 
         for(Maze2D maze2D : mazes) {
             maze2D.destroy();  //destroy maze
@@ -129,10 +126,6 @@ public class GraphicThread extends Thread {
 
         ball.destroy(); //destroy ball
     }
-
-//    private void setResizeValues() {
-//        List<ContourList> mazeArr
-//    }
 
     private void setMazes(List<ContourList> mazeArrayList) {
 
@@ -148,12 +141,14 @@ public class GraphicThread extends Thread {
 
     }
 
-    private void setBall() {
-        ArrayList<PointF> ballArrayList = gs.getBallArrayList();
-        if (ballArrayList != null) {
-            ball = new Ball2D(ballArrayList.get(0).x, ballArrayList.get(0).y, ballArrayList.get(1).x, box2d);
+    private void setBallAndEnd() {
+        ArrayList<PointF> startAndEndArrayList = gs.getBallArrayList();
+        if (startAndEndArrayList != null) {
+            ball = new Ball2D(startAndEndArrayList.get(0).x, startAndEndArrayList.get(0).y, startAndEndArrayList.get(1).x, box2d);
+            endHole = new End2D(startAndEndArrayList.get(2).x, startAndEndArrayList.get(2).y, startAndEndArrayList.get(3).x, startAndEndArrayList.get(1).x, box2d);
         }
     }
+
 
     public float getCreatorHeight() {
         return creatorHeight;
@@ -170,5 +165,7 @@ public class GraphicThread extends Thread {
     public void setCreatorWidth(float creatorWidth) {
         this.creatorWidth = creatorWidth;
     }
+
+
 }
 

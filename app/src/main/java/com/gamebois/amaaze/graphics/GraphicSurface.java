@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.view.GameActivity;
 
@@ -16,6 +18,9 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
 
     private String LOG_TAG = GameActivity.class.getSimpleName();
 
+    MutableLiveData<Boolean> gameOver;
+
+    public SurfaceHolder holder;
     private GraphicThread graphicThread;
     private boolean toggle = false;
     private float azimuth = 0.0f;
@@ -25,19 +30,25 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     private List<ContourList> mazeArrayList;
     private ArrayList<PointF> ballArrayList;
 
+    float screen_width, screen_height;
+
     public GraphicSurface(Context context) {
         super(context);
         graphicThread = new GraphicThread(this, context); //create game thread;
-        getHolder().addCallback(this);
+        holder = getHolder();
+        holder.addCallback(this);
+        gameOver = new MutableLiveData<Boolean>();
+        gameOver.setValue(false);
     }
 
-    public void setHeight(float height) {
+    public void setCreatorHeight(float height) {
         graphicThread.setCreatorHeight(height);
     }
 
-    public void setWidth(float width) {
+    public void setCreatorWidth(float width) {
         graphicThread.setCreatorWidth(width);
     }
+
 
 
     @Override
@@ -52,14 +63,21 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        stopGraphics();
     }
 
-    public void setScreenSize(int screen_width, int screen_height) {
-        graphicThread.setScreenSize(screen_width, screen_height);
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        screen_width = getWidth();
+        screen_height = getHeight();
+        Log.d(LOG_TAG, "OnSizeChanged " + screen_width + " x " + screen_height);
     }
+
 
     public void startGraphics() {
+        graphicThread.setScreenSize(screen_width, screen_height);  // passes ScreenSize i.e. View size information to graphicThread
         graphicThread.setRunning(true);
         graphicThread.start(); //start game thread
         toggle = true;
@@ -152,6 +170,10 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     public float getRoll()
     {
         return roll;
+    }
+
+    public MutableLiveData<Boolean> getGameOver() {
+        return gameOver;
     }
 
 }

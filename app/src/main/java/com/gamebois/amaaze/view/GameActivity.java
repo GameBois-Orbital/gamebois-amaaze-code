@@ -8,12 +8,14 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
@@ -32,11 +34,18 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity {
     private String LOG_TAG = GameActivity.class.getSimpleName();
 
+    FrameLayout layout;
     GraphicSurface gs;
+    CustomChronometer chronometer;
+
+    private boolean chronometerRunning = false;
+
 
     private int accelerometerSensor;
     private int magneticSensor;
     private SensorManager sensorManager;
+
+
 
     private float[] InR = new float[16];
     private float[] I = new float[16];
@@ -49,7 +58,8 @@ public class GameActivity extends AppCompatActivity {
 
     String ID;
 
-    private FrameLayout layout;
+    float layoutWidth, layoutHeight;
+
 
     final SensorEventListener sensorEventListener = new SensorEventListener() {
 
@@ -85,6 +95,7 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     };
+
     ArrayList<PointF> ballPoints = new ArrayList<>();
     List<ContourList> rigidsurfaces = new ArrayList<>();
 
@@ -95,36 +106,86 @@ public class GameActivity extends AppCompatActivity {
 
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
+        ballPoints.add(new PointF(700, 700));
+        ballPoints.add(new PointF(15, 15));
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
 
         layout = new FrameLayout(this);
         layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         setContentView(layout);
-        gs = new GraphicSurface(this); // create graphic surface
-
-        gs.getHolder().setFormat(PixelFormat.TRANSPARENT); //set graphic surface to transparent
-        gs.setZOrderOnTop(true); //graphic surface as top layer
-        gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int heightyo = displayMetrics.heightPixels;
-        int widthyo = displayMetrics.widthPixels;
-        Log.d(LOG_TAG, "LayoutParams" + widthyo + "x" + heightyo);
-
-        layout.addView(gs); //FEED HERE DATA);
-        gs.setBallArrayList(ballPoints);//FEED HERE DATA);
-        gs.setScreenSize(widthyo, heightyo);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometerSensor = Sensor.TYPE_ACCELEROMETER; //accelerometer
         magneticSensor = Sensor.TYPE_MAGNETIC_FIELD; //magnetic sensor
 
+        gs = new GraphicSurface(this); // create graphic surface
+        gs.getHolder().setFormat(PixelFormat.TRANSPARENT); //set graphic surface to transparent
+        gs.setZOrderOnTop(true); //graphic surface as top layer
+        gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        gs.setBallArrayList(ballPoints);//FEED HERE DATA);
         setRigidSurfaces(ID);
+        layout.addView(gs);
+        gs.getGameOver().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean gameOver) {
+                if (gameOver) {
+                    GameActivity.this.launchResultActivity();
+                }
+            }
+        });
+
+        chronometer = new CustomChronometer(this); // create Chronometer
+        chronometer.setTextSize(20);
+        FrameLayout.LayoutParams lp_chronometer = new FrameLayout.LayoutParams(
+                200, // Width in pixel
+                300, // Height in pixel
+                Gravity.RIGHT|Gravity.TOP);
+        lp_chronometer.setMargins(0, 30, 10, 10);
+        chronometer.setLayoutParams(lp_chronometer);
+        layout.addView(chronometer);
+        
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!chronometerRunning){
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.start();
+            chronometerRunning = true;
+        }
+    }
+
+
+    private void launchResultActivity() {
+        chronometer.stop();
+        chronometerRunning = false;
+        Log.d(LOG_TAG, "launching Result Activity" + chronometer.getText());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        chronometer.stop();
+        chronometerRunning = false;
+        sensorManager.unregisterListener(sensorEventListener);
+        if(gs!=null) {
+            gs.surfaceDestroyed(gs.holder);
+        }
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        launchResultActivity();
+        super.onDestroy();
+        sensorManager.unregisterListener(sensorEventListener);
+        if(gs!=null) {
+            gs.surfaceDestroyed(gs.holder);
+        }
+        finish();
+    }
 
     private void setRigidSurfaces(String mazeID) {
         final DocumentReference maze = FirebaseFirestore.getInstance()
@@ -135,8 +196,8 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public Task<QuerySnapshot> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
                 Maze m = task.getResult().toObject(Maze.class);
-                gs.setHeight(m.getHeight());
-                gs.setWidth(m.getWidth());
+                gs.setCreatorHeight(m.getHeight());
+                gs.setCreatorWidth(m.getWidth());
                 return maze.collection("contours")
                         .get();
             }
@@ -150,17 +211,6 @@ public class GameActivity extends AppCompatActivity {
                         startGame();
                     }
                 });
-//        Bundle bundle = getIntent().getExtras();
-//        int size = bundle.getInt("size");
-//        for (int i = 0; i < size; i++) {
-//            rigidsurfaces.add(bundle.<PointF>getParcelableArrayList("item" + i));
-//        }
-//        String s = "";
-//        for (PointF p : rigidsurfaces.get(0)) {
-//            s += p.toString();
-//        }
-//        Log.d(LOG_TAG, "Number of Contours (from bundle): " + rigidsurfaces.size() + "n" + rigidsurfaces.get(0).size() + s);
-
     }
 
     private void startGame() {
@@ -176,6 +226,7 @@ public class GameActivity extends AppCompatActivity {
         else {
             recreate();
         }
+        
     }
 
 
