@@ -1,5 +1,6 @@
 package com.gamebois.amaaze.model;
 
+import com.gamebois.amaaze.graphics.PointMarker;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -18,6 +19,8 @@ public class Maze {
     private long numLikes;
     private float height;
     private float width;
+    private PointMarker startPoint;
+    private PointMarker endPoint;
 
     public Maze() {
     }
@@ -88,5 +91,21 @@ public class Maze {
 
     public void setWidth(float width) {
         this.width = width;
+    }
+
+    public PointMarker getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(PointMarker startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public PointMarker getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(PointMarker endPoint) {
+        this.endPoint = endPoint;
     }
 }

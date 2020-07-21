@@ -20,4 +20,6 @@
     <string name="play_button_text">Play</string>
     <string name="proceed_button_text">Next</string>
     <string name="maze_title">Maze Title</string>
+    <string name="set_start_point">Set Start Point!</string>
+    <string name="set_end_point">Set End Point!</string>
 </resources>

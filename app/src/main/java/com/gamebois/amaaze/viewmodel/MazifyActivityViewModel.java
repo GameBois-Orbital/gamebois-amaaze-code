@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.gamebois.amaaze.graphics.PointMarker;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
 import com.gamebois.amaaze.repository.MazeRepository;
@@ -25,6 +26,8 @@ public class MazifyActivityViewModel extends ViewModel {
     private List<ContourList> rigidSurfaces;
     private float height;
     private float width;
+    private PointMarker endPoint;
+    private PointMarker startPoint;
 
     public MazifyActivityViewModel() {
         pathLiveData = new MutableLiveData<>();
@@ -52,6 +55,7 @@ public class MazifyActivityViewModel extends ViewModel {
 
     public void setRigidSurfaces(List<ContourList> rigidSurfaces) {
         this.rigidSurfaces = rigidSurfaces;
+        pathLiveData.setValue(null);
     }
 
     public void saveMaze() {
@@ -60,6 +64,8 @@ public class MazifyActivityViewModel extends ViewModel {
         if (title != null) {
             maze.setTitle(title);
         }
+        maze.setStartPoint(startPoint);
+        maze.setEndPoint(endPoint);
         maze.setHeight(height);
         maze.setWidth(width);
         maze.setIsPublic(isPublic);
@@ -96,6 +102,14 @@ public class MazifyActivityViewModel extends ViewModel {
 
     public void setWidth(float width) {
         this.width = width;
+    }
+
+    public void setStartPoint(PointMarker startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public void setEndPoint(PointMarker endPoint) {
+        this.endPoint = endPoint;
     }
 
     class PathGeneratorRunnable implements Runnable {
