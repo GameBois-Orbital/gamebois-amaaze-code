@@ -1,46 +1,28 @@
 package com.gamebois.amaaze.view;
 
 import android.content.pm.ActivityInfo;
-import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
-import android.graphics.Typeface;
-import android.graphics.drawable.LayerDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
-import com.gamebois.amaaze.viewmodel.MazifyActivityViewModel;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.common.graph.Graph;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -113,6 +95,7 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     };
+
     ArrayList<PointF> ballPoints = new ArrayList<>();
     List<ContourList> rigidsurfaces = new ArrayList<>();
 
@@ -123,6 +106,8 @@ public class GameActivity extends AppCompatActivity {
 
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
+        ballPoints.add(new PointF(700, 700));
+        ballPoints.add(new PointF(15, 15));
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -172,9 +157,11 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+
     private void launchResultActivity() {
         chronometer.stop();
         chronometerRunning = false;
+        Log.d(LOG_TAG, "launching Result Activity" + chronometer.getText());
     }
 
     @Override
@@ -186,6 +173,7 @@ public class GameActivity extends AppCompatActivity {
         if(gs!=null) {
             gs.surfaceDestroyed(gs.holder);
         }
+        finish();
     }
 
     @Override
@@ -196,6 +184,7 @@ public class GameActivity extends AppCompatActivity {
         if(gs!=null) {
             gs.surfaceDestroyed(gs.holder);
         }
+        finish();
     }
 
     private void setRigidSurfaces(String mazeID) {

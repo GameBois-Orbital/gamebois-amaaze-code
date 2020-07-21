@@ -1,6 +1,6 @@
 package com.gamebois.amaaze.graphics;
 
-import android.graphics.Canvas;
+import android.content.Context;
 import android.util.Log;
 
 import com.gamebois.amaaze.view.GameActivity;
@@ -23,9 +23,10 @@ public class Createbox2d {
     private World world;
     private float scaleFactor = 150.0f;
     private float IscaleFactor=1/scaleFactor;//meter to pixel
-    private Canvas canvas;
     private float width;
     private float  height;
+
+    public JBox2DContactListener contactListener;
 
 
     Createbox2d() {
@@ -131,5 +132,18 @@ public class Createbox2d {
         float pixelX=(p.x+offsetX)*scaleFactor;
         float pixelY=(-p.y+offsetY)*scaleFactor;
         return new Vec2(pixelX, pixelY);
+    }
+
+    /**
+     *  box2d contact listener
+     */
+
+    public void listenForCollisions(Context context) {
+        contactListener = new JBox2DContactListener(context);
+        world.setContactListener(contactListener);
+    }
+
+    public boolean isGameOver(){
+        return contactListener.isGameOver();
     }
 }

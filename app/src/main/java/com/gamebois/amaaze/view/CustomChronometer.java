@@ -5,8 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.widget.Chronometer;
-import android.widget.TextView;
+
 import java.text.DecimalFormat;
 
 public class CustomChronometer extends androidx.appcompat.widget.AppCompatTextView {
