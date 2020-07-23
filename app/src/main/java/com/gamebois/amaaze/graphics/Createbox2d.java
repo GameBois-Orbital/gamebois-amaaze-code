@@ -11,6 +11,8 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
 
+import java.util.Timer;
+
 public class Createbox2d {
     private String LOG_TAG = GameActivity.class.getSimpleName();
 
@@ -27,6 +29,7 @@ public class Createbox2d {
     private float  height;
 
     public JBox2DContactListener contactListener;
+    //public WormholeListener wormholeListener
 
 
     Createbox2d() {
@@ -145,5 +148,13 @@ public class Createbox2d {
 
     public boolean isGameOver(){
         return contactListener.isGameOver();
+    }
+
+    public boolean isWarping() {
+        return contactListener.isWarping();
+    }
+
+    public void notWarping() {
+        contactListener.notWarping();
     }
 }

@@ -30,7 +30,7 @@ public class WormholePointsGenerator {
     }
 
     public ArrayList<PointF> generate(int numOfWormholes) {
-        float wormholeRealmLength = Math.min(screen_width, screen_height);     // realm = where 68.2% of points land
+        float wormholeRealmLength = Math.min(screen_width, screen_height);     // realm  = where 68.2% of points land
         if (BuildConfig.DEBUG && wormholeRealmLength != screen_height) {
             throw new AssertionError("Assertion failed");
         }
