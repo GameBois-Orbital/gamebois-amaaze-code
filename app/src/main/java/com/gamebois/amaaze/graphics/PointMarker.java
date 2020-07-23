@@ -17,15 +17,13 @@ public class PointMarker {
     private float startRadius;
     private float radius;
 
-    public PointMarker(int viewWidth, int viewHeight, int color) {
-        this.mX = (float) (viewWidth / 2.0);
-        this.mY = (float) (viewHeight / 2.0);
-        float minParam = viewHeight >= viewWidth ? mY : mX;
+    public PointMarker(int h, int w, float radius, int color) {
+//        this.mX = (float) (h / 2.0);
+//        this.mY = (float) (w / 2.0);
         this.paint = new Paint();
         paint.setColor(color);
-        radius = minParam / 50;
+        this.radius = radius;
         startRadius = radius;
-
     }
 
     public float getmX() {
@@ -42,6 +40,7 @@ public class PointMarker {
 
     public void setRadius(float radius) {
         this.radius = radius;
+//        this.paint.setColor(color + (int) radius / 5);
     }
 
     public float getStartRadius() {

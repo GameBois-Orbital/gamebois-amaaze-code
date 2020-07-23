@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.graphics.PointMarker;
@@ -40,6 +41,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     private int mViewHeight;
     private PointMarker focusedPoint;
     private SurfaceHolder mSurfaceHolder;
+    private MutableLiveData<Float> seekBarValue = new MutableLiveData<>();
 
     //Animation
     //Graphics
@@ -80,10 +82,24 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         super.onSizeChanged(w, h, oldw, oldh);
         this.mViewHeight = h;
         this.mViewWidth = w;
+        radius = (float) (w / 80.0);
         focusStartPoint();
         mExtraContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 
     }
+
+    public void setPointsRadius(float radiusMultiplier) {
+        setPointsRadius(startPoint, radiusMultiplier);
+        setPointsRadius(endPoint, radiusMultiplier);
+        invalidate();
+    }
+
+    private void setPointsRadius(PointMarker pm, float radiusMultiplier) {
+        if (pm != null) {
+            pm.setRadius(radius * (radiusMultiplier / 50));
+        }
+    }
+
 
 //    private ObjectAnimator returnAnimator(PointMarker p) {
 //        if (p.getRepeatAnimator() == null) {
@@ -110,7 +126,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
 
     public void focusStartPoint() {
         if (startPoint == null) {
-            startPoint = new PointMarker(mViewWidth, mViewHeight, GREEN);
+            startPoint = new PointMarker(mViewHeight, mViewWidth, radius, GREEN);
         }
         this.focusedPoint = startPoint;
         invalidate();
@@ -118,7 +134,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
 
     public void focusEndPoint() {
         if (endPoint == null) {
-            endPoint = new PointMarker(mViewWidth, mViewHeight, RED);
+            endPoint = new PointMarker(mViewHeight, mViewWidth, radius, RED);
         }
         this.focusedPoint = endPoint;
         invalidate();

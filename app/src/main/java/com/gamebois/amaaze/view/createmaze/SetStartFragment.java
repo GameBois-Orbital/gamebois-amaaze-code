@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -16,6 +17,7 @@ import androidx.navigation.Navigation;
 
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.viewmodel.MazifyActivityViewModel;
+import com.google.android.material.slider.Slider;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
     private ImageButton backButton;
     private boolean canNavigate = false;
     private TextView instructionsText;
+    private Slider sizeSlider;
 
     public SetStartFragment() {
         // Required empty public constructor
@@ -43,13 +46,26 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_set_ball, container, false);
-        drawMazeView = (DrawMazeView) view.findViewById(R.id.draw_maze_view);
-        nextButton = (ImageButton) view.findViewById(R.id.button_to_details);
-        backButton = (ImageButton) view.findViewById(R.id.back_to_start);
-        instructionsText = (TextView) view.findViewById(R.id.set_ball_instructions);
+        drawMazeView = view.findViewById(R.id.draw_maze_view);
+        nextButton = view.findViewById(R.id.button_to_details);
+        backButton = view.findViewById(R.id.back_to_start);
+        sizeSlider = view.findViewById(R.id.size_picker);
+        instructionsText = view.findViewById(R.id.set_ball_instructions);
+        initialiseSlider();
         nextButton.setOnClickListener(this);
         backButton.setOnClickListener(this);
         return view;
+    }
+
+    private void initialiseSlider() {
+        sizeSlider.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                if (fromUser) {
+                    drawMazeView.setPointsRadius(value);
+                }
+            }
+        });
     }
 
     @Override
