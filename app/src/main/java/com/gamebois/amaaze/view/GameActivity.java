@@ -56,7 +56,7 @@ public class GameActivity extends AppCompatActivity {
     private float pitch = 0.0f;
     private float roll = 0.0f;
 
-    String ID;
+    private String ID;
 
     float layoutWidth, layoutHeight;
 

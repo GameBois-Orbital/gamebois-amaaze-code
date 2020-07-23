@@ -13,7 +13,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.core.content.res.ResourcesCompat;
-import androidx.lifecycle.MutableLiveData;
 
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.graphics.PointMarker;
@@ -29,23 +28,23 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     public static final String TAG = DrawMazeView.class.getSimpleName();
     public PointMarker startPoint;
     public PointMarker endPoint;
+    private static final int ANIMATION_DURATION = 200;
+
     //Thread variables
     private Thread mGameThread = null;
-    //Additional path variable?
     private boolean mRunning;
-    private MutableLiveData<Boolean> startIsSet = new MutableLiveData<>();
     private Context mContext;
-    private PointMarker focusedPoint;
-
-    private Paint paint;
-    private Paint startPaint;
-    private Paint endPaint;
+    private static final int ANIMATION_DELAY = 1000;
     private Bitmap mExtraContourBitmap;
     private int mViewWidth;
     private int mViewHeight;
+    private PointMarker focusedPoint;
     private SurfaceHolder mSurfaceHolder;
 
-    private Path path;
+    //Animation
+    //Graphics
+    private Paint paint;
+    private float radius;
 
     //Drawing paths
     private int mDrawColour;
@@ -72,10 +71,6 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeWidth(5);
-        startPaint = new Paint();
-        startPaint.setColor(GREEN);
-        endPaint = new Paint();
-        endPaint.setColor(RED);
     }
 
     //This method is called when a view changes size (such as when it is created), so can
@@ -85,21 +80,45 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         super.onSizeChanged(w, h, oldw, oldh);
         this.mViewHeight = h;
         this.mViewWidth = w;
-        this.startIsSet.setValue(false);
-        startPoint = new PointMarker(mViewWidth, mViewHeight);
         focusStartPoint();
         mExtraContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 
     }
 
+//    private ObjectAnimator returnAnimator(PointMarker p) {
+//        if (p.getRepeatAnimator() == null) {
+//            p.setRepeatAnimator(generateAnimator(p));
+//        }
+//        return p.getRepeatAnimator();
+//    }
+
+//    private void setRadius(float radius) {
+//        focusedPoint.setRadius(radius);
+//        focusedPoint.getPaint()
+//                .setColor(focusedPoint.getColor() + (int) radius / focusedPoint.COLOR_ADJUSTER);
+//        invalidate();
+//    }
+
+//    private ObjectAnimator generateAnimator(PointMarker p) {
+//        ObjectAnimator repeatAnimator = ObjectAnimator.ofFloat(this, "radius", p.getStartRadius(), (float) (p.getStartRadius() * 1.5));
+//        repeatAnimator.setInterpolator(new LinearOutSlowInInterpolator());
+//        repeatAnimator.setDuration(ANIMATION_DURATION);
+//        repeatAnimator.setRepeatCount(1);
+//        repeatAnimator.setRepeatMode(ValueAnimator.REVERSE);
+//        return repeatAnimator;
+//    }
+
     public void focusStartPoint() {
+        if (startPoint == null) {
+            startPoint = new PointMarker(mViewWidth, mViewHeight, GREEN);
+        }
         this.focusedPoint = startPoint;
         invalidate();
     }
 
     public void focusEndPoint() {
         if (endPoint == null) {
-            endPoint = new PointMarker(mViewWidth, mViewHeight);
+            endPoint = new PointMarker(mViewWidth, mViewHeight, RED);
         }
         this.focusedPoint = endPoint;
         invalidate();
@@ -143,9 +162,12 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
+//        ObjectAnimator animator = returnAnimator(focusedPoint);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                activateButton();
+//                if (animator.isRunning()) {
+//                    animator.cancel();
+//                }
                 updatePosition(focusedPoint, x, y);
                 invalidate();
                 break;
@@ -153,14 +175,13 @@ public class DrawMazeView extends SurfaceView implements Runnable {
                 updatePosition(focusedPoint, x, y);
                 invalidate();
                 break;
+            case MotionEvent.ACTION_UP:
+//                animator.start();
+                break;
             default:
                 //Do nothing
         }
         return true;
-    }
-
-    private void activateButton() {
-        this.startIsSet.postValue(true);
     }
 
     @Override
@@ -170,7 +191,8 @@ public class DrawMazeView extends SurfaceView implements Runnable {
             if (mSurfaceHolder.getSurface().isValid()) {
                 float startX = startPoint.getmX();
                 float startY = startPoint.getmY();
-                float radius = startPoint.getmRadius();
+                float radius = startPoint.getRadius();
+                Paint startPaint = startPoint.getPaint();
                 try {
                     canvas = mSurfaceHolder.lockCanvas();
                     canvas.save();
@@ -180,6 +202,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
                     if (endPoint != null) {
                         float endX = endPoint.getmX();
                         float endY = endPoint.getmY();
+                        Paint endPaint = endPoint.getPaint();
                         canvas.drawCircle(endX, endY, radius, endPaint);
                     }
                     canvas.restore();

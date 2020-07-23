@@ -14,8 +14,8 @@ public class Maze {
     private Date timeCreated;
     private String title;
     private String imageURL;
+    private String userID;
     private boolean isPublic;
-    private long wormholeDifficulty;
     private long numLikes;
     private float height;
     private float width;
@@ -61,14 +61,6 @@ public class Maze {
         this.isPublic = isPublic;
     }
 
-    public long getWormholeDifficulty() {
-        return wormholeDifficulty;
-    }
-
-    public void setWormholeDifficulty(long wormholeDifficulty) {
-        this.wormholeDifficulty = wormholeDifficulty;
-    }
-
     public long getNumLikes() {
         return numLikes;
     }
@@ -107,5 +99,13 @@ public class Maze {
 
     public void setEndPoint(PointMarker endPoint) {
         this.endPoint = endPoint;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }

@@ -53,7 +53,6 @@ public class Maze2D {
             body.createFixture(chain,1);
             body.setUserData(this);
         }
-
         
     }
 
