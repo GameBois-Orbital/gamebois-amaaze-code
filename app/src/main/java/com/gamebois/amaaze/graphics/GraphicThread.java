@@ -72,7 +72,7 @@ public class GraphicThread extends Thread {
         yoffset = (float) ((screen_height - creatorHeight * scale) / 2.0);
 
         END_RADIUS = gs.getEndPointRadius();
-        WORMHOLE_RADIUS = END_RADIUS * (float) 1.2;
+        WORMHOLE_RADIUS = END_RADIUS;
         setMazes(gs.getMazeArrayList());
         setWormholes(gs.getWormholesArrayList());
         setBallAt(gs.getStartPoint());
