@@ -28,7 +28,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     private float roll = 0.0f;
 
     private List<ContourList> mazeArrayList;
-    private ArrayList<PointF> ballArrayList;
+    private ArrayList<PointF> ballArrayList, wormholesArrayList;
 
     float screen_width, screen_height;
 
@@ -116,6 +116,10 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
         return ballArrayList;
     }
 
+    public ArrayList<PointF> getWormholesArrayList() {
+        return wormholesArrayList;
+    }
+
     public void setMazeArrayList(List<ContourList> mazeArrayList) {
         this.mazeArrayList = mazeArrayList;
     }
@@ -123,6 +127,12 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     public void setBallArrayList(ArrayList<PointF> ballArrayList) {
         this.ballArrayList = ballArrayList;
     }
+
+    public void setWormholesArrayList(ArrayList<PointF> wormholesArrayList) {
+        this.wormholesArrayList = wormholesArrayList;
+    }
+
+
 
     /**
      * set azimuth

@@ -14,11 +14,22 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 public class JBox2DContactListener implements ContactListener {
     private String LOG_TAG = GameActivity.class.getSimpleName();
-    private boolean gameOver;
+    private boolean gameOver, isWarping;
+    public String touched;
 
     public JBox2DContactListener(Context context) {
         this.gameOver = false;
+        this.isWarping = false;
     }
+
+    public boolean isWarping() {
+        return isWarping;
+    }
+
+    public void notWarping() {
+        this.isWarping = false;
+    }
+
 
     public boolean isGameOver() {
         return gameOver;
@@ -38,7 +49,16 @@ public class JBox2DContactListener implements ContactListener {
         if ((o1.getClass() == Ball2D.class && o2.getClass() == End2D.class) ||
                 (o1.getClass() == End2D.class && o2.getClass() == Ball2D.class)) {
             gameOver = true;
-            Log.d(LOG_TAG, "Contact detected");
+            Log.d(LOG_TAG, "End Contact detected");
+        }
+        if ((o1.getClass() == Integer.class && o2.getClass() == Ball2D.class )
+                || (o2.getClass() == Integer.class && o1.getClass() == Ball2D.class)) {
+            isWarping = true;
+            if (o1.getClass() == Integer.class) {
+                touched = o1.toString();
+            } else {
+                touched = o2.toString();
+            }
         }
 
     }

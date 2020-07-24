@@ -98,6 +98,7 @@ public class GameActivity extends AppCompatActivity {
 
     ArrayList<PointF> ballPoints = new ArrayList<>();
     List<ContourList> rigidsurfaces = new ArrayList<>();
+    ArrayList<PointF> wormholes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +110,9 @@ public class GameActivity extends AppCompatActivity {
         ballPoints.add(new PointF(5, 5));
         ballPoints.add(new PointF(700, 700));
         ballPoints.add(new PointF(15, 15));
+        wormholes.add(new PointF(1063, 70));
+        wormholes.add(new PointF(926, 179));
+        wormholes.add(new PointF(550, 840));
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -125,6 +129,7 @@ public class GameActivity extends AppCompatActivity {
         gs.setZOrderOnTop(true); //graphic surface as top layer
         gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         gs.setBallArrayList(ballPoints);//FEED HERE DATA);
+        gs.setWormholesArrayList(wormholes);
         setRigidSurfaces(ID);
         layout.addView(gs);
         gs.getGameOver().observe(this, new Observer<Boolean>() {

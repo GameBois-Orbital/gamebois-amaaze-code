@@ -7,6 +7,7 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.util.Log;
 
+import com.gamebois.amaaze.BuildConfig;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.view.GameActivity;
 
@@ -15,6 +16,9 @@ import java.util.List;
 
 public class GraphicThread extends Thread {
     private String LOG_TAG = GameActivity.class.getSimpleName();
+    float BALL_RADIUS = 5;
+    float END_RADIUS = 15;
+    float WORMHOLE_RADIUS = 40;
 
     private boolean running = false;
     private final int refresh_rate = 6;
@@ -27,6 +31,7 @@ public class GraphicThread extends Thread {
 
     private End2D endHole;
     private ArrayList<Maze2D> mazes = new ArrayList<Maze2D>();
+    private ArrayList<Wormhole2D> wormholes = new ArrayList<>();
     private Surface2D surfaceBoundary;
     private float screen_height, screen_width;
     private float creatorHeight, creatorWidth;
@@ -67,6 +72,7 @@ public class GraphicThread extends Thread {
 
        setMazes(gs.getMazeArrayList());
        setBallAndEnd();
+       setWormholes();
 
 
         while (running) {
@@ -76,9 +82,24 @@ public class GraphicThread extends Thread {
             }
             previousTime = currentTime;
 
+
             if (box2d.isGameOver()){
                 gs.getGameOver().postValue(true);
                 running = false;
+            }
+
+            int a = 2;
+            if (box2d.isWarping() && ball.isWarpable(currentTime)) {
+                box2d.notWarping();
+                String indexString = box2d.contactListener.touched;
+                int nextIndex = -1;
+                for (int i = 0; i < wormholes.size(); i++) {
+                    if (indexString.equals(((Object) i).toString())) {
+                        nextIndex = (i + 1) % (wormholes.size()); //get nextIndex by loop
+                        break;
+                    }
+                }
+                ball.teleportTo(wormholes.get(nextIndex), currentTime);
             }
 
             box2d.step(); //box2d step
@@ -94,11 +115,17 @@ public class GraphicThread extends Thread {
 
                     for (Maze2D maze2D : mazes) {
                         maze2D.display(c);  //display maze
+
+                    }
+                    for (Wormhole2D wormhole2D : wormholes) {
+                        wormhole2D.display(c);           // display wormholes
                     }
 
                     endHole.display(c); //display endHole
 
                     ball.display(c); //display ball
+
+
                 }
             } finally {
                 if (c != null) {
@@ -114,14 +141,19 @@ public class GraphicThread extends Thread {
             e.printStackTrace();
         }
     }
+    
 
     public void destroyAll() {
         if (surfaceBoundary !=null) {
             surfaceBoundary.destroy();
-    }
+        }
 
         for(Maze2D maze2D : mazes) {
             maze2D.destroy();  //destroy maze
+        }
+
+        for(Wormhole2D wormhole2D : wormholes) {
+            wormhole2D.destroy();
         }
 
         ball.destroy(); //destroy ball
@@ -141,11 +173,20 @@ public class GraphicThread extends Thread {
 
     }
 
+    private void setWormholes() {
+        ArrayList<PointF> wormholesArrayList = gs.getWormholesArrayList();
+        if (wormholesArrayList != null) {
+            for (int i = 0; i < wormholesArrayList.size(); i++) {
+                wormholes.add(new Wormhole2D(i, wormholesArrayList.get(i).x, wormholesArrayList.get(i).y, WORMHOLE_RADIUS, BALL_RADIUS, box2d));
+            }
+        }
+    }
+
     private void setBallAndEnd() {
         ArrayList<PointF> startAndEndArrayList = gs.getBallArrayList();
         if (startAndEndArrayList != null) {
-            ball = new Ball2D(startAndEndArrayList.get(0).x, startAndEndArrayList.get(0).y, startAndEndArrayList.get(1).x, box2d);
-            endHole = new End2D(startAndEndArrayList.get(2).x, startAndEndArrayList.get(2).y, startAndEndArrayList.get(3).x, startAndEndArrayList.get(1).x, box2d);
+            ball = new Ball2D(startAndEndArrayList.get(0).x, startAndEndArrayList.get(0).y, BALL_RADIUS, box2d);
+            endHole = new End2D(startAndEndArrayList.get(2).x, startAndEndArrayList.get(2).y, END_RADIUS, BALL_RADIUS, box2d);
         }
     }
 
