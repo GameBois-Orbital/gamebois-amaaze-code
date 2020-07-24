@@ -13,18 +13,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
-import com.gamebois.amaaze.model.Maze;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -99,13 +94,23 @@ public class GameActivity extends AppCompatActivity {
     ArrayList<PointF> ballPoints = new ArrayList<>();
     List<ContourList> rigidsurfaces = new ArrayList<>();
     ArrayList<PointF> wormholes = new ArrayList<>();
+    private List<Float> startPoint;
+    private List<Float> endPoint;
+    private float radius;
+    private float height;
+    private float width;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
         ID = b.getString(ViewMazeFragment.MAZE_ID_TAG);
-
+        startPoint = (List<Float>) b.getSerializable(ViewMazeFragment.MAZE_START_POINT);
+        endPoint = (List<Float>) b.getSerializable(ViewMazeFragment.MAZE_START_POINT);
+        radius = b.getFloat(ViewMazeFragment.MAZE_RADIUS);
+        height = b.getFloat(ViewMazeFragment.CREATOR_HEIGHT);
+        width = b.getFloat(ViewMazeFragment.CREATOR_WIDTH);
+        wormholes = b.getParcelableArrayList(ViewMazeFragment.MAZE_WORMHOLE);
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
         ballPoints.add(new PointF(700, 700));
@@ -194,20 +199,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setRigidSurfaces(String mazeID) {
-        final DocumentReference maze = FirebaseFirestore.getInstance()
+        Task<QuerySnapshot> retrievalTask = FirebaseFirestore.getInstance()
                 .collection("mazes")
-                .document(mazeID);
-        Task<DocumentSnapshot> getTask = maze.get();
-        Task<QuerySnapshot> retrievalTask = getTask.continueWithTask(new Continuation<DocumentSnapshot, Task<QuerySnapshot>>() {
-            @Override
-            public Task<QuerySnapshot> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
-                Maze m = task.getResult().toObject(Maze.class);
-                gs.setCreatorHeight(m.getCreatorHeight());
-                gs.setCreatorWidth(m.getCreatorWidth());
-                return maze.collection("contours")
-                        .get();
-            }
-        });
+                .document(mazeID)
+                .collection("contours")
+                .get();
         retrievalTask.addOnSuccessListener(
                 new OnSuccessListener<QuerySnapshot>() {
                     @Override

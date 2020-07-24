@@ -25,7 +25,7 @@ public class Maze {
     private List<Float> startPoint = new ArrayList<>(2);
     private List<Float> endPoint = new ArrayList<>(2);
     private float creatorRadius;
-    private List<PointF> wormholeCentres;
+    private ArrayList<PointF> wormholeCentres;
 
     public Maze() {
     }
@@ -122,11 +122,11 @@ public class Maze {
         this.endPoint = endPoint;
     }
 
-    public List<PointF> getWormholeCentres() {
+    public ArrayList<PointF> getWormholeCentres() {
         return wormholeCentres;
     }
 
-    public void setWormholeCentres(List<PointF> wormholeCentres) {
+    public void setWormholeCentres(ArrayList<PointF> wormholeCentres) {
         this.wormholeCentres = wormholeCentres;
     }
 }

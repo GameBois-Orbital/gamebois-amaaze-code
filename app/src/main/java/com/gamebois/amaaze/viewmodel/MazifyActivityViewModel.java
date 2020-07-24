@@ -127,7 +127,7 @@ public class MazifyActivityViewModel extends ViewModel {
     }
 
 
-    public List<PointF> generateWormholes() {
+    public ArrayList<PointF> generateWormholes() {
         List<Path> paths = pathLiveData.getValue();
         Path start = new Path();
         Path end = new Path();
@@ -144,7 +144,7 @@ public class MazifyActivityViewModel extends ViewModel {
         );
         paths.add(start);
         paths.add(end);
-        List<PointF> viewWormholes = new WormholePointsGenerator(
+        ArrayList<PointF> viewWormholes = new WormholePointsGenerator(
                 paths,
                 creatorWidth,
                 creatorHeight,

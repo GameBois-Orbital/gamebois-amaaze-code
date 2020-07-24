@@ -3,6 +3,7 @@ package com.gamebois.amaaze.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.gamebois.amaaze.viewmodel.PrivateMazeViewModel;
 import com.gamebois.amaaze.viewmodel.PublicMazeViewModel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
@@ -36,6 +38,7 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
     public static final String MAZE_RADIUS = "Maze Radius";
     public static final String CREATOR_HEIGHT = "Maze Height";
     public static final String CREATOR_WIDTH = "Maze Width";
+    public static final String MAZE_WORMHOLE = "Maze Wormhole";
     private boolean mIsPublic = false;
     private ViewMazesAdapter mAdapter;
     private MazeViewModel mViewModel;
@@ -136,7 +139,8 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
 
     @Override
     public void onPlayClick(String mazeID, List<Float> startPoint, List<Float> endPoint,
-                            float radius, float creatorHeight, float creatorWidth) {
+                            float radius, float creatorHeight, float creatorWidth,
+                            ArrayList<PointF> wormholes) {
         Intent intent = new Intent(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
         b.putString(MAZE_ID_TAG, mazeID);
@@ -145,6 +149,7 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
         b.putFloat(CREATOR_WIDTH, creatorWidth);
         b.putSerializable(MAZE_START_POINT, (Serializable) startPoint);
         b.putSerializable(MAZE_END_POINT, (Serializable) endPoint);
+        b.putParcelableArrayList(MAZE_WORMHOLE, wormholes);
         intent.putExtras(b);
         startActivity(intent);
     }

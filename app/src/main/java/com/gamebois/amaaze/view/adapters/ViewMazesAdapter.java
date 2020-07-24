@@ -2,6 +2,7 @@ package com.gamebois.amaaze.view.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,7 +117,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
                          List<Float> endPoint,
                          float radius,
                          float creatorHeight,
-                         float creatorWidth);
+                         float creatorWidth,
+                         ArrayList<PointF> wormholes);
     }
 
     public class MazeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -158,7 +160,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
                             m.getEndPoint(),
                             m.getCreatorRadius(),
                             m.getCreatorHeight(),
-                            m.getCreatorWidth());
+                            m.getCreatorWidth(),
+                            m.getWormholeCentres());
             }
         }
     }
