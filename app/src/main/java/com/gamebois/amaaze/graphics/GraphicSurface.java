@@ -28,9 +28,10 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     private float roll = 0.0f;
 
     private List<ContourList> mazeArrayList;
-    private ArrayList<PointF> ballArrayList, wormholesArrayList;
+    private ArrayList<PointF> wormholesArrayList;
+    private PointF startPoint, endPoint;
 
-    float screen_width, screen_height;
+    float screen_width, screen_height, endPointRadius;
 
     public GraphicSurface(Context context) {
         super(context);
@@ -112,24 +113,40 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
         return mazeArrayList;
     }
 
-    public ArrayList<PointF> getBallArrayList() {
-        return ballArrayList;
-    }
-
     public ArrayList<PointF> getWormholesArrayList() {
         return wormholesArrayList;
+    }
+
+    public PointF getStartPoint() {
+        return startPoint;
+    }
+
+    public PointF getEndPoint() {
+        return endPoint;
+    }
+
+    public float getEndPointRadius() {
+        return endPointRadius;
     }
 
     public void setMazeArrayList(List<ContourList> mazeArrayList) {
         this.mazeArrayList = mazeArrayList;
     }
 
-    public void setBallArrayList(ArrayList<PointF> ballArrayList) {
-        this.ballArrayList = ballArrayList;
-    }
-
     public void setWormholesArrayList(ArrayList<PointF> wormholesArrayList) {
         this.wormholesArrayList = wormholesArrayList;
+    }
+
+    public void setStartPoint(PointF pointF) {
+        this.startPoint = pointF;
+    }
+
+    public void setEndPoint(PointF pointF) {
+        this.endPoint = pointF;
+    }
+
+    public void setEndPointRadius(float radius) {
+        this.endPointRadius = radius;
     }
 
 
@@ -185,5 +202,6 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     public MutableLiveData<Boolean> getGameOver() {
         return gameOver;
     }
+
 
 }

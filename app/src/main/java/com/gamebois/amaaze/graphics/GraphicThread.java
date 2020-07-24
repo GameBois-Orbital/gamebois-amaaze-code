@@ -11,14 +11,15 @@ import com.gamebois.amaaze.BuildConfig;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.view.GameActivity;
 
+import org.opencv.core.Point;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GraphicThread extends Thread {
     private String LOG_TAG = GameActivity.class.getSimpleName();
     float BALL_RADIUS = 5;
-    float END_RADIUS;
-    float WORMHOLE_RADIUS;
+    float END_RADIUS, WORMHOLE_RADIUS;
 
     private boolean running = false;
     private final int refresh_rate = 6;
@@ -28,7 +29,6 @@ public class GraphicThread extends Thread {
     private Canvas c = null;
     private Createbox2d box2d;
     private Ball2D ball;
-
     private End2D endHole;
     private ArrayList<Maze2D> mazes = new ArrayList<Maze2D>();
     private ArrayList<Wormhole2D> wormholes = new ArrayList<>();
@@ -44,9 +44,6 @@ public class GraphicThread extends Thread {
         this.gs = gs;
         box2d = new Createbox2d();// create box2d world
         box2d.listenForCollisions(context);
-        scale = Math.min(screen_width / creatorWidth, screen_height / creatorHeight);
-        xoffset = (float) ((screen_width - creatorWidth * scale) / 2.0);
-        yoffset = (float) ((screen_height - creatorHeight * scale) / 2.0);
     }
 
     public void setScreenSize(float screen_width, float screen_height) {
@@ -73,9 +70,16 @@ public class GraphicThread extends Thread {
         //border surfaces so that ball won't go out of the screen
         surfaceBoundary = new Surface2D(screen_width, screen_height, box2d);
 
-       setMazes(gs.getMazeArrayList());
-       setBallAndEnd();
-       setWormholes();
+        scale = Math.min(screen_width / creatorWidth, screen_height / creatorHeight);
+        xoffset = (float) ((screen_width - creatorWidth * scale) / 2.0);
+        yoffset = (float) ((screen_height - creatorHeight * scale) / 2.0);
+
+        END_RADIUS = gs.getEndPointRadius();
+        WORMHOLE_RADIUS = END_RADIUS * (float) 1.2;
+        setMazes(gs.getMazeArrayList());
+        setWormholes(gs.getWormholesArrayList());
+        setBallAt(gs.getStartPoint());
+        setEndAt(gs.getEndPoint());
 
 
         while (running) {
@@ -144,7 +148,9 @@ public class GraphicThread extends Thread {
             e.printStackTrace();
         }
     }
-    
+
+
+
 
     public void destroyAll() {
         if (surfaceBoundary !=null) {
@@ -165,45 +171,33 @@ public class GraphicThread extends Thread {
     private void setMazes(List<ContourList> mazeArrayList) {
 
         if (mazeArrayList != null) {
-            Log.d(LOG_TAG, "Hello" + creatorWidth + " " + creatorHeight);
             for (int i = 0; i < mazeArrayList.size(); i++) {
-                mazes.add(new Maze2D(mazeArrayList.get(i).getContourList(), scale, xoffset, yoffset, box2d)); //add maze points to maze for creating box2d body
+                ArrayList<PointF> contour = mazeArrayList.get(i).getContourList();
+                for (PointF point : contour) {
+                    point.set(point.x*scale + xoffset, point.y*scale + yoffset);
+                }
+                Log.d(LOG_TAG, "hello" + contour.toString());
+                mazes.add(new Maze2D(contour, box2d)); //add maze points to maze for creating box2d body
             }
         }
-
     }
-
-    private void setWormholes() {
-        ArrayList<PointF> wormholesArrayList = gs.getWormholesArrayList();
+    private void setWormholes(ArrayList<PointF> wormholesArrayList) {
         if (wormholesArrayList != null) {
             for (int i = 0; i < wormholesArrayList.size(); i++) {
-                wormholes.add(new Wormhole2D(i, wormholesArrayList.get(i).x * scale + xoffset, wormholesArrayList.get(i).y *scale + yoffset, END_RADIUS, BALL_RADIUS, box2d));
+                wormholes.add(new Wormhole2D(i, wormholesArrayList.get(i).x*scale + xoffset, wormholesArrayList.get(i).y*scale + yoffset, WORMHOLE_RADIUS, BALL_RADIUS, box2d));
             }
         }
     }
-
-    private void setBallAndEnd() {
-        ArrayList<PointF> startAndEndArrayList = gs.getBallArrayList();
-        if (startAndEndArrayList != null) {
-            END_RADIUS = startAndEndArrayList.get(2).x;
-            ball = new Ball2D(startAndEndArrayList.get(0).x * scale + xoffset, startAndEndArrayList.get(0).y * scale + yoffset, BALL_RADIUS, box2d);
-            endHole = new End2D(startAndEndArrayList.get(1).x * scale + xoffset, startAndEndArrayList.get(1).y * scale + yoffset, END_RADIUS, BALL_RADIUS, box2d);
-        }
+    private void setBallAt(PointF start) {
+        ball = new Ball2D(start.x*scale + xoffset, start.y*scale + yoffset, BALL_RADIUS, box2d);
     }
-
-
-    public float getCreatorHeight() {
-        return creatorHeight;
+    private void setEndAt(PointF end) {
+        endHole = new End2D(end.x*scale + xoffset, end.y*scale + yoffset, END_RADIUS, BALL_RADIUS, box2d);
     }
 
     public void setCreatorHeight(float creatorHeight) {
         this.creatorHeight = creatorHeight;
     }
-
-    public float getCreatorWidth() {
-        return creatorWidth;
-    }
-
     public void setCreatorWidth(float creatorWidth) {
         this.creatorWidth = creatorWidth;
     }

@@ -53,9 +53,6 @@ public class GameActivity extends AppCompatActivity {
 
     private String ID;
 
-    float layoutWidth, layoutHeight;
-
-
     final SensorEventListener sensorEventListener = new SensorEventListener() {
 
         public void onAccuracyChanged (Sensor senor, int accuracy) {
@@ -91,7 +88,6 @@ public class GameActivity extends AppCompatActivity {
         }
     };
 
-    ArrayList<PointF> ballPoints = new ArrayList<>();
     List<ContourList> rigidsurfaces = new ArrayList<>();
     ArrayList<PointF> wormholes = new ArrayList<>();
     private List<Float> startPoint;
@@ -99,7 +95,6 @@ public class GameActivity extends AppCompatActivity {
     private float radius;
     private float height;
     private float width;
-    float scale, offsetx, offsety;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,17 +102,12 @@ public class GameActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         ID = b.getString(ViewMazeFragment.MAZE_ID_TAG);
         startPoint = (List<Float>) b.getSerializable(ViewMazeFragment.MAZE_START_POINT);
-        endPoint = (List<Float>) b.getSerializable(ViewMazeFragment.MAZE_START_POINT);
+        endPoint = (List<Float>) b.getSerializable(ViewMazeFragment.MAZE_END_POINT);
         radius = b.getFloat(ViewMazeFragment.MAZE_RADIUS);
         height = b.getFloat(ViewMazeFragment.CREATOR_HEIGHT);
         width = b.getFloat(ViewMazeFragment.CREATOR_WIDTH);
-
-
         wormholes = b.getParcelableArrayList(ViewMazeFragment.MAZE_WORMHOLE);
 
-        ballPoints.add(new PointF(startPoint.get(0), startPoint.get(1)));
-        ballPoints.add(new PointF(endPoint.get(0), endPoint.get(1)));
-        ballPoints.add(new PointF(radius, radius));
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -133,11 +123,16 @@ public class GameActivity extends AppCompatActivity {
         gs.getHolder().setFormat(PixelFormat.TRANSPARENT); //set graphic surface to transparent
         gs.setZOrderOnTop(true); //graphic surface as top layer
         gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        gs.setBallArrayList(ballPoints);//FEED HERE DATA);
+
+        gs.setStartPoint(new PointF(startPoint.get(0), startPoint.get(1)));
+        gs.setEndPoint(new PointF(endPoint.get(0), endPoint.get(1)));
+        gs.setEndPointRadius(radius);
         gs.setWormholesArrayList(wormholes);
         gs.setCreatorWidth(width);
         gs.setCreatorHeight(height);
         setRigidSurfaces(ID);
+
+
         layout.addView(gs);
         gs.getGameOver().observe(this, new Observer<Boolean>() {
             @Override
@@ -213,6 +208,7 @@ public class GameActivity extends AppCompatActivity {
                         rigidsurfaces = documentSnapshots.toObjects(ContourList.class);
                         gs.setMazeArrayList(rigidsurfaces);
                         startGame();
+                        Log.d(LOG_TAG, "rigid" + rigidsurfaces.toString());
                     }
                 });
     }
@@ -224,7 +220,7 @@ public class GameActivity extends AppCompatActivity {
             sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(accelerometerSensor), SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-        if(gs.getBallArrayList()!= null && gs.getMazeArrayList() != null) {   // random checks
+        if(gs.getMazeArrayList() != null) {   // random checks
             gs.startGraphics();
         }
         else {
