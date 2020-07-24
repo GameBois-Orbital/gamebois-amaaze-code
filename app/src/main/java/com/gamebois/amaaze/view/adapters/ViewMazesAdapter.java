@@ -112,8 +112,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
 
     public interface OnPlayListener {
         void onPlayClick(String mazeID,
-                         Float[] startPoint,
-                         Float[] endPoint,
+                         List<Float> startPoint,
+                         List<Float> endPoint,
                          float radius,
                          float creatorHeight,
                          float creatorWidth);
@@ -154,8 +154,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
                     int pos = getAdapterPosition();
                     Maze m = mazeList.get(pos);
                     onPlayListener.onPlayClick(m.getUniqueID(),
-                            m.getStartPoint().toArray(new Float[0]),
-                            m.getEndPoint().toArray(new Float[0]),
+                            m.getStartPoint(),
+                            m.getEndPoint(),
                             m.getCreatorRadius(),
                             m.getCreatorHeight(),
                             m.getCreatorWidth());

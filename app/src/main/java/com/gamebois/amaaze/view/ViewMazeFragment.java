@@ -22,6 +22,9 @@ import com.gamebois.amaaze.viewmodel.MazeViewModel;
 import com.gamebois.amaaze.viewmodel.PrivateMazeViewModel;
 import com.gamebois.amaaze.viewmodel.PublicMazeViewModel;
 
+import java.io.Serializable;
+import java.util.List;
+
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPlayListener {
@@ -132,7 +135,7 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
 
 
     @Override
-    public void onPlayClick(String mazeID, Float[] startPoint, Float[] endPoint,
+    public void onPlayClick(String mazeID, List<Float> startPoint, List<Float> endPoint,
                             float radius, float creatorHeight, float creatorWidth) {
         Intent intent = new Intent(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
@@ -140,8 +143,9 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
         b.putFloat(MAZE_RADIUS, radius);
         b.putFloat(CREATOR_HEIGHT, creatorHeight);
         b.putFloat(CREATOR_WIDTH, creatorWidth);
-        intent.putExtra(MAZE_START_POINT, startPoint);
-        intent.putExtra(MAZE_END_POINT, endPoint);
+        b.putSerializable(MAZE_START_POINT, (Serializable) startPoint);
+        b.putSerializable(MAZE_END_POINT, (Serializable) endPoint);
+        intent.putExtras(b);
         startActivity(intent);
     }
 }

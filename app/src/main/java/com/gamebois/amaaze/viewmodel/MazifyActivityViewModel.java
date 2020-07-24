@@ -32,11 +32,6 @@ public class MazifyActivityViewModel extends ViewModel {
     private float creatorWidth;
     private PointMarker endPoint;
     private PointMarker startPoint;
-    private float viewWidth;
-    private float viewHeight;
-    private float scale;
-    private float xoffset;
-    private float yoffset;
 
     public MazifyActivityViewModel() {
         pathLiveData = new MutableLiveData<>();
@@ -74,10 +69,10 @@ public class MazifyActivityViewModel extends ViewModel {
             maze.setTitle(title);
         }
         maze.setStartPoint(Arrays.asList(
-                calculateOffset(startPoint.getmX(), xoffset),
-                calculateOffset(startPoint.getmY(), yoffset)));
+                startPoint.getmX(),
+                startPoint.getmY()));
         maze.setEndPoint(Arrays.asList(endPoint.getmX(), endPoint.getmY()));
-        maze.setCreatorRadius(calculateOffset(startPoint.getRadius()));
+        maze.setCreatorRadius(startPoint.getRadius());
         maze.setCreatorHeight(creatorHeight);
         maze.setCreatorWidth(creatorWidth);
         maze.setWormholeCentres(generateWormholes());
@@ -93,14 +88,6 @@ public class MazifyActivityViewModel extends ViewModel {
         } else {
             MazeRepository.addMaze(maze);
         }
-    }
-
-    private float calculateOffset(float radius) {
-        return radius / scale;
-    }
-
-    private float calculateOffset(float number, float offset) {
-        return (number - offset) / scale;
     }
 
     public LiveData<List<Path>> getPaths() {
@@ -139,26 +126,6 @@ public class MazifyActivityViewModel extends ViewModel {
         this.creatorWidth = creatorWidth;
     }
 
-    public float getViewWidth() {
-        return viewWidth;
-    }
-
-    public void setViewWidth(float viewWidth) {
-        this.viewWidth = viewWidth;
-    }
-
-    public float getViewHeight() {
-        return viewHeight;
-    }
-
-    public void setViewHeight(float viewHeight) {
-        this.viewHeight = viewHeight;
-    }
-
-//    public void setParams(float height, float width) {
-//        this.viewHeight = height;
-//        this.viewWidth = width;
-//    }
 
     public List<PointF> generateWormholes() {
         List<Path> paths = pathLiveData.getValue();
@@ -179,18 +146,10 @@ public class MazifyActivityViewModel extends ViewModel {
         paths.add(end);
         List<PointF> viewWormholes = new WormholePointsGenerator(
                 paths,
-                viewWidth,
-                viewHeight,
+                creatorWidth,
+                creatorHeight,
                 startPoint.getRadius())
                 .generate(8);
-        Log.d(LOG_TAG, "Smaller: " + viewWormholes.toString());
-        for (PointF wormhole : viewWormholes) {
-            wormhole.set(
-                    calculateOffset(wormhole.x, xoffset),
-                    calculateOffset(wormhole.y, yoffset)
-            );
-        }
-        Log.d(LOG_TAG, "Bigger: " + viewWormholes.toString());
         return viewWormholes;
     }
 
