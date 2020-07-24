@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callback {
+
     private String LOG_TAG = GameActivity.class.getSimpleName();
 
     MutableLiveData<Boolean> gameOver;

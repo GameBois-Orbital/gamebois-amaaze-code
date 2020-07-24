@@ -3,7 +3,9 @@ package com.gamebois.amaaze.model;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class Maze {
@@ -13,11 +15,14 @@ public class Maze {
     private Date timeCreated;
     private String title;
     private String imageURL;
+    private String userID;
     private boolean isPublic;
-    private long wormholeDifficulty;
     private long numLikes;
-    private float height;
-    private float width;
+    private float creatorHeight;
+    private float creatorWidth;
+    private List<Float> startPoint = new ArrayList<>(2);
+    private List<Float> endPoint = new ArrayList<>(2);
+    private float creatorRadius;
 
     public Maze() {
     }
@@ -58,14 +63,6 @@ public class Maze {
         this.isPublic = isPublic;
     }
 
-    public long getWormholeDifficulty() {
-        return wormholeDifficulty;
-    }
-
-    public void setWormholeDifficulty(long wormholeDifficulty) {
-        this.wormholeDifficulty = wormholeDifficulty;
-    }
-
     public long getNumLikes() {
         return numLikes;
     }
@@ -74,19 +71,51 @@ public class Maze {
         this.numLikes = numLikes;
     }
 
-    public float getHeight() {
-        return height;
+    public float getCreatorHeight() {
+        return creatorHeight;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
+    public void setCreatorHeight(float height) {
+        this.creatorHeight = height;
     }
 
-    public float getWidth() {
-        return width;
+    public float getCreatorWidth() {
+        return creatorWidth;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
+    public void setCreatorWidth(float creatorWidth) {
+        this.creatorWidth = creatorWidth;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public float getCreatorRadius() {
+        return creatorRadius;
+    }
+
+    public void setCreatorRadius(float creatorRadius) {
+        this.creatorRadius = creatorRadius;
+    }
+
+    public List<Float> getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(List<Float> startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public List<Float> getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(List<Float> endPoint) {
+        this.endPoint = endPoint;
     }
 }
