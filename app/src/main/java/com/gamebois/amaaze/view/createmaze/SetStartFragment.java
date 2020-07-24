@@ -2,9 +2,11 @@ package com.gamebois.amaaze.view.createmaze;
 
 import android.graphics.Path;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -31,6 +33,8 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
     private boolean canNavigate = false;
     private TextView instructionsText;
     private Slider sizeSlider;
+    private float height;
+    private float width;
 
     public SetStartFragment() {
         // Required empty public constructor
@@ -52,9 +56,24 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
         sizeSlider = view.findViewById(R.id.size_picker);
         instructionsText = view.findViewById(R.id.set_ball_instructions);
         initialiseSlider();
+        getWidthAndHeight(drawMazeView);
         nextButton.setOnClickListener(this);
         backButton.setOnClickListener(this);
         return view;
+    }
+
+    private void getWidthAndHeight(final DrawMazeView drawMazeView) {
+        final ViewTreeObserver obs = drawMazeView.getViewTreeObserver();
+
+        obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                height = drawMazeView.getHeight();
+                width = drawMazeView.getWidth();
+
+                drawMazeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 
     private void initialiseSlider() {
@@ -72,10 +91,14 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(requireActivity()).get(MazifyActivityViewModel.class);
+        mViewModel.setViewHeight(height);
+        mViewModel.setViewWidth(width);
         mViewModel.getPaths().observe(getViewLifecycleOwner(), new Observer<List<Path>>() {
             @Override
             public void onChanged(List<Path> pathList) {
+                Log.d(LOG_TAG, "Path change called");
                 if (pathList != null) {
+                    Log.d(LOG_TAG, pathList.toString());
                     drawMazeView.setPaths(pathList);
                 }
             }

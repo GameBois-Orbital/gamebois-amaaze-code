@@ -196,8 +196,8 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public Task<QuerySnapshot> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
                 Maze m = task.getResult().toObject(Maze.class);
-                gs.setCreatorHeight(m.getHeight());
-                gs.setCreatorWidth(m.getWidth());
+                gs.setCreatorHeight(m.getCreatorHeight());
+                gs.setCreatorWidth(m.getCreatorWidth());
                 return maze.collection("contours")
                         .get();
             }

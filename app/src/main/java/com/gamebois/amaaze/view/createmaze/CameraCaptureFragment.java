@@ -93,12 +93,12 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_camera_capture, container, false);
-        mOpenCVCameraView = (CameraBridgeViewBase) view.findViewById(R.id.my_camera_view);
+        mOpenCVCameraView = view.findViewById(R.id.my_camera_view);
         mOpenCVCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCVCameraView.setCvCameraViewListener(this);
-        setButton = (Button) view.findViewById(R.id.set_button);
+        setButton = view.findViewById(R.id.set_button);
         setButton.setOnClickListener(this);
-        pBar = (ProgressBar) view.findViewById(R.id.camera_progress_bar);
+        pBar = view.findViewById(R.id.camera_progress_bar);
         mViewModel = new ViewModelProvider(requireActivity()).get(MazifyActivityViewModel.class);
         return view;
     }
@@ -131,8 +131,8 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
         switch (v.getId()) {
             case R.id.set_button:
                 setButton.setEnabled(false);
-                mViewModel.setHeight(mOpenCVCameraView.getHeight());
-                mViewModel.setWidth(mOpenCVCameraView.getWidth());
+                mViewModel.setCreatorHeight(mOpenCVCameraView.getHeight());
+                mViewModel.setCreatorWidth(mOpenCVCameraView.getWidth());
                 mOpenCVCameraView.disableView();
                 mViewModel.setRigidSurfaces(this.rigidSurfaces);
                 Navigation.findNavController(v).navigate(R.id.action_cameraCaptureFragment_to_setBallFragment);
