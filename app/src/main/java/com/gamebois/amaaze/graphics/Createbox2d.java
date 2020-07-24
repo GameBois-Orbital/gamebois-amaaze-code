@@ -48,7 +48,6 @@ public class Createbox2d {
      * to iterate in box2d world
      */
     public void step() {
-        float timeStep = 1.0f / 60f;
         world.step(TIMESTEP,VELOCITY_ITERATIONS,POSITION_ITERATIONS);
         world.clearForces();
     }

@@ -63,10 +63,7 @@ public class GraphicThread extends Thread {
         return Math.max(MIN, Math.min(value, MAX));
     }
 
-    public void run() {
-        long previousTime, currentTime, startTime;
-        previousTime = System.currentTimeMillis();
-
+    public void setGameWorldAndGraphics() {
         //border surfaces so that ball won't go out of the screen
         surfaceBoundary = new Surface2D(screen_width, screen_height, box2d);
 
@@ -80,6 +77,12 @@ public class GraphicThread extends Thread {
         setWormholes(gs.getWormholesArrayList());
         setBallAt(gs.getStartPoint());
         setEndAt(gs.getEndPoint());
+
+    }
+
+    public void run() {
+        long previousTime, currentTime, startTime;
+        previousTime = System.currentTimeMillis();
 
 
         while (running) {

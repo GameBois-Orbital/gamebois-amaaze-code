@@ -79,6 +79,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
 
     public void startGraphics() {
         graphicThread.setScreenSize(screen_width, screen_height);  // passes ScreenSize i.e. View size information to graphicThread
+        graphicThread.setGameWorldAndGraphics();
         graphicThread.setRunning(true);
         graphicThread.start(); //start game thread
         toggle = true;
