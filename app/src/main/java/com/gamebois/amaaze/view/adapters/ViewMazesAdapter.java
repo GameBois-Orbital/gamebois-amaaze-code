@@ -111,7 +111,12 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
     }
 
     public interface OnPlayListener {
-        void onPlayClick(String mazeID);
+        void onPlayClick(String mazeID,
+                         Float[] startPoint,
+                         Float[] endPoint,
+                         float radius,
+                         float creatorHeight,
+                         float creatorWidth);
     }
 
     public class MazeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -147,7 +152,13 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
             switch (v.getId()) {
                 case R.id.playButton:
                     int pos = getAdapterPosition();
-                    onPlayListener.onPlayClick(mazeList.get(pos).getUniqueID());
+                    Maze m = mazeList.get(pos);
+                    onPlayListener.onPlayClick(m.getUniqueID(),
+                            m.getStartPoint().toArray(new Float[0]),
+                            m.getEndPoint().toArray(new Float[0]),
+                            m.getCreatorRadius(),
+                            m.getCreatorHeight(),
+                            m.getCreatorWidth());
             }
         }
     }

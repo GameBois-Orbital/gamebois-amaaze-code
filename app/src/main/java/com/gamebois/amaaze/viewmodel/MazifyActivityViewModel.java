@@ -4,15 +4,20 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.gamebois.amaaze.graphics.PointMarker;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
 import com.gamebois.amaaze.repository.MazeRepository;
+import com.gamebois.amaaze.view.createmaze.WormholePointsGenerator;
+import com.google.android.gms.tasks.OnFailureListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MazifyActivityViewModel extends ViewModel {
@@ -23,8 +28,15 @@ public class MazifyActivityViewModel extends ViewModel {
     private String title;
     private MutableLiveData<List<Path>> pathLiveData;
     private List<ContourList> rigidSurfaces;
-    private float height;
-    private float width;
+    private float creatorHeight;
+    private float creatorWidth;
+    private PointMarker endPoint;
+    private PointMarker startPoint;
+    private float viewWidth;
+    private float viewHeight;
+    private float scale;
+    private float xoffset;
+    private float yoffset;
 
     public MazifyActivityViewModel() {
         pathLiveData = new MutableLiveData<>();
@@ -52,6 +64,7 @@ public class MazifyActivityViewModel extends ViewModel {
 
     public void setRigidSurfaces(List<ContourList> rigidSurfaces) {
         this.rigidSurfaces = rigidSurfaces;
+        pathLiveData.setValue(null);
     }
 
     public void saveMaze() {
@@ -60,14 +73,34 @@ public class MazifyActivityViewModel extends ViewModel {
         if (title != null) {
             maze.setTitle(title);
         }
-        maze.setHeight(height);
-        maze.setWidth(width);
+        maze.setStartPoint(Arrays.asList(
+                calculateOffset(startPoint.getmX(), xoffset),
+                calculateOffset(startPoint.getmY(), yoffset)));
+        maze.setEndPoint(Arrays.asList(endPoint.getmX(), endPoint.getmY()));
+        maze.setCreatorRadius(calculateOffset(startPoint.getRadius()));
+        maze.setCreatorHeight(creatorHeight);
+        maze.setCreatorWidth(creatorWidth);
+        maze.setWormholeCentres(generateWormholes());
         maze.setIsPublic(isPublic);
         if (rigidSurfaces != null) {
-            MazeRepository.addMaze(maze, rigidSurfaces);
+            MazeRepository.addMaze(maze, rigidSurfaces)
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(LOG_TAG, e.toString());
+                        }
+                    });
         } else {
             MazeRepository.addMaze(maze);
         }
+    }
+
+    private float calculateOffset(float radius) {
+        return radius / scale;
+    }
+
+    private float calculateOffset(float number, float offset) {
+        return (number - offset) / scale;
     }
 
     public LiveData<List<Path>> getPaths() {
@@ -82,20 +115,83 @@ public class MazifyActivityViewModel extends ViewModel {
         new Thread(runnable).start();
     }
 
-    public float getHeight() {
-        return height;
+    public void setStartPoint(PointMarker startPoint) {
+        this.startPoint = startPoint;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
+    public void setEndPoint(PointMarker endPoint) {
+        this.endPoint = endPoint;
     }
 
-    public float getWidth() {
-        return width;
+    public float getCreatorHeight() {
+        return creatorHeight;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
+    public void setCreatorHeight(float creatorHeight) {
+        this.creatorHeight = creatorHeight;
+    }
+
+    public float getCreatorWidth() {
+        return creatorWidth;
+    }
+
+    public void setCreatorWidth(float creatorWidth) {
+        this.creatorWidth = creatorWidth;
+    }
+
+    public float getViewWidth() {
+        return viewWidth;
+    }
+
+    public void setViewWidth(float viewWidth) {
+        this.viewWidth = viewWidth;
+    }
+
+    public float getViewHeight() {
+        return viewHeight;
+    }
+
+    public void setViewHeight(float viewHeight) {
+        this.viewHeight = viewHeight;
+    }
+
+//    public void setParams(float height, float width) {
+//        this.viewHeight = height;
+//        this.viewWidth = width;
+//    }
+
+    public List<PointF> generateWormholes() {
+        List<Path> paths = pathLiveData.getValue();
+        Path start = new Path();
+        Path end = new Path();
+        start.addCircle(
+                startPoint.getmX(),
+                startPoint.getmY(),
+                startPoint.getRadius(),
+                Path.Direction.CW);
+        end.addCircle(
+                endPoint.getmX(),
+                endPoint.getmY(),
+                startPoint.getRadius(),
+                Path.Direction.CW
+        );
+        paths.add(start);
+        paths.add(end);
+        List<PointF> viewWormholes = new WormholePointsGenerator(
+                paths,
+                viewWidth,
+                viewHeight,
+                startPoint.getRadius())
+                .generate(8);
+        Log.d(LOG_TAG, "Smaller: " + viewWormholes.toString());
+        for (PointF wormhole : viewWormholes) {
+            wormhole.set(
+                    calculateOffset(wormhole.x, xoffset),
+                    calculateOffset(wormhole.y, yoffset)
+            );
+        }
+        Log.d(LOG_TAG, "Bigger: " + viewWormholes.toString());
+        return viewWormholes;
     }
 
     class PathGeneratorRunnable implements Runnable {
@@ -129,3 +225,34 @@ public class MazifyActivityViewModel extends ViewModel {
         }
     }
 }
+
+/*
+
+List<PointF> polyPoints = surface.getContourList();
+                Path wallPath = new Path();
+                wallPath.moveTo(polyPoints.get(0).x * scale + xoffset, polyPoints.get(0).y * scale + yoffset);
+                for (int j = 0; j < polyPoints.size(); j++) {
+                    PointF p = polyPoints.get(j);
+                    wallPath.lineTo(p.x * scale + xoffset, p.y * scale + yoffset);
+                }
+                wallPath.lineTo(polyPoints.get(0).x * scale + xoffset, polyPoints.get(0).y * scale + yoffset);
+                wallPath.close();
+                paths.add(wallPath);
+            }
+
+
+final ArrayList<Path> paths = new ArrayList<>();
+            for (ContourList surface : rigidSurfaces) {
+                List<PointF> polyPoints = surface.getContourList();
+                Path wallPath = new Path();
+                wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
+                for (int j = 1; j < polyPoints.size(); j++) {
+                    PointF p = polyPoints.get(j);
+                    wallPath.lineTo(p.x, p.y);
+                }
+                wallPath.close();
+                paths.add(wallPath);
+            }
+            pathLiveData.postValue(paths);
+        }
+ */

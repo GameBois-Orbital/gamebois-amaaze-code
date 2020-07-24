@@ -14,12 +14,12 @@ public class WormholePointsGenerator {
 
     private List<Path> pathList;
     private float screen_width, screen_height;
-    private int radius;
+    private float radius;
     private Random rand;
     ArrayList<PointF> wormholePoints;
     ArrayList<Path> wormholePaths;
 
-    WormholePointsGenerator(List<Path> pathList, float screen_width, float screen_height, int radius) {
+    public WormholePointsGenerator(List<Path> pathList, float screen_width, float screen_height, float radius) {
         this.pathList = pathList;
         this.screen_width = screen_width;
         this.screen_height = screen_height;

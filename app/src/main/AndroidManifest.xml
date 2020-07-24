@@ -18,17 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".view.ViewMazeActivity"
-            android:label="@string/view_maze_title"
-            android:parentActivityName=".view.MainActivity" />
-        <activity android:name=".view.GameActivity"></activity>
-        <activity
-            android:name=".view.createmaze.MazifyActivity"
-            android:label="@string/activity_camera_capture_name"
-            android:parentActivityName=".view.MainActivity"
-            android:screenOrientation="sensorLandscape"></activity>
-
+        <activity android:name=".view.EndGameActivity"></activity>
         <activity
             android:name=".view.MainActivity"
             android:launchMode="singleInstance">
@@ -38,6 +28,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.ViewMazeActivity"
+            android:label="@string/view_maze_title"
+            android:parentActivityName=".view.MainActivity" />
+        <activity android:name=".view.GameActivity" />
+        <activity
+            android:name=".view.createmaze.MazifyActivity"
+            android:label="@string/activity_camera_capture_name"
+            android:parentActivityName=".view.MainActivity"
+            android:screenOrientation="sensorLandscape" />
     </application>
 
 </manifest>

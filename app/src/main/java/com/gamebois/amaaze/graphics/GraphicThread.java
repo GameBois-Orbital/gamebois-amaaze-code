@@ -138,7 +138,6 @@ public class GraphicThread extends Thread {
             Thread.sleep(refresh_rate - 5); // Wait some time till I need to display again
         } catch (
                 InterruptedException e) {
-            assert e != null;
             e.printStackTrace();
         }
     }

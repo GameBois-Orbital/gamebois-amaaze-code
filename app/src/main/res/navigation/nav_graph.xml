@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/setBallFragment"
-        android:name="com.gamebois.amaaze.view.createmaze.SetBallFragment"
+        android:name="com.gamebois.amaaze.view.createmaze.SetStartFragment"
         android:label="fragment_set_ball"
         tools:layout="@layout/fragment_set_ball">
         <action

@@ -56,7 +56,7 @@ public class GameActivity extends AppCompatActivity {
     private float pitch = 0.0f;
     private float roll = 0.0f;
 
-    String ID;
+    private String ID;
 
     float layoutWidth, layoutHeight;
 
@@ -103,8 +103,8 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle b = getIntent().getExtras();
         ID = getIntent().getStringExtra(ViewMazeFragment.MAZE_ID_TAG);
-
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
         ballPoints.add(new PointF(700, 700));
@@ -201,8 +201,8 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public Task<QuerySnapshot> then(@NonNull Task<DocumentSnapshot> task) throws Exception {
                 Maze m = task.getResult().toObject(Maze.class);
-                gs.setCreatorHeight(m.getHeight());
-                gs.setCreatorWidth(m.getWidth());
+                gs.setCreatorHeight(m.getCreatorHeight());
+                gs.setCreatorWidth(m.getCreatorWidth());
                 return maze.collection("contours")
                         .get();
             }

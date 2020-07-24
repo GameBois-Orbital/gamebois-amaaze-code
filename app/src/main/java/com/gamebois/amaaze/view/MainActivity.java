@@ -16,6 +16,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.view.createmaze.MazifyActivity;
 import com.gamebois.amaaze.viewmodel.MainActivityViewModel;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
@@ -51,12 +52,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSignIn() {
         //Enables sign in through email and Google
+        AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder()
+                .setSignInOptions(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .build();
+
         Intent signInIntent = AuthUI.getInstance().createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
                         new AuthUI.IdpConfig.EmailBuilder().build(),
-                        new AuthUI.IdpConfig.GoogleBuilder().build()
+                        googleIdp
                 ))
-                .setIsSmartLockEnabled(false)
+                .setIsSmartLockEnabled(true)
                 .build();
         startActivityForResult(signInIntent, RC_SIGN_IN);
         mViewModel.setIsSigningIn(true);
