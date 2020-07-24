@@ -1,5 +1,7 @@
 package com.gamebois.amaaze.model;
 
+import android.graphics.PointF;
+
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -17,12 +19,13 @@ public class Maze {
     private String imageURL;
     private String userID;
     private boolean isPublic;
-    private long numLikes;
+    private long numLikes = 0;
     private float creatorHeight;
     private float creatorWidth;
     private List<Float> startPoint = new ArrayList<>(2);
     private List<Float> endPoint = new ArrayList<>(2);
     private float creatorRadius;
+    private List<PointF> wormholeCentres;
 
     public Maze() {
     }
@@ -117,5 +120,13 @@ public class Maze {
 
     public void setEndPoint(List<Float> endPoint) {
         this.endPoint = endPoint;
+    }
+
+    public List<PointF> getWormholeCentres() {
+        return wormholeCentres;
+    }
+
+    public void setWormholeCentres(List<PointF> wormholeCentres) {
+        this.wormholeCentres = wormholeCentres;
     }
 }

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -35,6 +36,8 @@ public class MazeRepository {
     }
 
     public static Task<Void> addMaze(Maze m) {
+        m.setUserID(FirebaseAuth.getInstance()
+                .getUid());
         return FirebaseFirestore.getInstance()
                 .collection("mazes")
                 .document(m.getUniqueID())
@@ -44,6 +47,8 @@ public class MazeRepository {
     public static Task<Void> addMaze(Maze m, List<ContourList> rigidSurfaces) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         WriteBatch batch = firestore.batch();
+        m.setUserID(FirebaseAuth.getInstance()
+                .getUid());
         DocumentReference newMaze = firestore
                 .collection("mazes")
                 .document(m.getUniqueID());

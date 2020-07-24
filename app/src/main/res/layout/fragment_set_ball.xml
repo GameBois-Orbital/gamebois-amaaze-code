@@ -8,41 +8,45 @@
     android:orientation="vertical"
     tools:context=".view.createmaze.SetStartFragment">
 
-    <LinearLayout
-        android:id="@+id/large_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/set_ball_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/set_start_point"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/set_ball_instructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/set_start_point"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    <com.google.android.material.slider.Slider
+        android:id="@+id/size_picker"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:padding="8dp"
+        android:value="50"
+        android:valueFrom="0"
+        android:valueTo="100"
+        app:layout_constraintBottom_toBottomOf="@+id/button_to_details"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/size_picker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:value="50.0"
-            android:valueFrom="0.0"
-            android:valueTo="100.0" />
 
-        <com.gamebois.amaaze.view.createmaze.DrawMazeView
-            android:id="@+id/draw_maze_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-    </LinearLayout>
+    <com.gamebois.amaaze.view.createmaze.DrawMazeView
+        android:id="@+id/draw_maze_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/button_to_details"

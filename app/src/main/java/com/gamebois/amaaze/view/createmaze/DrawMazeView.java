@@ -36,7 +36,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     private boolean mRunning;
     private Context mContext;
     private static final int ANIMATION_DELAY = 1000;
-    private Bitmap mExtraContourBitmap;
+    public Bitmap mExtraContourBitmap;
     private int mViewWidth;
     private int mViewHeight;
     private PointMarker focusedPoint;

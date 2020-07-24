@@ -102,8 +102,8 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle b = getIntent().getExtras();
         ID = getIntent().getStringExtra(ViewMazeFragment.MAZE_ID_TAG);
-
         ballPoints.add(new PointF(500, 500));
         ballPoints.add(new PointF(5, 5));
         ballPoints.add(new PointF(700, 700));

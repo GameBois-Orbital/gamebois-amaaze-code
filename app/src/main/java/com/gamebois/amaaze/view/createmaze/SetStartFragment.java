@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -50,38 +49,37 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_set_ball, container, false);
-        drawMazeView = view.findViewById(R.id.draw_maze_view);
         nextButton = view.findViewById(R.id.button_to_details);
+        drawMazeView = view.findViewById(R.id.draw_maze_view);
         backButton = view.findViewById(R.id.back_to_start);
         sizeSlider = view.findViewById(R.id.size_picker);
         instructionsText = view.findViewById(R.id.set_ball_instructions);
         initialiseSlider();
-        getWidthAndHeight(drawMazeView);
         nextButton.setOnClickListener(this);
         backButton.setOnClickListener(this);
         return view;
     }
 
-    private void getWidthAndHeight(final DrawMazeView drawMazeView) {
-        final ViewTreeObserver obs = drawMazeView.getViewTreeObserver();
-
-        obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                height = drawMazeView.getHeight();
-                width = drawMazeView.getWidth();
-
-                drawMazeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
-    }
+//    private void getWidthAndHeight(final DrawMazeView drawMazeView) {
+//        final ViewTreeObserver obs = drawMazeView.getViewTreeObserver();
+//
+//        obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                height = drawMazeView.getHeight();
+//                width = drawMazeView.getWidth();
+//                mViewModel.setParams(height, width);
+//                drawMazeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//            }
+//        });
+//    }
 
     private void initialiseSlider() {
         sizeSlider.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
                 if (fromUser) {
-                    drawMazeView.setPointsRadius(value);
+                    drawMazeView.setPointsRadius((float) value);
                 }
             }
         });
@@ -91,8 +89,6 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(requireActivity()).get(MazifyActivityViewModel.class);
-        mViewModel.setViewHeight(height);
-        mViewModel.setViewWidth(width);
         mViewModel.getPaths().observe(getViewLifecycleOwner(), new Observer<List<Path>>() {
             @Override
             public void onChanged(List<Path> pathList) {
@@ -150,8 +146,10 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
 
     private void navigateToNextScreen() {
         canNavigate = false;
+//        Uri output = WorkerUtils.writeBitmapToFile(getActivity(), output);
         mViewModel.setStartPoint(drawMazeView.startPoint);
         mViewModel.setEndPoint(drawMazeView.endPoint);
+        mViewModel.generateWormholes();
     }
 
     private void initialiseBackButton() {

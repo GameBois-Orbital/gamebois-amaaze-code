@@ -28,6 +28,11 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
 
     public static final String MAZE_ID_TAG = "Maze ID Tag";
     private static final String ARG_PUBLIC = "public-bool";
+    public static final String MAZE_START_POINT = "Maze Start Point";
+    public static final String MAZE_END_POINT = "Maze End Point";
+    public static final String MAZE_RADIUS = "Maze Radius";
+    public static final String CREATOR_HEIGHT = "Maze Height";
+    public static final String CREATOR_WIDTH = "Maze Width";
     private boolean mIsPublic = false;
     private ViewMazesAdapter mAdapter;
     private MazeViewModel mViewModel;
@@ -127,9 +132,16 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
 
 
     @Override
-    public void onPlayClick(String mazeID) {
+    public void onPlayClick(String mazeID, Float[] startPoint, Float[] endPoint,
+                            float radius, float creatorHeight, float creatorWidth) {
         Intent intent = new Intent(getActivity(), GameActivity.class);
-        intent.putExtra(MAZE_ID_TAG, mazeID);
+        Bundle b = new Bundle();
+        b.putString(MAZE_ID_TAG, mazeID);
+        b.putFloat(MAZE_RADIUS, radius);
+        b.putFloat(CREATOR_HEIGHT, creatorHeight);
+        b.putFloat(CREATOR_WIDTH, creatorWidth);
+        intent.putExtra(MAZE_START_POINT, startPoint);
+        intent.putExtra(MAZE_END_POINT, endPoint);
         startActivity(intent);
     }
 }
