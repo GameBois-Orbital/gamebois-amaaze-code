@@ -17,8 +17,8 @@ import java.util.List;
 public class GraphicThread extends Thread {
     private String LOG_TAG = GameActivity.class.getSimpleName();
     float BALL_RADIUS = 5;
-    float END_RADIUS = 15;
-    float WORMHOLE_RADIUS = 40;
+    float END_RADIUS;
+    float WORMHOLE_RADIUS;
 
     private boolean running = false;
     private final int refresh_rate = 6;
@@ -44,6 +44,9 @@ public class GraphicThread extends Thread {
         this.gs = gs;
         box2d = new Createbox2d();// create box2d world
         box2d.listenForCollisions(context);
+        scale = Math.min(screen_width / creatorWidth, screen_height / creatorHeight);
+        xoffset = (float) ((screen_width - creatorWidth * scale) / 2.0);
+        yoffset = (float) ((screen_height - creatorHeight * scale) / 2.0);
     }
 
     public void setScreenSize(float screen_width, float screen_height) {
@@ -162,9 +165,6 @@ public class GraphicThread extends Thread {
     private void setMazes(List<ContourList> mazeArrayList) {
 
         if (mazeArrayList != null) {
-            scale = Math.min(screen_width / creatorWidth, screen_height / creatorHeight);
-            xoffset = (float) ((screen_width - creatorWidth * scale) / 2.0);
-            yoffset = (float) ((screen_height - creatorHeight * scale) / 2.0);
             Log.d(LOG_TAG, "Hello" + creatorWidth + " " + creatorHeight);
             for (int i = 0; i < mazeArrayList.size(); i++) {
                 mazes.add(new Maze2D(mazeArrayList.get(i).getContourList(), scale, xoffset, yoffset, box2d)); //add maze points to maze for creating box2d body
@@ -177,7 +177,7 @@ public class GraphicThread extends Thread {
         ArrayList<PointF> wormholesArrayList = gs.getWormholesArrayList();
         if (wormholesArrayList != null) {
             for (int i = 0; i < wormholesArrayList.size(); i++) {
-                wormholes.add(new Wormhole2D(i, wormholesArrayList.get(i).x, wormholesArrayList.get(i).y, WORMHOLE_RADIUS, BALL_RADIUS, box2d));
+                wormholes.add(new Wormhole2D(i, wormholesArrayList.get(i).x * scale + xoffset, wormholesArrayList.get(i).y *scale + yoffset, END_RADIUS, BALL_RADIUS, box2d));
             }
         }
     }
@@ -185,8 +185,9 @@ public class GraphicThread extends Thread {
     private void setBallAndEnd() {
         ArrayList<PointF> startAndEndArrayList = gs.getBallArrayList();
         if (startAndEndArrayList != null) {
-            ball = new Ball2D(startAndEndArrayList.get(0).x, startAndEndArrayList.get(0).y, BALL_RADIUS, box2d);
-            endHole = new End2D(startAndEndArrayList.get(2).x, startAndEndArrayList.get(2).y, END_RADIUS, BALL_RADIUS, box2d);
+            END_RADIUS = startAndEndArrayList.get(2).x;
+            ball = new Ball2D(startAndEndArrayList.get(0).x * scale + xoffset, startAndEndArrayList.get(0).y * scale + yoffset, BALL_RADIUS, box2d);
+            endHole = new End2D(startAndEndArrayList.get(1).x * scale + xoffset, startAndEndArrayList.get(1).y * scale + yoffset, END_RADIUS, BALL_RADIUS, box2d);
         }
     }
 

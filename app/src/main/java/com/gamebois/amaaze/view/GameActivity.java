@@ -99,6 +99,7 @@ public class GameActivity extends AppCompatActivity {
     private float radius;
     private float height;
     private float width;
+    float scale, offsetx, offsety;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,14 +111,13 @@ public class GameActivity extends AppCompatActivity {
         radius = b.getFloat(ViewMazeFragment.MAZE_RADIUS);
         height = b.getFloat(ViewMazeFragment.CREATOR_HEIGHT);
         width = b.getFloat(ViewMazeFragment.CREATOR_WIDTH);
+
+
         wormholes = b.getParcelableArrayList(ViewMazeFragment.MAZE_WORMHOLE);
-        ballPoints.add(new PointF(500, 500));
-        ballPoints.add(new PointF(5, 5));
-        ballPoints.add(new PointF(700, 700));
-        ballPoints.add(new PointF(15, 15));
-        wormholes.add(new PointF(1063, 70));
-        wormholes.add(new PointF(926, 179));
-        wormholes.add(new PointF(550, 840));
+
+        ballPoints.add(new PointF(startPoint.get(0), startPoint.get(1)));
+        ballPoints.add(new PointF(endPoint.get(0), endPoint.get(1)));
+        ballPoints.add(new PointF(radius, radius));
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -135,6 +135,8 @@ public class GameActivity extends AppCompatActivity {
         gs.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         gs.setBallArrayList(ballPoints);//FEED HERE DATA);
         gs.setWormholesArrayList(wormholes);
+        gs.setCreatorWidth(width);
+        gs.setCreatorHeight(height);
         setRigidSurfaces(ID);
         layout.addView(gs);
         gs.getGameOver().observe(this, new Observer<Boolean>() {
