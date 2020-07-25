@@ -76,9 +76,11 @@ public class MazeRepository {
 
     }
 
-    public static Task<Void> deleteMaze(Maze m) {
-        return FirebaseFirestore.getInstance()
-                .collection("mazes").document(m.getUniqueID()).delete();
+    public Task<Void> deleteMaze(Maze m) {
+        return firestore
+                .collection("mazes")
+                .document(m.getUniqueID())
+                .delete();
     }
 
     public static void likeMaze(Maze m) {
@@ -107,12 +109,15 @@ public class MazeRepository {
                             switch (change.getType()) {
                                 case ADDED:
                                     onDocumentAdded(change);
+                                    Log.d(TAG, "New Msg: " + change.getDocument().toObject(Maze.class));
                                     break;
                                 case MODIFIED:
                                     onDocumentModified(change);
+                                    Log.d(TAG, "Modified Msg: " + change.getDocument().toObject(Maze.class));
                                     break;
                                 case REMOVED:
                                     onDocumentRemoved(change);
+                                    Log.d(TAG, "Deleted Msg: " + change.getDocument().toObject(Maze.class));
                                     break;
                             }
                         }

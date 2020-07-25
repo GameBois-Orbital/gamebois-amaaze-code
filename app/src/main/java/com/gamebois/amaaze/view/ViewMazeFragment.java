@@ -129,7 +129,7 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
         mAdapter = new ViewMazesAdapter(activityContext, this);
         view.setAdapter(mAdapter);
         view.setHasFixedSize(true);
-        view.setItemViewCacheSize(15);
+//        view.setItemViewCacheSize(15);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(view);
