@@ -202,7 +202,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
-        Canvas canvas;
+//        Canvas canvas;
         while (mRunning) {
             if (mSurfaceHolder.getSurface().isValid()) {
                 float startX = startPoint.getmX();
@@ -210,7 +210,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
                 float radius = startPoint.getRadius();
                 Paint startPaint = startPoint.getPaint();
                 try {
-                    canvas = mSurfaceHolder.lockCanvas();
+                    Canvas canvas = mSurfaceHolder.lockCanvas();
                     canvas.save();
                     canvas.drawColor(WHITE);
                     initialisePaths(canvas);

@@ -17,6 +17,7 @@ public class Wormhole2D {
 
     private int index;
     private float x,y,radius, ballRadius;
+    private float FRICTION = 200;
     private Createbox2d box2d;
     private Body b1;
 
@@ -38,6 +39,7 @@ public class Wormhole2D {
 
         FixtureDef fd = new FixtureDef(); // Body properties
         fd.shape = cs;
+        fd.friction = FRICTION;
 
         b1.createFixture(fd); //add properties to body
         b1.setUserData(index);
