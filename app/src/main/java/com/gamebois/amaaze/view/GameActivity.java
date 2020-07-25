@@ -186,7 +186,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        launchResultActivity();
+      //  launchResultActivity();
         super.onDestroy();
         sensorManager.unregisterListener(sensorEventListener);
         if(gs!=null) {

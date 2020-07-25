@@ -149,7 +149,7 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
 //        Uri output = WorkerUtils.writeBitmapToFile(getActivity(), output);
         mViewModel.setStartPoint(drawMazeView.startPoint);
         mViewModel.setEndPoint(drawMazeView.endPoint);
-        mViewModel.generateWormholes();
+//        mViewModel.generateWormholes();
     }
 
     private void initialiseBackButton() {

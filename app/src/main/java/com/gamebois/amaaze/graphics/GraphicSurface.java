@@ -65,6 +65,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         stopGraphics();
+        Log.d(LOG_TAG, "GS destroy surface");
     }
 
 
