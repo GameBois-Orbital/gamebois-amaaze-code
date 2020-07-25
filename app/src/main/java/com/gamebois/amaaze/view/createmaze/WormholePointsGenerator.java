@@ -30,7 +30,10 @@ public class WormholePointsGenerator {
     }
 
     public ArrayList<PointF> generate(int numOfWormholes) {
-        float wormholeRealmLength = Math.min(screen_width, screen_height) * (float) 0.3;     // realm  = where 68.2% of points land
+        float wormholeRealmLength = Math.min(screen_width, screen_height);     // realm  = where 68.2% of points land
+        if (BuildConfig.DEBUG && wormholeRealmLength != screen_height) {
+            throw new AssertionError("Assertion failed");
+        }
         float centerOfScreen_x = screen_width / (float) 2;
         float centerOfScreen_y = screen_height / (float) 2;
 
@@ -38,9 +41,9 @@ public class WormholePointsGenerator {
             float rand_x = (float) rand.nextGaussian();
             float rand_y = (float) rand.nextGaussian();
 
-            float point_x = centerOfScreen_x + (rand_x * wormholeRealmLength);
-            float point_y = centerOfScreen_y + (rand_y * wormholeRealmLength);
-
+            float point_x = centerOfScreen_x + (rand_x * centerOfScreen_x);
+            float point_y = centerOfScreen_y + (rand_y * centerOfScreen_y);
+            
             if ((point_x + radius) > screen_width || (point_x - radius) < 0 || (point_y + radius) > screen_height || (point_y - radius) < 0) {
                 continue;
             }
