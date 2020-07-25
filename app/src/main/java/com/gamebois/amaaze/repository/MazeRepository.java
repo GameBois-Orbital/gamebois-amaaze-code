@@ -109,12 +109,15 @@ public class MazeRepository {
                             switch (change.getType()) {
                                 case ADDED:
                                     onDocumentAdded(change);
+                                    Log.d(TAG, "New Msg: " + change.getDocument().toObject(Maze.class));
                                     break;
                                 case MODIFIED:
                                     onDocumentModified(change);
+                                    Log.d(TAG, "Modified Msg: " + change.getDocument().toObject(Maze.class));
                                     break;
                                 case REMOVED:
                                     onDocumentRemoved(change);
+                                    Log.d(TAG, "Deleted Msg: " + change.getDocument().toObject(Maze.class));
                                     break;
                             }
                         }
