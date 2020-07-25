@@ -2,19 +2,18 @@ package com.gamebois.amaaze.viewmodel;
 
 import com.gamebois.amaaze.repository.MazeRepository;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class PrivateMazeViewModel extends MazeViewModel {
 
     private FirebaseFirestore mFirestore;
-    private FirebaseUser mUser;
+    private String userID;
     private MazeRepository mazeRepository;
 
     public PrivateMazeViewModel() {
         mFirestore = FirebaseFirestore.getInstance();
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        userID = FirebaseAuth.getInstance().getUid();
     }
 //getInstance
 //    public void setInterface (MazeRepository.OnFirestoreTaskComplete onFirestoreTaskComplete) {
@@ -24,7 +23,7 @@ public class PrivateMazeViewModel extends MazeViewModel {
     @Override
     public Query getQuery() {
         return mFirestore.collection("mazes")
-                .whereEqualTo("userID", mUser.getUid())
+                .whereEqualTo("userID", userID)
                 .orderBy("numLikes", Query.Direction.DESCENDING);
     }
 }
