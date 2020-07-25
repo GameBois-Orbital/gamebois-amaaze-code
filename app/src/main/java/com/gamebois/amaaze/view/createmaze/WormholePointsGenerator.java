@@ -43,8 +43,7 @@ public class WormholePointsGenerator {
 
             float point_x = centerOfScreen_x + (rand_x * centerOfScreen_x);
             float point_y = centerOfScreen_y + (rand_y * centerOfScreen_y);
-
-
+            
             if ((point_x + radius) > screen_width || (point_x - radius) < 0 || (point_y + radius) > screen_height || (point_y - radius) < 0) {
                 continue;
             }
