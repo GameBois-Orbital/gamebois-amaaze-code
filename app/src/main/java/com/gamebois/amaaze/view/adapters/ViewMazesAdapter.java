@@ -101,8 +101,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
 
     }
 
-    public void deleteMaze(int position) {
-        MazeRepository.deleteMaze(mazeList.get(position))
+    public void deleteMaze(final int position) {
+        mRepository.deleteMaze(mazeList.get(position))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

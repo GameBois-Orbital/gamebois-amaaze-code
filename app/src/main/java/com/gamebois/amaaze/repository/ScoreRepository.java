@@ -5,8 +5,11 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.gamebois.amaaze.model.Score;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -14,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 public class ScoreRepository {
 
@@ -27,15 +31,37 @@ public class ScoreRepository {
         this.firestoreScoreTaskComplete = firestoreTaskComplete;
     }
 
-    public static void addScore(String timing, String mazeID) {
+    private static Score addScore(String timing, FirebaseUser user) {
         Score score = new Score();
-        score.setUserID(FirebaseAuth.getInstance().getUid());
+        score.setUserID(user.getUid());
+        score.setUsername(user.getDisplayName());
+        score.setProfileURL(user.getPhotoUrl().toString());
         score.setTiming(timing);
-        FirebaseFirestore.getInstance()
+        return score;
+    }
+
+    public static void addScoreIfHighscore(final String timing, String mazeID) {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final DocumentReference scoreRef = FirebaseFirestore.getInstance()
                 .collection("scores")
                 .document(mazeID)
                 .collection("values")
-                .add(score);
+                .document(user.getUid());
+        scoreRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            Score oldScore = documentSnapshot.toObject(Score.class);
+                            if (oldScore.getTiming().compareTo(timing) < 0) {
+                                oldScore.setTiming(timing);
+                                scoreRef.set(oldScore, SetOptions.mergeFields("timing"));
+                            }
+                        } else {
+                            scoreRef.set(addScore(timing, user));
+                        }
+                    }
+                });
     }
 
     public void setQuery(Query mQuery) {

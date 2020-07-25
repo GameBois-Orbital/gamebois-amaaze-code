@@ -9,13 +9,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.viewmodel.MazifyActivityViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class AddInfoFragment extends Fragment implements View.OnClickListener {
@@ -23,6 +27,7 @@ public class AddInfoFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = AddInfoFragment.class.getSimpleName();
     private Button saveButton;
     private SwitchMaterial publicToggle;
+    private View loadingScreen;
     private MazifyActivityViewModel mViewModel;
     private TextWatcher createMazeTextWatcher = new TextWatcher() {
         @Override
@@ -59,8 +64,9 @@ public class AddInfoFragment extends Fragment implements View.OnClickListener {
         saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(this);
         EditText titleEdit = view.findViewById(R.id.maze_title_edit);
+        loadingScreen = view.findViewById(R.id.loading_screen);
         titleEdit.addTextChangedListener(createMazeTextWatcher);
-        publicToggle = (SwitchMaterial) view.findViewById(R.id.public_switch);
+        publicToggle = view.findViewById(R.id.public_switch);
         initPublicToggle();
         return view;
     }
@@ -88,8 +94,22 @@ public class AddInfoFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save_button:
-                mViewModel.saveMaze();
-                getActivity().finish();
+                loadingScreen.setVisibility(View.VISIBLE);
+                saveButton.setEnabled(false);
+                mViewModel.saveMaze()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(requireContext(), "Maze saved", Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Maze failed to save. Check connection.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
         }
     }
 }

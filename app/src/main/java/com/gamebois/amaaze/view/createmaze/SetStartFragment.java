@@ -79,7 +79,7 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
                 if (fromUser) {
-                    drawMazeView.setPointsRadius((float) value);
+                    drawMazeView.setPointsRadius(value);
                 }
             }
         });
@@ -149,7 +149,6 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
 //        Uri output = WorkerUtils.writeBitmapToFile(getActivity(), output);
         mViewModel.setStartPoint(drawMazeView.startPoint);
         mViewModel.setEndPoint(drawMazeView.endPoint);
-        mViewModel.generateWormholes();
     }
 
     private void initialiseBackButton() {

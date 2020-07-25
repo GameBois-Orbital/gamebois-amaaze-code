@@ -4,7 +4,6 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,7 +13,7 @@ import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
 import com.gamebois.amaaze.repository.MazeRepository;
 import com.gamebois.amaaze.view.createmaze.WormholePointsGenerator;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,10 +22,11 @@ import java.util.List;
 public class MazifyActivityViewModel extends ViewModel {
 
     public static final String LOG_TAG = MazifyActivityViewModel.class.getSimpleName();
-    private boolean isPublic;
+    private boolean isPublic = true;
     private Maze maze;
     private String title;
     private MutableLiveData<List<Path>> pathLiveData;
+    private ArrayList<PointF> wormholes;
     private List<ContourList> rigidSurfaces;
     private float creatorHeight;
     private float creatorWidth;
@@ -62,7 +62,7 @@ public class MazifyActivityViewModel extends ViewModel {
         pathLiveData.setValue(null);
     }
 
-    public void saveMaze() {
+    public Task<Void> saveMaze() {
         maze = new Maze();
         maze.setUniqueID();
         if (title != null) {
@@ -78,15 +78,9 @@ public class MazifyActivityViewModel extends ViewModel {
         maze.setWormholeCentres(generateWormholes());
         maze.setIsPublic(isPublic);
         if (rigidSurfaces != null) {
-            MazeRepository.addMaze(maze, rigidSurfaces)
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(LOG_TAG, e.toString());
-                        }
-                    });
+            return MazeRepository.addMaze(maze, rigidSurfaces);
         } else {
-            MazeRepository.addMaze(maze);
+            return MazeRepository.addMaze(maze);
         }
     }
 
@@ -144,13 +138,12 @@ public class MazifyActivityViewModel extends ViewModel {
         );
         paths.add(start);
         paths.add(end);
-        ArrayList<PointF> viewWormholes = new WormholePointsGenerator(
+        return new WormholePointsGenerator(
                 paths,
                 creatorWidth,
                 creatorHeight,
                 startPoint.getRadius())
                 .generate(8);
-        return viewWormholes;
     }
 
     class PathGeneratorRunnable implements Runnable {

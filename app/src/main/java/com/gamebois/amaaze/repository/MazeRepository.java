@@ -76,9 +76,11 @@ public class MazeRepository {
 
     }
 
-    public static Task<Void> deleteMaze(Maze m) {
-        return FirebaseFirestore.getInstance()
-                .collection("mazes").document(m.getUniqueID()).delete();
+    public Task<Void> deleteMaze(Maze m) {
+        return firestore
+                .collection("mazes")
+                .document(m.getUniqueID())
+                .delete();
     }
 
     public static void likeMaze(Maze m) {
