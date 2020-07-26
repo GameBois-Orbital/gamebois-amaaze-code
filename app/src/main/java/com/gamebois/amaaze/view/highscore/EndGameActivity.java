@@ -24,7 +24,7 @@ public class EndGameActivity extends AppCompatActivity {
         ScoreViewModel mViewModel = new ViewModelProvider(this).get(ScoreViewModel.class);
         mViewModel.setTiming(timing);
         mViewModel.setDocumentID(mazeID);
-        Toolbar mToolbar = findViewById(R.id.view_toolbar);
+        Toolbar mToolbar = findViewById(R.id.score_toolbar);
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);

@@ -71,9 +71,9 @@ public class ViewMazeActivity extends AppCompatActivity {
 
         @Override
         public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-            if (position == 0) {
+            if (position == 1) {
                 tab.setText(R.string.title_private_tab);
-            } else if (position == 1) {
+            } else if (position == 0) {
                 tab.setText(R.string.title_public_tab);
             }
         }
@@ -87,7 +87,7 @@ public class ViewMazeActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            if (position == 0) {
+            if (position == 1) {
                 return ViewMazeFragment.newInstance(false);
             } else {
                 return ViewMazeFragment.newInstance(true);
