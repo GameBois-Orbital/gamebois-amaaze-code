@@ -1,5 +1,6 @@
 package com.gamebois.amaaze.viewmodel;
 
+import android.graphics.Bitmap;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.Log;
@@ -32,9 +33,12 @@ public class MazifyActivityViewModel extends ViewModel {
     private float creatorWidth;
     private PointMarker endPoint;
     private PointMarker startPoint;
+    private Bitmap mExtraContourBitmap;
 
     public MazifyActivityViewModel() {
         pathLiveData = new MutableLiveData<>();
+        maze = new Maze();
+        maze.setUniqueID();
     }
 
     public boolean isPublic() {
@@ -63,8 +67,6 @@ public class MazifyActivityViewModel extends ViewModel {
     }
 
     public Task<Void> saveMaze() {
-        maze = new Maze();
-        maze.setUniqueID();
         if (title != null) {
             maze.setTitle(title);
         }
@@ -146,6 +148,12 @@ public class MazifyActivityViewModel extends ViewModel {
                 .generate(8);
     }
 
+    public void generateImage(Bitmap mExtraContourBitmap) {
+        this.mExtraContourBitmap = mExtraContourBitmap;
+        ImageGeneratorRunnable runnable = new ImageGeneratorRunnable();
+        new Thread(runnable).start();
+    }
+
     class PathGeneratorRunnable implements Runnable {
 
         public PathGeneratorRunnable() {
@@ -174,6 +182,21 @@ public class MazifyActivityViewModel extends ViewModel {
                 paths.add(wallPath);
             }
             pathLiveData.postValue(paths);
+        }
+    }
+
+    class ImageGeneratorRunnable implements Runnable {
+
+        public ImageGeneratorRunnable() {
+        }
+
+        @Override
+        public void run() {
+            try {
+                MazeRepository.generateImage(mExtraContourBitmap, maze);
+            } catch (Throwable t) {
+                Log.d(LOG_TAG, "Error uploading image");
+            }
         }
     }
 }

@@ -53,7 +53,7 @@ public class ScoreRepository {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             Score oldScore = documentSnapshot.toObject(Score.class);
-                            if (oldScore.getTiming().compareTo(timing) < 0) {
+                            if (oldScore.getTiming().compareTo(timing) > 0) {
                                 oldScore.setTiming(timing);
                                 scoreRef.set(oldScore, SetOptions.mergeFields("timing"));
                             }

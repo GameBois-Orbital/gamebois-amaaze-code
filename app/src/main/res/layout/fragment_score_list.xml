@@ -6,8 +6,7 @@
     android:name="com.gamebois.amaaze.view.ScoreFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_margin="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".view.ScoreFragment"
-    tools:listitem="@layout/fragment_item" />
+    tools:context=".view.highscore.ScoreFragment"
+    tools:listitem="@layout/fragment_score_item" />

@@ -20,4 +20,8 @@
     <string name="maze_title">Maze Title</string>
     <string name="set_start_point">Set Start Point!</string>
     <string name="set_end_point">Set End Point!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="timing_description">Great job! Your timing was:</string>
+    <string name="timing_content">00:00:00</string>
 </resources>

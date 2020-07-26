@@ -36,7 +36,9 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     private boolean mRunning;
     private Context mContext;
     private static final int ANIMATION_DELAY = 1000;
+    public Bitmap mContourBitmap;
     public Bitmap mExtraContourBitmap;
+    private Canvas mExtraCanvas;
     private int mViewWidth;
     private int mViewHeight;
     private PointMarker focusedPoint;
@@ -84,8 +86,10 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         this.mViewWidth = w;
         radius = (float) (w / 80.0);
         focusStartPoint();
+        mContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        mExtraCanvas = new Canvas();
         mExtraContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-
+        initialisePaths(mExtraCanvas, mExtraContourBitmap);
     }
 
     public void setPointsRadius(float radiusMultiplier) {
@@ -145,8 +149,9 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         invalidate();
     }
 
-    private void initialisePaths(Canvas canvas) {
-        canvas.drawBitmap(mExtraContourBitmap, 0, 0, null);
+    private void initialisePaths(Canvas canvas, Bitmap mContourBitmap) {
+        canvas.drawBitmap(mContourBitmap, 0, 0, null);
+        canvas.drawColor(WHITE);
         if (paths != null) {
             for (Path path : paths) {
                 canvas.drawPath(path, paint);
@@ -202,7 +207,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
-//        Canvas canvas;
+        Canvas canvas;
         while (mRunning) {
             if (mSurfaceHolder.getSurface().isValid()) {
                 float startX = startPoint.getmX();
@@ -210,10 +215,9 @@ public class DrawMazeView extends SurfaceView implements Runnable {
                 float radius = startPoint.getRadius();
                 Paint startPaint = startPoint.getPaint();
                 try {
-                    Canvas canvas = mSurfaceHolder.lockCanvas();
+                    canvas = mSurfaceHolder.lockCanvas();
                     canvas.save();
-                    canvas.drawColor(WHITE);
-                    initialisePaths(canvas);
+                    initialisePaths(canvas, mContourBitmap);
                     canvas.drawCircle(startX, startY, radius, startPaint);
                     if (endPoint != null) {
                         float endX = endPoint.getmX();

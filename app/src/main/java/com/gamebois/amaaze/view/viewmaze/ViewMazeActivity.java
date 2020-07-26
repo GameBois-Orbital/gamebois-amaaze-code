@@ -1,4 +1,4 @@
-package com.gamebois.amaaze.view;
+package com.gamebois.amaaze.view.viewmaze;
 
 import android.content.Intent;
 import android.os.Bundle;

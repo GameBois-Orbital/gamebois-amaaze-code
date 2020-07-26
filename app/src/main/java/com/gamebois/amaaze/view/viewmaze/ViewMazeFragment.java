@@ -1,4 +1,4 @@
-package com.gamebois.amaaze.view;
+package com.gamebois.amaaze.view.viewmaze;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gamebois.amaaze.R;
+import com.gamebois.amaaze.view.GameActivity;
 import com.gamebois.amaaze.view.adapters.ViewMazesAdapter;
 import com.gamebois.amaaze.viewmodel.MazeViewModel;
 import com.gamebois.amaaze.viewmodel.PrivateMazeViewModel;
@@ -129,11 +130,11 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
         mAdapter = new ViewMazesAdapter(activityContext, this);
         view.setAdapter(mAdapter);
         view.setHasFixedSize(true);
-//        view.setItemViewCacheSize(15);
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(view);
-
+        view.setItemViewCacheSize(15);
+        if (!mIsPublic) {
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+            itemTouchHelper.attachToRecyclerView(view);
+        }
     }
 
 

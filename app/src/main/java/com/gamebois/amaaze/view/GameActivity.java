@@ -1,5 +1,6 @@
 package com.gamebois.amaaze.view;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
@@ -18,6 +19,8 @@ import androidx.lifecycle.Observer;
 
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
+import com.gamebois.amaaze.view.highscore.EndGameActivity;
+import com.gamebois.amaaze.view.viewmaze.ViewMazeFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
+    public static final String TIME_TEXT = "Chronometer";
+    public static final String MAZE_ID = "MazeID";
     private String LOG_TAG = GameActivity.class.getSimpleName();
 
     FrameLayout layout;
@@ -169,7 +174,10 @@ public class GameActivity extends AppCompatActivity {
     private void launchResultActivity() {
         chronometer.stop();
         chronometerRunning = false;
-        Log.d(LOG_TAG, "launching Result Activity" + chronometer.getText());
+        Intent intent = new Intent(this, EndGameActivity.class);
+        intent.putExtra(TIME_TEXT, chronometer.getText());
+        intent.putExtra(MAZE_ID, ID);
+        startActivity(intent);
     }
 
     @Override

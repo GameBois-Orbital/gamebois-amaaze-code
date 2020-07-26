@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.firebase.ui.auth.AuthUI;
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.view.createmaze.MazifyActivity;
+import com.gamebois.amaaze.view.viewmaze.ViewMazeActivity;
 import com.gamebois.amaaze.viewmodel.MainActivityViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;

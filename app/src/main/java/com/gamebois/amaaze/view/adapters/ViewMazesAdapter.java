@@ -144,7 +144,7 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
             mazeTitle.setText(maze.getTitle());
             GlideApp.with(mazeImage.getContext())
                     .load(maze.getImageURL())
-                    .placeholder(new ColorDrawable(Color.BLACK))
+                    .placeholder(new ColorDrawable(Color.YELLOW))
                     .error(new ColorDrawable(Color.RED))
                     .into(mazeImage);
         }

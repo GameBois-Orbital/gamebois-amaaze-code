@@ -146,10 +146,10 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
 
     private void navigateToNextScreen() {
         canNavigate = false;
-//        Uri output = WorkerUtils.writeBitmapToFile(getActivity(), output);
+//        drawMazeView.pause();
         mViewModel.setStartPoint(drawMazeView.startPoint);
         mViewModel.setEndPoint(drawMazeView.endPoint);
-//        mViewModel.generateWormholes();
+        mViewModel.generateImage(drawMazeView.mExtraContourBitmap);
     }
 
     private void initialiseBackButton() {

@@ -18,7 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.EndGameActivity"></activity>
+        <activity
+            android:name=".view.highscore.EndGameActivity"
+            android:label="Scores"
+            android:parentActivityName=".view.MainActivity" />
         <activity
             android:name=".view.MainActivity"
             android:launchMode="singleInstance">
@@ -29,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.ViewMazeActivity"
+            android:name=".view.viewmaze.ViewMazeActivity"
             android:label="@string/view_maze_title"
             android:parentActivityName=".view.MainActivity" />
         <activity android:name=".view.GameActivity"

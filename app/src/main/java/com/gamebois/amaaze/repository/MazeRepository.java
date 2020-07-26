@@ -1,11 +1,16 @@
 package com.gamebois.amaaze.repository;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -20,12 +25,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class MazeRepository {
 
-    private static final String TAG = "Maze Repository";
+    private static final String TAG = "MazeRepository";
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private OnFirestoreTaskComplete firestoreTaskComplete;
     private ListenerRegistration mRegistration;
@@ -41,7 +50,7 @@ public class MazeRepository {
         return FirebaseFirestore.getInstance()
                 .collection("mazes")
                 .document(m.getUniqueID())
-                .set(m);
+                .set(m, SetOptions.merge());
     }
 
     public static Task<Void> addMaze(Maze m, List<ContourList> rigidSurfaces) {
@@ -74,6 +83,38 @@ public class MazeRepository {
 
     public static void updateMaze(Maze m) {
 
+    }
+
+    public static void generateImage(Bitmap mExtraContourBitmap, final Maze m) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://amaaze-6da22.appspot.com/");
+        String referenceID = m.getUniqueID() + ".png";
+        final StorageReference pictureRef = storageRef.child(referenceID);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mExtraContourBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = pictureRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d(TAG, exception.toString());
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                pictureRef.getDownloadUrl()
+                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                m.setImageURL(uri.toString());
+                                FirebaseFirestore.getInstance()
+                                        .collection("mazes")
+                                        .document(m.getUniqueID())
+                                        .set(m, SetOptions.merge());
+                            }
+                        });
+            }
+        });
     }
 
     public Task<Void> deleteMaze(Maze m) {

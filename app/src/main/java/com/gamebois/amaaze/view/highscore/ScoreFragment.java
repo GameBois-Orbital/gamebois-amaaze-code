@@ -1,4 +1,4 @@
-package com.gamebois.amaaze.view;
+package com.gamebois.amaaze.view.highscore;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,9 +16,6 @@ import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.view.adapters.MyScoreRecyclerViewAdapter;
 import com.gamebois.amaaze.viewmodel.ScoreViewModel;
 
-/**
- * A fragment representing a list of Items.
- */
 public class ScoreFragment extends Fragment {
 
     private MyScoreRecyclerViewAdapter mAdapter;
@@ -39,7 +36,7 @@ public class ScoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_score_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {

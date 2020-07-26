@@ -17,6 +17,7 @@ import com.gamebois.amaaze.repository.ScoreRepository;
 import com.gamebois.amaaze.view.GlideApp;
 import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,7 +27,7 @@ public class MyScoreRecyclerViewAdapter extends RecyclerView.Adapter<MyScoreRecy
     public static final String LOG_TAG = MyScoreRecyclerViewAdapter.class.getSimpleName();
     private final Context context;
     private ScoreRepository mRepository;
-    private List<Score> mScores;
+    private List<Score> mScores = new ArrayList<>();
 
     public MyScoreRecyclerViewAdapter(Context context) {
         this.context = context;
@@ -36,7 +37,7 @@ public class MyScoreRecyclerViewAdapter extends RecyclerView.Adapter<MyScoreRecy
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.fragment_score_item, parent, false);
         return new ViewHolder(view);
     }
 
