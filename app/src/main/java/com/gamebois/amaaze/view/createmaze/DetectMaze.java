@@ -23,7 +23,7 @@ class DetectMaze {
 
     private Mat processed = new Mat();
     private Mat filtered = new Mat();
-    private Size unhole = new Size(15, 15);
+    private Size unhole = new Size(7, 7);
     private Scalar color = new Scalar(0, 255, 0);
     private List<MatOfPoint> contours;
     public double biggest;

@@ -54,9 +54,9 @@ public class Ball2D {
 
         FixtureDef fd = new FixtureDef(); // Body properties
         fd.shape = cs;
-        fd.density = 1;
-        fd.friction = 0.2f;
-        fd.restitution = 0.5f;
+        fd.density = 0.3f;
+        fd.friction = 0.1f;
+        fd.restitution = 0.3f;
 
         b1.createFixture(fd); //add properties to body
         b1.setUserData(this);

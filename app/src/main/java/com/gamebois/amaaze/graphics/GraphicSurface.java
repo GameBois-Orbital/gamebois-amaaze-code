@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gamebois.amaaze.model.ContourList;
+import com.gamebois.amaaze.view.CustomChronometer;
 import com.gamebois.amaaze.view.GameActivity;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
         graphicThread = new GraphicThread(this, context); //create game thread;
         holder = getHolder();
         holder.addCallback(this);
-        gameOver = new MutableLiveData<Boolean>();
+        gameOver = new MutableLiveData<>();
         gameOver.setValue(false);
     }
 
@@ -104,6 +105,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
                 }
                 catch (InterruptedException e)
                 {
+                    e.printStackTrace();
                 }
             }
         }
@@ -206,4 +208,7 @@ public class GraphicSurface extends SurfaceView implements SurfaceHolder.Callbac
     }
 
 
+    public void setCustChrono(CustomChronometer chronometer) {
+        graphicThread.setCustChrono(chronometer);
+    }
 }

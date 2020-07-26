@@ -8,4 +8,5 @@
     <color name="textOnSecondary">#FFFFFF</color>
     <color name="colorSurface">#EFE5FD</color>
     <color name="warning">#B00020</color>
+    <color name="backgroundOfGame">#fff8e1</color>
 </resources>

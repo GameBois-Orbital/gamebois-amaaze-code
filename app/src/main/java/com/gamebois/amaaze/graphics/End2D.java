@@ -43,4 +43,8 @@ public class End2D {
         paint.setColor(Color.GRAY);
         c.drawCircle(x, y, this.radius, paint); //draw ball
     }
+
+    public void destroy() {
+        box2d.destroyBody(b1);
+    }
 }

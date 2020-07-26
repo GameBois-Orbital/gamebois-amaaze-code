@@ -5,10 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Chronometer;
 
 import com.gamebois.amaaze.BuildConfig;
 import com.gamebois.amaaze.model.ContourList;
+import com.gamebois.amaaze.view.CustomChronometer;
 import com.gamebois.amaaze.view.GameActivity;
 
 import org.opencv.core.Point;
@@ -20,6 +23,7 @@ public class GraphicThread extends Thread {
     private String LOG_TAG = GameActivity.class.getSimpleName();
     float BALL_RADIUS = 5;
     float END_RADIUS, WORMHOLE_RADIUS;
+    CustomChronometer custChrono;
 
     private boolean running = false;
     private final int refresh_rate = 6;
@@ -30,7 +34,7 @@ public class GraphicThread extends Thread {
     private Createbox2d box2d;
     private Ball2D ball;
     private End2D endHole;
-    private ArrayList<Maze2D> mazes = new ArrayList<Maze2D>();
+    private ArrayList<Maze2D> mazes = new ArrayList<>();
     private ArrayList<Wormhole2D> wormholes = new ArrayList<>();
     private Surface2D surfaceBoundary;
     private float screen_height, screen_width;
@@ -83,7 +87,9 @@ public class GraphicThread extends Thread {
     public void run() {
         long previousTime, currentTime, startTime;
         previousTime = System.currentTimeMillis();
-
+        startTime = SystemClock.elapsedRealtime();
+        custChrono.setBase(startTime);
+        custChrono.start();
 
         while (running) {
             currentTime = System.currentTimeMillis();
@@ -96,6 +102,7 @@ public class GraphicThread extends Thread {
             if (box2d.isGameOver()){
                 gs.getGameOver().postValue(true);
                 running = false;
+                custChrono.stop();
             }
 
             int a = 2;
@@ -169,6 +176,7 @@ public class GraphicThread extends Thread {
         }
 
         ball.destroy(); //destroy ball
+        endHole.destroy();
     }
 
     private void setMazes(List<ContourList> mazeArrayList) {
@@ -206,5 +214,8 @@ public class GraphicThread extends Thread {
     }
 
 
+    public void setCustChrono(CustomChronometer chronometer) {
+        custChrono = chronometer;
+    }
 }
 

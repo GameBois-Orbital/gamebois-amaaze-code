@@ -17,6 +17,8 @@ import com.gamebois.amaaze.repository.ScoreRepository;
 import com.gamebois.amaaze.view.GlideApp;
 import com.google.firebase.firestore.Query;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class MyScoreRecyclerViewAdapter extends RecyclerView.Adapter<MyScoreRecy
 
     }
 
+    @NotNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())

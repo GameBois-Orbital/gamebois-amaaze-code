@@ -9,7 +9,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -17,6 +16,7 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
+import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.graphics.GraphicSurface;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.view.highscore.EndGameActivity;
@@ -37,8 +37,6 @@ public class GameActivity extends AppCompatActivity {
     FrameLayout layout;
     GraphicSurface gs;
     CustomChronometer chronometer;
-
-    private boolean chronometerRunning = false;
 
 
     private int accelerometerSensor;
@@ -118,6 +116,7 @@ public class GameActivity extends AppCompatActivity {
 
         layout = new FrameLayout(this);
         layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        layout.setBackgroundColor(getResources().getColor(R.color.backgroundOfGame));
         setContentView(layout);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -153,27 +152,22 @@ public class GameActivity extends AppCompatActivity {
         FrameLayout.LayoutParams lp_chronometer = new FrameLayout.LayoutParams(
                 200, // Width in pixel
                 300, // Height in pixel
-                Gravity.RIGHT|Gravity.TOP);
-        lp_chronometer.setMargins(0, 30, 10, 10);
+                Gravity.LEFT|Gravity.TOP);
+        lp_chronometer.setMargins(10, 30, 10, 10);
         chronometer.setLayoutParams(lp_chronometer);
         layout.addView(chronometer);
+        gs.setCustChrono(chronometer);
         
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!chronometerRunning){
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            chronometer.start();
-            chronometerRunning = true;
-        }
+
     }
 
 
     private void launchResultActivity() {
-        chronometer.stop();
-        chronometerRunning = false;
         Intent intent = new Intent(this, EndGameActivity.class);
         intent.putExtra(TIME_TEXT, chronometer.getText());
         intent.putExtra(MAZE_ID, ID);
@@ -183,8 +177,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        chronometer.stop();
-        chronometerRunning = false;
+
         sensorManager.unregisterListener(sensorEventListener);
         if(gs!=null) {
             gs.surfaceDestroyed(gs.holder);
