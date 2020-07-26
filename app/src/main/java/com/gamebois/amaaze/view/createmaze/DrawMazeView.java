@@ -37,8 +37,6 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     private Context mContext;
     private static final int ANIMATION_DELAY = 1000;
     public Bitmap mContourBitmap;
-    public Bitmap mExtraContourBitmap;
-    private Canvas mExtraCanvas;
     private int mViewWidth;
     private int mViewHeight;
     private PointMarker focusedPoint;
@@ -87,9 +85,6 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         radius = (float) (w / 80.0);
         focusStartPoint();
         mContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mExtraCanvas = new Canvas();
-        mExtraContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        initialisePaths(mExtraCanvas, mExtraContourBitmap);
     }
 
     public void setPointsRadius(float radiusMultiplier) {

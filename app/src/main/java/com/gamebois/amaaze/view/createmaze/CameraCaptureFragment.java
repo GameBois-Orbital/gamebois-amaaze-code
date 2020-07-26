@@ -43,6 +43,7 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
             super.onManagerConnected(status);
             if (status == BaseLoaderCallback.SUCCESS) {
                 mOpenCVCameraView.enableView();
+//                mOpenCVCameraView.setCvCameraViewListener(CameraCaptureFragment.this);
             } else {
                 super.onManagerConnected(status);
             }
@@ -133,6 +134,7 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
                 setButton.setEnabled(false);
                 mViewModel.setCreatorHeight(mOpenCVCameraView.getHeight());
                 mViewModel.setCreatorWidth(mOpenCVCameraView.getWidth());
+                mViewModel.setMat(frame);
                 mOpenCVCameraView.disableView();
                 mViewModel.setRigidSurfaces(this.rigidSurfaces);
                 Navigation.findNavController(v).navigate(R.id.action_cameraCaptureFragment_to_setBallFragment);

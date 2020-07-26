@@ -149,7 +149,6 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
 //        drawMazeView.pause();
         mViewModel.setStartPoint(drawMazeView.startPoint);
         mViewModel.setEndPoint(drawMazeView.endPoint);
-        mViewModel.generateImage(drawMazeView.mExtraContourBitmap);
     }
 
     private void initialiseBackButton() {

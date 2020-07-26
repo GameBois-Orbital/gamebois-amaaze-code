@@ -16,6 +16,9 @@ import com.gamebois.amaaze.repository.MazeRepository;
 import com.gamebois.amaaze.view.createmaze.WormholePointsGenerator;
 import com.google.android.gms.tasks.Task;
 
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -148,10 +151,15 @@ public class MazifyActivityViewModel extends ViewModel {
                 .generate(8);
     }
 
-    public void generateImage(Bitmap mExtraContourBitmap) {
-        this.mExtraContourBitmap = mExtraContourBitmap;
-        ImageGeneratorRunnable runnable = new ImageGeneratorRunnable();
+    private void generateImage(Mat frame) {
+        ImageGeneratorRunnable runnable = new ImageGeneratorRunnable(frame);
         new Thread(runnable).start();
+    }
+
+    public void setMat(Mat frame) {
+        Log.d(LOG_TAG, "FRAME 1: " + frame.height() + " " + frame.width());
+        this.mExtraContourBitmap = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.ARGB_8888);
+        generateImage(frame);
     }
 
     class PathGeneratorRunnable implements Runnable {
@@ -187,15 +195,21 @@ public class MazifyActivityViewModel extends ViewModel {
 
     class ImageGeneratorRunnable implements Runnable {
 
-        public ImageGeneratorRunnable() {
+        Mat frame;
+
+        public ImageGeneratorRunnable(Mat frame) {
+            this.frame = frame;
         }
 
         @Override
         public void run() {
             try {
+                Log.d(LOG_TAG, "FRAME: " + frame.height() + " " + frame.width());
+                Log.d(LOG_TAG, "BITMAP: " + mExtraContourBitmap.getHeight() + " " + mExtraContourBitmap.getWidth());
+                Utils.matToBitmap(frame, mExtraContourBitmap, true);
                 MazeRepository.generateImage(mExtraContourBitmap, maze);
             } catch (Throwable t) {
-                Log.d(LOG_TAG, "Error uploading image");
+                Log.d(LOG_TAG, t.getMessage());
             }
         }
     }
