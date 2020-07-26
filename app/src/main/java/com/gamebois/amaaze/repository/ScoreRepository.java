@@ -35,7 +35,9 @@ public class ScoreRepository {
         Score score = new Score();
         score.setUserID(user.getUid());
         score.setUsername(user.getDisplayName());
-        score.setProfileURL(user.getPhotoUrl().toString());
+        if (user.getPhotoUrl() != null) {
+            score.setProfileURL(user.getPhotoUrl().toString());
+        }
         score.setTiming(timing);
         return score;
     }
