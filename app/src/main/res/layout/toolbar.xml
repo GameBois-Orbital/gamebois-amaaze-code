@@ -5,4 +5,5 @@
     android:layout_height="wrap_content"
     android:background="?attr/colorSecondary"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:titleTextColor="@color/textOnSecondary" />

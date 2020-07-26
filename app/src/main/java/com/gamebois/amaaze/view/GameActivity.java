@@ -116,7 +116,7 @@ public class GameActivity extends AppCompatActivity {
 
         layout = new FrameLayout(this);
         layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        layout.setBackgroundColor(getResources().getColor(R.color.backgroundOfGame));
+        layout.setBackgroundColor(getResources().getColor(R.color.background));
         setContentView(layout);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -149,6 +149,7 @@ public class GameActivity extends AppCompatActivity {
 
         chronometer = new CustomChronometer(this); // create Chronometer
         chronometer.setTextSize(20);
+        chronometer.setTextColor(getResources().getColor(R.color.colorAccentDark) );
         FrameLayout.LayoutParams lp_chronometer = new FrameLayout.LayoutParams(
                 200, // Width in pixel
                 300, // Height in pixel

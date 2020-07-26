@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ffeb3b</color>
-    <color name="colorPrimaryDark">#b2a429</color>
     <color name="colorAccent">#7b1fa2</color>
     <color name="colorAccentDark">#4a0072</color>
-    <color name="textOnPrimary">#000000</color>
+    <color name="colorAccentLight">#ae52d4</color>
+    <color name="colorPrimary">#ffeb3b</color>
+    <color name="colorPrimaryDark">#fdd835</color>
+    <color name="textOnPrimary">#4a0072</color>
     <color name="textOnSecondary">#FFFFFF</color>
-    <color name="colorSurface">#EFE5FD</color>
+    <color name="colorSurface">@color/colorPrimary</color>
     <color name="warning">#B00020</color>
-    <color name="backgroundOfGame">#fff8e1</color>
+    <color name="background">#ffffe5</color>
 </resources>

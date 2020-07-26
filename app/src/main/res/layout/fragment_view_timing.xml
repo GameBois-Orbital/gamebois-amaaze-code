@@ -24,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:textColor="@color/textOnPrimary"
             android:text="@string/timing_description" />
 
         <TextView
@@ -32,6 +33,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:text="@string/timing_content"
+            android:textColor="@color/textOnPrimary"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
 
@@ -46,10 +48,9 @@
 
         <Button
             android:id="@+id/button_to_highscores"
-            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Highscores"
+            android:text="@string/highscores"
             app:icon="@drawable/ic_next" />
     </LinearLayout>
 
