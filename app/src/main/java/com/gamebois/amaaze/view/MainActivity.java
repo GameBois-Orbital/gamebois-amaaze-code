@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 
+import static com.gamebois.amaaze.R.style.SignInAppTheme;
+
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
                         googleIdp
                 ))
                 .setIsSmartLockEnabled(true)
+                .setTheme(SignInAppTheme)
+                .setLogo(R.drawable.ic_amaaze)
                 .build();
         startActivityForResult(signInIntent, RC_SIGN_IN);
         mViewModel.setIsSigningIn(true);
