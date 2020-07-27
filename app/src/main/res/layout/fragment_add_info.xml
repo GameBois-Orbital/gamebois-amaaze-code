@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.createmaze.AddInfoFragment">
+
+    <!--    <include-->
+    <!--        android:id="@+id/mazify_toolbar"-->
+    <!--        layout="@layout/toolbar"-->
+    <!--        android:elevation="4dp"-->
+    <!--        app:title="@string/mazify_activity_title" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/maze_title"
+            android:paddingVertical="16dp"
+            app:startIconDrawable="@drawable/ic_baseline_title_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/maze_title_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textColor="@color/colorAccentDark"
+                android:textColorLink="@color/colorAccentDark" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--        <NumberPicker-->
+        <!--            android:id="@+id/wormhole_picker"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:padding="16dp" />-->
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/public_switch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:checked="true"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="16dp"
+            android:text="@string/title_public_tab"
+            android:textColor="@color/colorAccentDark"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <LinearLayout
+            android:id="@+id/loading_screen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="2dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/maze_loader_text" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/save_button_cd"
+            android:enabled="false"
+            android:paddingVertical="8dp"
+            android:text="@string/save_button_text" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

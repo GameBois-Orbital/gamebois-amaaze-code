@@ -2,6 +2,7 @@ package com.gamebois.amaaze.view.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +33,11 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
     private final LayoutInflater mInflater;
     private List<Maze> mazeList = new ArrayList<>();
     private Context context;
+    private OnPlayListener onPlayListener;
 
-    public ViewMazesAdapter(Context context) {
+    public ViewMazesAdapter(Context context, OnPlayListener onPlayListener) {
         this.context = context;
+        this.onPlayListener = onPlayListener;
         mInflater = LayoutInflater.from(context);
     }
 
@@ -42,7 +45,7 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
     @Override
     public MazeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View mCardView = mInflater.inflate(R.layout.view_single_maze, parent, false);
-        return new MazeViewHolder(mCardView, this);
+        return new MazeViewHolder(mCardView, this, onPlayListener);
     }
 
     @Override
@@ -98,8 +101,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
 
     }
 
-    public void deleteMaze(int position) {
-        MazeRepository.deleteMaze(mazeList.get(position))
+    public void deleteMaze(final int position) {
+        mRepository.deleteMaze(mazeList.get(position))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -108,17 +111,32 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
                 });
     }
 
-    public class MazeViewHolder extends RecyclerView.ViewHolder {
+    public interface OnPlayListener {
+        void onPlayClick(String mazeID,
+                         List<Float> startPoint,
+                         List<Float> endPoint,
+                         float radius,
+                         float creatorHeight,
+                         float creatorWidth,
+                         ArrayList<PointF> wormholes);
+    }
+
+    public class MazeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final ViewMazesAdapter mAdapter;
         //TODO: Add other views
         private final TextView mazeTitle;
         private final ImageView mazeImage;
+        private final TextView playButton;
+        private OnPlayListener onPlayListener;
 
-        public MazeViewHolder(@NonNull View itemView, ViewMazesAdapter adapter) {
+        public MazeViewHolder(@NonNull View itemView, ViewMazesAdapter adapter, OnPlayListener onPlayListener) {
             super(itemView);
+            this.onPlayListener = onPlayListener;
             mazeTitle = itemView.findViewById(R.id.mazeTitle);
             mazeImage = itemView.findViewById(R.id.mazeImage);
+            playButton = itemView.findViewById(R.id.playButton);
+            playButton.setOnClickListener(this);
             this.mAdapter = adapter;
         }
 
@@ -126,11 +144,25 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
             mazeTitle.setText(maze.getTitle());
             GlideApp.with(mazeImage.getContext())
                     .load(maze.getImageURL())
-                    .placeholder(new ColorDrawable(Color.BLACK))
+                    .placeholder(new ColorDrawable(Color.YELLOW))
                     .error(new ColorDrawable(Color.RED))
                     .into(mazeImage);
         }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.playButton:
+                    int pos = getAdapterPosition();
+                    Maze m = mazeList.get(pos);
+                    onPlayListener.onPlayClick(m.getUniqueID(),
+                            m.getStartPoint(),
+                            m.getEndPoint(),
+                            m.getCreatorRadius(),
+                            m.getCreatorHeight(),
+                            m.getCreatorWidth(),
+                            m.getWormholeCentres());
+            }
+        }
     }
-
-
 }

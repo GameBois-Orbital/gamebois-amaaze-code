@@ -1,18 +1,19 @@
 package com.gamebois.amaaze.viewmodel;
 
 import com.gamebois.amaaze.repository.MazeRepository;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class PrivateMazeViewModel extends MazeViewModel {
 
-    //TODO: Currently database logic is found in the viewmodel AND adapter classes. Need to refactor.
-
     private FirebaseFirestore mFirestore;
+    private String userID;
     private MazeRepository mazeRepository;
 
     public PrivateMazeViewModel() {
         mFirestore = FirebaseFirestore.getInstance();
+        userID = FirebaseAuth.getInstance().getUid();
     }
 //getInstance
 //    public void setInterface (MazeRepository.OnFirestoreTaskComplete onFirestoreTaskComplete) {
@@ -22,7 +23,7 @@ public class PrivateMazeViewModel extends MazeViewModel {
     @Override
     public Query getQuery() {
         return mFirestore.collection("mazes")
-                .whereEqualTo("isPublic", false)
+                .whereEqualTo("userID", userID)
                 .orderBy("numLikes", Query.Direction.DESCENDING);
     }
 }

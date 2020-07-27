@@ -1,9 +1,14 @@
 package com.gamebois.amaaze.model;
 
+import android.graphics.PointF;
+
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class Maze {
     @DocumentId
@@ -12,26 +17,29 @@ public class Maze {
     private Date timeCreated;
     private String title;
     private String imageURL;
+    private String userID;
     private boolean isPublic;
-    private long wormholeDifficulty;
-    private long numLikes;
+    private long numLikes = 0;
+    private float creatorHeight;
+    private float creatorWidth;
+    private List<Float> startPoint = new ArrayList<>(2);
+    private List<Float> endPoint = new ArrayList<>(2);
+    private float creatorRadius;
+    private ArrayList<PointF> wormholeCentres;
 
     public Maze() {
     }
 
-    public Maze(String title, String imageURL, boolean isPublic) {
-        this.title = title;
-        this.imageURL = imageURL;
-        this.isPublic = isPublic;
-        numLikes = 0;
+    public String getUniqueID() {
+        return uniqueID;
     }
 
-    public boolean getIsPublic() {
-        return isPublic;
+    public void setUniqueID() {
+        this.uniqueID = UUID.randomUUID().toString();
     }
 
-    public void setIsPublic(boolean isPublic) {
-        this.isPublic = isPublic;
+    public Date getTimeCreated() {
+        return timeCreated;
     }
 
     public String getTitle() {
@@ -50,6 +58,14 @@ public class Maze {
         this.imageURL = imageURL;
     }
 
+    public boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
     public long getNumLikes() {
         return numLikes;
     }
@@ -58,19 +74,59 @@ public class Maze {
         this.numLikes = numLikes;
     }
 
-    public String getUniqueID() {
-        return uniqueID;
+    public float getCreatorHeight() {
+        return creatorHeight;
     }
 
-    public Date getTimeCreated() {
-        return timeCreated;
+    public void setCreatorHeight(float height) {
+        this.creatorHeight = height;
     }
 
-    public long getWormholeDifficulty() {
-        return wormholeDifficulty;
+    public float getCreatorWidth() {
+        return creatorWidth;
     }
 
-    public void setWormholeDifficulty(long wormholeDifficulty) {
-        this.wormholeDifficulty = wormholeDifficulty;
+    public void setCreatorWidth(float creatorWidth) {
+        this.creatorWidth = creatorWidth;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public float getCreatorRadius() {
+        return creatorRadius;
+    }
+
+    public void setCreatorRadius(float creatorRadius) {
+        this.creatorRadius = creatorRadius;
+    }
+
+    public List<Float> getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(List<Float> startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public List<Float> getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(List<Float> endPoint) {
+        this.endPoint = endPoint;
+    }
+
+    public ArrayList<PointF> getWormholeCentres() {
+        return wormholeCentres;
+    }
+
+    public void setWormholeCentres(ArrayList<PointF> wormholeCentres) {
+        this.wormholeCentres = wormholeCentres;
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/highscore_graph"
+    app:startDestination="@id/viewTimingFragment">
+
+    <fragment
+        android:id="@+id/scoreFragment"
+        android:name="com.gamebois.amaaze.view.highscore.ScoreFragment"
+        android:label="fragment_score_list"
+        tools:layout="@layout/fragment_score_list" />
+    <fragment
+        android:id="@+id/viewTimingFragment"
+        android:name="com.gamebois.amaaze.view.highscore.ViewTimingFragment"
+        android:label="ViewTimingFragment">
+        <action
+            android:id="@+id/action_viewTimingFragment_to_scoreFragment"
+            app:destination="@id/scoreFragment" />
+    </fragment>
+</navigation>

@@ -2,6 +2,7 @@ package com.gamebois.amaaze.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,12 +14,18 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.firebase.ui.auth.AuthUI;
 import com.gamebois.amaaze.R;
+import com.gamebois.amaaze.view.createmaze.MazifyActivity;
+import com.gamebois.amaaze.view.viewmaze.ViewMazeActivity;
 import com.gamebois.amaaze.viewmodel.MainActivityViewModel;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 
+import static com.gamebois.amaaze.R.style.SignInAppTheme;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final int RC_SIGN_IN = 2323;
     private Toolbar mToolbar;
@@ -48,12 +55,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSignIn() {
         //Enables sign in through email and Google
+        AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder()
+                .setSignInOptions(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .build();
+
         Intent signInIntent = AuthUI.getInstance().createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
                         new AuthUI.IdpConfig.EmailBuilder().build(),
-                        new AuthUI.IdpConfig.GoogleBuilder().build()
+                        googleIdp
                 ))
-                .setIsSmartLockEnabled(false)
+                .setIsSmartLockEnabled(true)
+                .setTheme(SignInAppTheme)
+                .setLogo(R.drawable.ic_amaaze)
                 .build();
         startActivityForResult(signInIntent, RC_SIGN_IN);
         mViewModel.setIsSigningIn(true);
@@ -85,10 +98,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                //TODO: Link to Settings
-                showTodoToast();
-                break;
             case R.id.action_sign_out:
                 AuthUI.getInstance().signOut(this);
                 startSignIn();
@@ -104,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void showTodoToast() {
         Toast.makeText(this, "TODO: Implement", Toast.LENGTH_SHORT).show();
+    }
+
+    public void launchCameraCaptureActivity(View view) {
+        Log.d(LOG_TAG, "Create maze click");
+        Intent intent = new Intent(this, MazifyActivity.class);
+        startActivity(intent);
     }
 
 }
