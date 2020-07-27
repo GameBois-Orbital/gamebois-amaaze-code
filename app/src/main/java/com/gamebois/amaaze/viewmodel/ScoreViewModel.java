@@ -20,7 +20,7 @@ public class ScoreViewModel extends ViewModel {
         return mFirestore.collection("scores")
                 .document(documentID)
                 .collection("values")
-                .orderBy("timing", Query.Direction.DESCENDING);
+                .orderBy("timing", Query.Direction.ASCENDING);
     }
 
     public String getDocumentID() {
