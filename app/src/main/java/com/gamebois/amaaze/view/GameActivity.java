@@ -151,9 +151,9 @@ public class GameActivity extends AppCompatActivity {
         chronometer.setTextSize(20);
         chronometer.setTextColor(getResources().getColor(R.color.colorAccentDark) );
         FrameLayout.LayoutParams lp_chronometer = new FrameLayout.LayoutParams(
-                200, // Width in pixel
-                300, // Height in pixel
-                Gravity.LEFT|Gravity.TOP);
+                500, // Width in pixel
+                500, // Height in pixel
+                Gravity.LEFT | Gravity.TOP);
         lp_chronometer.setMargins(10, 30, 10, 10);
         chronometer.setLayoutParams(lp_chronometer);
         layout.addView(chronometer);
