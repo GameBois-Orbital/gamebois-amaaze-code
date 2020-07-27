@@ -42,10 +42,13 @@ public class GraphicThread extends Thread {
     private float MIN = -3.8f;
     private float MAX = 3.8f;
 
+    private Context context;
+
     private float scale, xoffset, yoffset;
 
     public GraphicThread(GraphicSurface gs, Context context) {
         this.gs = gs;
+        this.context = context;
         box2d = new Createbox2d();// create box2d world
         box2d.listenForCollisions(context);
     }
@@ -195,7 +198,7 @@ public class GraphicThread extends Thread {
     private void setWormholes(ArrayList<PointF> wormholesArrayList) {
         if (wormholesArrayList != null) {
             for (int i = 0; i < wormholesArrayList.size(); i++) {
-                wormholes.add(new Wormhole2D(i, wormholesArrayList.get(i).x*scale + xoffset, wormholesArrayList.get(i).y*scale + yoffset, WORMHOLE_RADIUS, BALL_RADIUS, box2d));
+                wormholes.add(new Wormhole2D(i, wormholesArrayList.get(i).x*scale + xoffset, wormholesArrayList.get(i).y*scale + yoffset, WORMHOLE_RADIUS, BALL_RADIUS, box2d, context));
             }
         }
     }
