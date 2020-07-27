@@ -94,10 +94,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                //TODO: Link to Settings
-                showTodoToast();
-                break;
             case R.id.action_sign_out:
                 AuthUI.getInstance().signOut(this);
                 startSignIn();

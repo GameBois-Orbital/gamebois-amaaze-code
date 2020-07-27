@@ -20,13 +20,15 @@
             android:layout_height="wrap_content"
             app:tabGravity="fill"
             app:tabMode="fixed"
-            android:background="@color/colorAccentLight" />
+            android:background="@color/colorAccent"
+            app:tabSelectedTextColor="@color/textOnSecondary"
+            app:tabTextColor="@color/colorAccentLight" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="639dp"
+        android:layout_height="0dp"
         android:layout_weight="1" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
