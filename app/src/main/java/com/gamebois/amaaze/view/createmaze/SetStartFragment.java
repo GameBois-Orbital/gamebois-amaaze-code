@@ -142,6 +142,7 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
         drawMazeView.focusEndPoint();
         initialiseBackButton();
         instructionsText.setText(R.string.set_end_point);
+        instructionsText.setTextColor(getResources().getColor(R.color.colorSurface));
     }
 
     private void navigateToNextScreen() {
