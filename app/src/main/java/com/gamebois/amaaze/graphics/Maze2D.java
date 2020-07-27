@@ -6,8 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 
-import com.gamebois.amaaze.R;
-
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -54,7 +52,7 @@ public class Maze2D {
 
     public void display(Canvas c) {
         Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setColor(Color.parseColor("#ae52d4"));
