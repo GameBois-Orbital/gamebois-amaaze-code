@@ -12,4 +12,4 @@ Amaaze is a game that allows you to design a maze on pen and paper and navigate 
 
 [User Guide](https://docs.google.com/document/d/1yqykKKyOoy72cCZ2ZuYu__H0Up6Bz3XdclapvabRMoI/edit?usp=sharing)
 
-[Walkthrough](https://tinyurl.com/gamebois-video-milestone3)
+[Walkthrough](https://youtu.be/_19ToNRiNW4)
