@@ -21,8 +21,7 @@ import java.util.List;
 
 public class GraphicThread extends Thread {
     private String LOG_TAG = GameActivity.class.getSimpleName();
-    float BALL_RADIUS = 5;
-    float END_RADIUS, WORMHOLE_RADIUS;
+    float END_RADIUS, WORMHOLE_RADIUS, BALL_RADIUS;
     CustomChronometer custChrono;
 
     private boolean running = false;
@@ -80,6 +79,7 @@ public class GraphicThread extends Thread {
 
         END_RADIUS = gs.getEndPointRadius();
         WORMHOLE_RADIUS = END_RADIUS;
+        BALL_RADIUS = END_RADIUS * 0.4f;
         setMazes(gs.getMazeArrayList());
         setWormholes(gs.getWormholesArrayList());
         setBallAt(gs.getStartPoint());

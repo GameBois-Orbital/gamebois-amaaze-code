@@ -95,8 +95,8 @@ public class Ball2D {
     }
 
     public void teleportTo(Wormhole2D wormhole2D, long currentTime) {
-        Vec2 point = box2d.coordPixelsToWorld((float) (wormhole2D.getX() + (wormhole2D.getRadius()*0.9 - radius)),
-                (float) (wormhole2D.getY() + (wormhole2D.getRadius()*0.9 - radius)));
+        Vec2 point = box2d.coordPixelsToWorld((float) (wormhole2D.getX() + wormhole2D.getRadius()- radius),
+                (float) (wormhole2D.getY() + wormhole2D.getRadius() - radius));
         b1.setTransform(point, 1);
         availableTime = currentTime + 2000;
     }

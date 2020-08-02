@@ -49,7 +49,7 @@ public class Wormhole2D {
         b1 = box2d.createBody(bd);
 
         CircleShape cs = new CircleShape();
-        cs.m_radius = box2d.scalarPixelsToWorld((float) (radius - (ballRadius*2*0.8))); // shape has radius smaller than this.radius by 0.8 ball diameter
+        cs.m_radius = box2d.scalarPixelsToWorld((float) (radius - (ballRadius*2*0.6))); // shape has radius smaller than this.radius by 0.8 ball diameter
 
         FixtureDef fd = new FixtureDef(); // Body properties
         fd.shape = cs;
