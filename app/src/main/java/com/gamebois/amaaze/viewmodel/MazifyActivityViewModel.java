@@ -26,16 +26,22 @@ import java.util.List;
 public class MazifyActivityViewModel extends ViewModel {
 
     public static final String LOG_TAG = MazifyActivityViewModel.class.getSimpleName();
-    private boolean isPublic = true;
+
     private Maze maze;
+
+    //Maze attributes defined by users
     private String title;
-    private MutableLiveData<List<Path>> pathLiveData;
-    private ArrayList<PointF> wormholes;
+    private boolean isPublic = true;
     private List<ContourList> rigidSurfaces;
-    private float creatorHeight;
-    private float creatorWidth;
     private PointMarker endPoint;
     private PointMarker startPoint;
+
+    //Maze attributes for graphics rendering
+    private float creatorHeight;
+    private float creatorWidth;
+    private MutableLiveData<List<Path>> pathLiveData;
+    private ArrayList<PointF> wormholes;
+
     private Bitmap mExtraContourBitmap;
 
     public MazifyActivityViewModel() {
@@ -44,29 +50,64 @@ public class MazifyActivityViewModel extends ViewModel {
         maze.setUniqueID();
     }
 
-    public boolean isPublic() {
-        return isPublic;
-    }
+    //Setters for user-defined attributes
 
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
-    }
-
-    public String getTitle() {
-        return title;
+    public void setPublic(boolean mPublic) {
+        this.isPublic = mPublic;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public List<ContourList> getRigidSurfaces() {
-        return rigidSurfaces;
-    }
-
     public void setRigidSurfaces(List<ContourList> rigidSurfaces) {
         this.rigidSurfaces = rigidSurfaces;
         pathLiveData.setValue(null);
+    }
+
+    public void setStartPoint(PointMarker startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public void setEndPoint(PointMarker endPoint) {
+        this.endPoint = endPoint;
+    }
+
+    //Setters for graphics rendering attributes
+
+    public void setCreatorHeight(float creatorHeight) {
+        this.creatorHeight = creatorHeight;
+    }
+
+    public void setCreatorWidth(float creatorWidth) {
+        this.creatorWidth = creatorWidth;
+    }
+
+    /**
+     * In a separate thread, obtain Paths from contour list and update pathLiveData
+     */
+
+    private void setPaths() {
+        PathGeneratorRunnable runnable = new PathGeneratorRunnable();
+        new Thread(runnable).start();
+    }
+
+    public LiveData<List<Path>> getPaths() {
+        if (pathLiveData.getValue() == null) {
+            setPaths();
+        }
+        return pathLiveData;
+    }
+
+    public void setMat(Mat frame) {
+        Log.d(LOG_TAG, "FRAME 1: " + frame.height() + " " + frame.width());
+        this.mExtraContourBitmap = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.ARGB_8888);
+        generateImage(frame);
+    }
+
+    private void generateImage(Mat frame) {
+        ImageGeneratorRunnable runnable = new ImageGeneratorRunnable(frame);
+        new Thread(runnable).start();
     }
 
     public Task<Void> saveMaze() {
@@ -88,43 +129,6 @@ public class MazifyActivityViewModel extends ViewModel {
             return MazeRepository.addMaze(maze);
         }
     }
-
-    public LiveData<List<Path>> getPaths() {
-        if (pathLiveData.getValue() == null) {
-            setPaths();
-        }
-        return pathLiveData;
-    }
-
-    private void setPaths() {
-        PathGeneratorRunnable runnable = new PathGeneratorRunnable();
-        new Thread(runnable).start();
-    }
-
-    public void setStartPoint(PointMarker startPoint) {
-        this.startPoint = startPoint;
-    }
-
-    public void setEndPoint(PointMarker endPoint) {
-        this.endPoint = endPoint;
-    }
-
-    public float getCreatorHeight() {
-        return creatorHeight;
-    }
-
-    public void setCreatorHeight(float creatorHeight) {
-        this.creatorHeight = creatorHeight;
-    }
-
-    public float getCreatorWidth() {
-        return creatorWidth;
-    }
-
-    public void setCreatorWidth(float creatorWidth) {
-        this.creatorWidth = creatorWidth;
-    }
-
 
     public ArrayList<PointF> generateWormholes() {
         List<Path> paths = pathLiveData.getValue();
@@ -149,17 +153,6 @@ public class MazifyActivityViewModel extends ViewModel {
                 creatorHeight,
                 startPoint.getRadius())
                 .generate(8);
-    }
-
-    private void generateImage(Mat frame) {
-        ImageGeneratorRunnable runnable = new ImageGeneratorRunnable(frame);
-        new Thread(runnable).start();
-    }
-
-    public void setMat(Mat frame) {
-        Log.d(LOG_TAG, "FRAME 1: " + frame.height() + " " + frame.width());
-        this.mExtraContourBitmap = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.ARGB_8888);
-        generateImage(frame);
     }
 
     class PathGeneratorRunnable implements Runnable {
@@ -214,34 +207,3 @@ public class MazifyActivityViewModel extends ViewModel {
         }
     }
 }
-
-/*
-
-List<PointF> polyPoints = surface.getContourList();
-                Path wallPath = new Path();
-                wallPath.moveTo(polyPoints.get(0).x * scale + xoffset, polyPoints.get(0).y * scale + yoffset);
-                for (int j = 0; j < polyPoints.size(); j++) {
-                    PointF p = polyPoints.get(j);
-                    wallPath.lineTo(p.x * scale + xoffset, p.y * scale + yoffset);
-                }
-                wallPath.lineTo(polyPoints.get(0).x * scale + xoffset, polyPoints.get(0).y * scale + yoffset);
-                wallPath.close();
-                paths.add(wallPath);
-            }
-
-
-final ArrayList<Path> paths = new ArrayList<>();
-            for (ContourList surface : rigidSurfaces) {
-                List<PointF> polyPoints = surface.getContourList();
-                Path wallPath = new Path();
-                wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
-                for (int j = 1; j < polyPoints.size(); j++) {
-                    PointF p = polyPoints.get(j);
-                    wallPath.lineTo(p.x, p.y);
-                }
-                wallPath.close();
-                paths.add(wallPath);
-            }
-            pathLiveData.postValue(paths);
-        }
- */

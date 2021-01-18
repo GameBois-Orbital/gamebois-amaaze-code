@@ -1,7 +1,6 @@
 package com.gamebois.amaaze.view.createmaze;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.gamebois.amaaze.model.ContourList;
 
@@ -47,9 +46,6 @@ class DetectMaze {
         yoffset = (float) ((screen_height - scale * mat_height) / 2.0);
     }
 
-    // public ArrayList<ContourList> getRigidSurfaces() {
-    //   return rigidSurfaces;
-    //}
     public ArrayList<ContourList> getRigidSurfaces() {
         return rigidSurfaces;
     }
@@ -80,35 +76,6 @@ class DetectMaze {
     }
 }
 
-        /*rigidSurfaces.clear();
-
-        for (int i = 0; i < contours.size(); i++) {
-            double contourArea = Imgproc.contourArea(contours.get(i));
-            if (MIN_CONTOUR_AREA < contourArea) {
-                Imgproc.drawContours(frame, contours, i, color, 2, Core.LINE_8, hierarchy, 0, new Point());
-
-                contourShifted.clear();
-                List<Point> contour = contours.get(i).toList();
-                for (int j = 0; j < contour.size(); j++) {
-                    Point p = contour.get(j);
-                    contourShifted.add(new PointF((float) p.x * this.scale + this.xoffset, (float) p.y * this.scale + this.yoffset));
-                    rigidSurfaces.add(contourShifted);
-                }
-            } else {
-                continue;
-            }
-        }     */
-
-//double maxVal = 0;
-//int max_index = -1;
-
-        /*for (int i = 0; i < contours.size(); i++) {
-            double contourArea = Imgproc.contourArea(contours.get(i));
-            if (maxVal < contourArea) {
-                maxVal = contourArea;
-                max_index = i;
-            }
-        }            */
 
 
 

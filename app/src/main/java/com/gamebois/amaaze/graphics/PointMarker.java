@@ -14,8 +14,8 @@ public class PointMarker {
     private float radius;
 
     public PointMarker(int h, int w, float radius, int color) {
-//        this.mX = (float) (h / 2.0);
-//        this.mY = (float) (w / 2.0);
+        this.mX = (float) (w / 2.0);
+        this.mY = (float) (h / 2.0);
         this.paint = new Paint();
         this.color = color;
         paint.setColor(color);

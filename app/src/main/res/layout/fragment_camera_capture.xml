@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/my_camera_view" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/set_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,6 @@
         android:layout_marginBottom="32dp"
         android:enabled="true"
         android:text="@string/set_button_text"
-        android:background="@drawable/rounded_button_filled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

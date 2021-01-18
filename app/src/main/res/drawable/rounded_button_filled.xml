@@ -3,11 +3,10 @@
     <corners
         android:radius="20dp" />
 
-    <solid
-        android:color="@color/colorAccentDark" />
+    <solid android:color="@color/warning" />
     
     <stroke
-        android:color="@color/colorAccentDark"
+        android:color="@color/warning"
         android:width="2dp" />
 
     <size

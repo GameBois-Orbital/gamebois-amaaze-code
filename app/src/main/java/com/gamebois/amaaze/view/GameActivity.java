@@ -149,7 +149,7 @@ public class GameActivity extends AppCompatActivity {
 
         chronometer = new CustomChronometer(this); // create Chronometer
         chronometer.setTextSize(20);
-        chronometer.setTextColor(getResources().getColor(R.color.colorAccentDark) );
+        chronometer.setTextColor(getResources().getColor(R.color.colorSecondary));
         FrameLayout.LayoutParams lp_chronometer = new FrameLayout.LayoutParams(
                 500, // Width in pixel
                 500, // Height in pixel

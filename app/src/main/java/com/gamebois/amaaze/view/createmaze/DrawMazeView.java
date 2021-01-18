@@ -13,7 +13,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.core.content.res.ResourcesCompat;
-import androidx.lifecycle.MutableLiveData;
 
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.graphics.PointMarker;
@@ -29,21 +28,20 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     public static final String TAG = DrawMazeView.class.getSimpleName();
     public PointMarker startPoint;
     public PointMarker endPoint;
-    private static final int ANIMATION_DURATION = 200;
 
     //Thread variables
     private Thread mGameThread = null;
     private boolean mRunning;
-    private Context mContext;
-    private static final int ANIMATION_DELAY = 1000;
     public Bitmap mContourBitmap;
     private int mViewWidth;
     private int mViewHeight;
     private PointMarker focusedPoint;
     private SurfaceHolder mSurfaceHolder;
-    private MutableLiveData<Float> seekBarValue = new MutableLiveData<>();
 
     //Animation
+    private static final int ANIMATION_DURATION = 200;
+    private static final int ANIMATION_DELAY = 1000;
+
     //Graphics
     private Paint paint;
     private float radius;
@@ -62,9 +60,8 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     }
 
     private void init(Context context) {
-        this.mContext = context;
         this.mSurfaceHolder = getHolder();
-        mDrawColour = ResourcesCompat.getColor(getResources(), R.color.colorAccentDark, null);
+        mDrawColour = ResourcesCompat.getColor(getResources(), R.color.colorSecondary, null);
         paint = new Paint();
         paint.setColor(mDrawColour);
         paint.setAntiAlias(true);
@@ -75,16 +72,17 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         paint.setStrokeWidth(5);
     }
 
-    //This method is called when a view changes size (such as when it is created), so can
+    //This method is called when a view changes size (such as when it is created), so we can
     //initialise the bitmap here
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         this.mViewHeight = h;
         this.mViewWidth = w;
-        radius = (float) (w / 80.0);
+        radius = (float) (w / 40);
         focusStartPoint();
         mContourBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        setDrawingCacheEnabled(true);
     }
 
     public void setPointsRadius(float radiusMultiplier) {
@@ -95,7 +93,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
 
     private void setPointsRadius(PointMarker pm, float radiusMultiplier) {
         if (pm != null) {
-            pm.setRadius(radius * (radiusMultiplier / 50));
+            pm.setRadius(radius * (radiusMultiplier / 2));
         }
     }
 
@@ -172,7 +170,7 @@ public class DrawMazeView extends SurfaceView implements Runnable {
         mGameThread = new Thread(this);
         mGameThread.start();
     }
-
+    
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {

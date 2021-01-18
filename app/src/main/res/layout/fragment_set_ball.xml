@@ -43,9 +43,9 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
         android:padding="8dp"
-        android:value="50"
+        android:value="2.5"
         android:valueFrom="0"
-        android:valueTo="100"
+        android:valueTo="5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/back_to_start"
         app:layout_constraintStart_toStartOf="parent" />

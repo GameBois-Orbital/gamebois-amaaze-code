@@ -1,9 +1,7 @@
 package com.gamebois.amaaze.view.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PointF;
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,6 +126,7 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
         private final TextView mazeTitle;
         private final ImageView mazeImage;
         private final TextView playButton;
+        private final View cardView;
         private OnPlayListener onPlayListener;
 
         public MazeViewHolder(@NonNull View itemView, ViewMazesAdapter adapter, OnPlayListener onPlayListener) {
@@ -136,7 +135,9 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
             mazeTitle = itemView.findViewById(R.id.mazeTitle);
             mazeImage = itemView.findViewById(R.id.mazeImage);
             playButton = itemView.findViewById(R.id.playButton);
+            cardView = itemView.findViewById(R.id.card);
             playButton.setOnClickListener(this);
+            cardView.setOnClickListener(this);
             this.mAdapter = adapter;
         }
 
@@ -144,24 +145,24 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
             mazeTitle.setText(maze.getTitle());
             GlideApp.with(mazeImage.getContext())
                     .load(maze.getImageURL())
-                    .placeholder(new ColorDrawable(Color.YELLOW))
-                    .error(new ColorDrawable(Color.RED))
+                    .placeholder(R.drawable.loading_image_bg)
+                    .error(R.drawable.error_bg)
                     .into(mazeImage);
         }
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.playButton:
-                    int pos = getAdapterPosition();
-                    Maze m = mazeList.get(pos);
-                    onPlayListener.onPlayClick(m.getUniqueID(),
-                            m.getStartPoint(),
-                            m.getEndPoint(),
-                            m.getCreatorRadius(),
-                            m.getCreatorHeight(),
-                            m.getCreatorWidth(),
-                            m.getWormholeCentres());
+            int clickID = v.getId();
+            if (clickID == R.id.playButton || clickID == R.id.card) {
+                int pos = getAdapterPosition();
+                Maze m = mazeList.get(pos);
+                onPlayListener.onPlayClick(m.getUniqueID(),
+                        m.getStartPoint(),
+                        m.getEndPoint(),
+                        m.getCreatorRadius(),
+                        m.getCreatorHeight(),
+                        m.getCreatorWidth(),
+                        m.getWormholeCentres());
             }
         }
     }

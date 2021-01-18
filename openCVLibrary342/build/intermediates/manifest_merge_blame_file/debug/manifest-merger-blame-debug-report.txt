@@ -5,14 +5,14 @@
 5    android:versionName="3.4.2" >
 6
 7    <uses-sdk
-7-->C:\Users\shion\AndroidStudioProjects\Game1.1\openCVLibrary342\src\main\AndroidManifest.xml:7:5-47
+7-->C:\Users\mione\AndroidStudioProjects\Amaaze\openCVLibrary342\src\main\AndroidManifest.xml:7:5-47
 8        android:minSdkVersion="21"
-8-->C:\Users\shion\AndroidStudioProjects\Game1.1\openCVLibrary342\src\main\AndroidManifest.xml:7:5-47
+8-->C:\Users\mione\AndroidStudioProjects\Amaaze\openCVLibrary342\src\main\AndroidManifest.xml:7:5-47
 9        android:targetSdkVersion="29" />
-9-->C:\Users\shion\AndroidStudioProjects\Game1.1\openCVLibrary342\src\main\AndroidManifest.xml:7:15-44
+9-->C:\Users\mione\AndroidStudioProjects\Amaaze\openCVLibrary342\src\main\AndroidManifest.xml:7:15-44
 10
 11    <uses-permission android:name="android.permission.CAMERA" />
-11-->C:\Users\shion\AndroidStudioProjects\Game1.1\openCVLibrary342\src\main\AndroidManifest.xml:8:5-65
-11-->C:\Users\shion\AndroidStudioProjects\Game1.1\openCVLibrary342\src\main\AndroidManifest.xml:8:22-62
+11-->C:\Users\mione\AndroidStudioProjects\Amaaze\openCVLibrary342\src\main\AndroidManifest.xml:8:5-65
+11-->C:\Users\mione\AndroidStudioProjects\Amaaze\openCVLibrary342\src\main\AndroidManifest.xml:8:22-62
 12
 13</manifest>

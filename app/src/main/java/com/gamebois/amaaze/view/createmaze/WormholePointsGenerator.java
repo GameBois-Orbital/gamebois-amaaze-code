@@ -40,7 +40,7 @@ public class WormholePointsGenerator {
         while (numOfWormholes > wormholePoints.size()) {
             float rand_x = (float) rand.nextGaussian();
             float rand_y = (float) rand.nextGaussian();
-
+            //why 0.2f and 0.3f?
             float point_x = centerOfScreen_x + (rand_x * wormholeRealmLength * 0.2f);
             float point_y = centerOfScreen_y + (rand_y * wormholeRealmLength * 0.3f);
             

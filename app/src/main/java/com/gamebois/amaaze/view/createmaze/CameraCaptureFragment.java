@@ -7,7 +7,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,7 +34,6 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
     CameraBridgeViewBase mOpenCVCameraView;
     DetectMaze dm;
     Button setButton;
-    ProgressBar pBar;
     ArrayList<ContourList> rigidSurfaces;
     BaseLoaderCallback mLoaderCallBack = new BaseLoaderCallback(getActivity()) {
         @Override
@@ -99,7 +97,6 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
         mOpenCVCameraView.setCvCameraViewListener(this);
         setButton = view.findViewById(R.id.set_button);
         setButton.setOnClickListener(this);
-        pBar = view.findViewById(R.id.camera_progress_bar);
         mViewModel = new ViewModelProvider(requireActivity()).get(MazifyActivityViewModel.class);
         return view;
     }
@@ -112,7 +109,7 @@ public class  CameraCaptureFragment extends Fragment implements CameraBridgeView
                 "Mat: " + mOpenCVCameraView.getMatWidth() + "x" + mOpenCVCameraView.getMatHeight() + "Scale:" + mOpenCVCameraView.getmScale());
         dm.process(frame);
         rigidSurfaces = dm.getRigidSurfaces();
-        //Log.d(LOG_TAG, "Number of Contours (in rigidSurfaces)" + Integer.toString(rigidsurfaces.size()));
+//        Log.d(LOG_TAG, "Number of Contours (in rigidSurfaces)" + Integer.toString(rigidsurfaces.size()));
         return frame;
     }
 
