@@ -12,8 +12,8 @@ import androidx.lifecycle.ViewModel;
 import com.gamebois.amaaze.graphics.PointMarker;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
+import com.gamebois.amaaze.model.WormholePointsGenerator;
 import com.gamebois.amaaze.repository.MazeRepository;
-import com.gamebois.amaaze.view.createmaze.WormholePointsGenerator;
 import com.google.android.gms.tasks.Task;
 
 import org.opencv.android.Utils;

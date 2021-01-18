@@ -1,4 +1,4 @@
-package com.gamebois.amaaze.view.createmaze;
+package com.gamebois.amaaze.model;
 
 import android.graphics.Path;
 import android.graphics.PointF;
