@@ -4,5 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:navigationIcon="@drawable/shr_menu"
-    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    android:theme="@style/Amaaze.Toolbar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+</androidx.appcompat.widget.Toolbar>

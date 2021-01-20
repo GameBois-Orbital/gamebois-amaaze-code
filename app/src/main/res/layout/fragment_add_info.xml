@@ -22,6 +22,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textField"
+            style="@style/Amaaze.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -41,6 +42,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textDescription"
+            style="@style/Amaaze.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -70,6 +72,7 @@
             android:checked="true"
             android:paddingHorizontal="4dp"
             android:paddingVertical="16dp"
+            android:textColor="@color/textOnBackground"
             android:text="@string/title_public_tab" />
 
         <LinearLayout

@@ -1,20 +1,54 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryVariant</item>
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
-        <item name="colorOnPrimary">@color/textOnPrimary</item>
+        <item name="android:textColorPrimary">@color/textOnPrimary</item>
+        <item name="android:textColorSecondary">@color/textOnPrimary</item>
+        <!-- Controls the style of the top app bar -->
+        <item name="colorAccent">@color/colorPrimary</item>
+
         <item name="colorOnSecondary">@color/textOnSecondary</item>
         <item name="colorSurface">@color/colorSurface</item>
-        <item name="colorOnSurface">@color/colorSecondary</item>
+        <item name="colorOnSurface">@color/textOnBackground</item>
+        <item name="colorOnBackground">@color/textOnBackground</item>
         <item name="colorError">@color/warning</item>
         <item name="colorOnError">@color/colorSecondary</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+
+    <style name="Amaaze.Toolbar" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">?attr/colorAccent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:theme">@style/AppTheme</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+    <style name="Amaaze.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/TextAppearance.Amaaze.TextInputLayout.HintText</item>
+        <item name="hintTextColor">@color/colorSecondaryVariant</item>
+        <item name="background">@color/background</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.Amaaze.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Amaaze.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="backgroundTint">?attr/colorPrimaryDark</item>
+    </style>
+
+    <style name="Amaaze.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="SignInAppTheme" parent="Theme.MaterialComponents">

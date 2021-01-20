@@ -1,8 +1,6 @@
 package com.gamebois.amaaze.view.viewmaze;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -14,8 +12,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.gamebois.amaaze.R;
-import com.gamebois.amaaze.view.createmaze.MazifyActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -42,8 +38,6 @@ public class ViewMazeActivity extends AppCompatActivity {
         //Sync the tabs with scrolling fragments
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         new TabLayoutMediator(tabLayout, viewPager, new MazeTabConfiguration()).attach();
-        //Add a click listener to the floating action button
-        initFab();
     }
 
     @Override
@@ -54,17 +48,6 @@ public class ViewMazeActivity extends AppCompatActivity {
         } else {
             viewPager.setCurrentItem(currPage - 1);
         }
-    }
-
-    public void initFab() {
-        FloatingActionButton buttonAddNote = findViewById(R.id.button_add_maze);
-        buttonAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ViewMazeActivity.this, MazifyActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     private static class MazeTabConfiguration implements TabLayoutMediator.TabConfigurationStrategy {
