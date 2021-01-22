@@ -26,4 +26,7 @@
     <string name="timing_content">00:00:00</string>
     <string name="highscores">Highscores</string>
     <string name="maze_description">A short description of your maze...</string>
+    <string name="loading_generating_paths">Generating paths...</string>
+    <string name="loading_initialise_pathfinding">Initialising pathfinding grid...</string>
+    <string name="retrieving_maze">Retrieving maze...</string>
 </resources>

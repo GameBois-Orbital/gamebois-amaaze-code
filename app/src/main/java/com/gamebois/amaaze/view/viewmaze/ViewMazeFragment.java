@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gamebois.amaaze.R;
 import com.gamebois.amaaze.view.GameActivity;
 import com.gamebois.amaaze.view.adapters.ViewMazesAdapter;
+import com.gamebois.amaaze.view.findpaths.SolveActivity;
 import com.gamebois.amaaze.viewmodel.MazeViewModel;
 import com.gamebois.amaaze.viewmodel.PrivateMazeViewModel;
 import com.gamebois.amaaze.viewmodel.PublicMazeViewModel;
@@ -151,6 +153,21 @@ public class ViewMazeFragment extends Fragment implements ViewMazesAdapter.OnPla
         b.putSerializable(MAZE_START_POINT, (Serializable) startPoint);
         b.putSerializable(MAZE_END_POINT, (Serializable) endPoint);
         b.putParcelableArrayList(MAZE_WORMHOLE, wormholes);
+        intent.putExtras(b);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSolveClick(String mazeID, List<Float> startPoint, List<Float> endPoint, float radius, float creatorHeight, float creatorWidth) {
+        Intent intent = new Intent(getActivity(), SolveActivity.class);
+        Log.d("VIEWMAZE", "ENTERED METHOD");
+        Bundle b = new Bundle();
+        b.putString(MAZE_ID_TAG, mazeID);
+        b.putFloat(MAZE_RADIUS, radius);
+        b.putFloat(CREATOR_HEIGHT, creatorHeight);
+        b.putFloat(CREATOR_WIDTH, creatorWidth);
+        b.putSerializable(MAZE_START_POINT, (Serializable) startPoint);
+        b.putSerializable(MAZE_END_POINT, (Serializable) endPoint);
         intent.putExtras(b);
         startActivity(intent);
     }

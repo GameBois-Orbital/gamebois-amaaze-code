@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/score_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        app:cardBackgroundColor="@color/fui_transparent"
         android:padding="16dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -27,7 +29,7 @@
                 android:id="@+id/score_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/textOnPrimary"/>
+                android:textColor="@color/textOnPrimary" />
 
             <TextView
                 android:id="@+id/score_title"
@@ -37,7 +39,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </com.google.android.material.card.MaterialCardView>
 

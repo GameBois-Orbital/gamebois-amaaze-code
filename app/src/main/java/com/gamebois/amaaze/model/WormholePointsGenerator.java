@@ -5,7 +5,6 @@ import android.graphics.PointF;
 import android.util.Log;
 
 import com.gamebois.amaaze.BuildConfig;
-import com.gamebois.amaaze.model.pathfinding.PathFinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,6 @@ public class WormholePointsGenerator {
         }
         float centerOfScreen_x = screen_width / (float) 2;
         float centerOfScreen_y = screen_height / (float) 2;
-
-        PathFinder pf = new PathFinder(Math.round(screen_height), Math.round(screen_width), pathList);
-        pf.setUpGraph();
 
         while (numOfWormholes > wormholePoints.size()) {
             float rand_x = (float) rand.nextGaussian();

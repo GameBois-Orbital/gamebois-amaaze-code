@@ -3,6 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingHorizontal="6dp"
     android:paddingTop="6dp">
@@ -47,27 +48,36 @@
                 android:layout_marginVertical="6dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="8dp">
+                android:paddingHorizontal="4dp">
 
-                <TextView
+                <Button
                     android:id="@+id/playButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:paddingEnd="8dp"
-                    android:textColor="@color/textOnBackground"
+                    style="@style/Widget.MaterialComponents.Button.Icon"
                     android:text="@string/play_button_text"
-                    android:textAllCaps="true" />
+                    android:layout_marginRight="4dp"
+                    app:icon="@drawable/ic_baseline_play_arrow_24" />
 
-                <CheckBox
-                    android:id="@+id/likeButton"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/like_icon"
-                    android:button="@null"
-                    android:checked="false"
-                    android:stateListAnimator="@animator/scale" />
+                <Button
+                    android:id="@+id/solveButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:text="Solve"
+                    android:textColor="@color/colorSecondary"
+                    app:icon="@drawable/ic_baseline_image_search_24"
+                    app:iconTint="@color/colorSecondary" />
+                <!--                <CheckBox-->
+                <!--                    android:id="@+id/likeButton"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="20dp"-->
+                <!--                    android:layout_marginHorizontal="4dp"-->
+                <!--                    android:background="@drawable/like_icon"-->
+                <!--                    android:button="@null"-->
+                <!--                    android:checked="false"-->
+                <!--                    android:stateListAnimator="@animator/scale" />-->
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

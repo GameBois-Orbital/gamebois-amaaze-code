@@ -13,10 +13,11 @@ import com.gamebois.amaaze.graphics.PointMarker;
 import com.gamebois.amaaze.model.ContourList;
 import com.gamebois.amaaze.model.Maze;
 import com.gamebois.amaaze.model.WormholePointsGenerator;
+import com.gamebois.amaaze.model.imageprocessing.ImageGeneratorRunnable;
+import com.gamebois.amaaze.model.imageprocessing.PathGeneratorRunnable;
 import com.gamebois.amaaze.repository.MazeRepository;
 import com.google.android.gms.tasks.Task;
 
-import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class MazifyActivityViewModel extends ViewModel {
      */
 
     private void setPaths() {
-        PathGeneratorRunnable runnable = new PathGeneratorRunnable();
+        PathGeneratorRunnable runnable = new PathGeneratorRunnable(rigidSurfaces, pathLiveData);
         new Thread(runnable).start();
     }
 
@@ -106,7 +107,7 @@ public class MazifyActivityViewModel extends ViewModel {
     }
 
     private void generateImage(Mat frame) {
-        ImageGeneratorRunnable runnable = new ImageGeneratorRunnable(frame);
+        ImageGeneratorRunnable runnable = new ImageGeneratorRunnable(frame, mExtraContourBitmap, maze);
         new Thread(runnable).start();
     }
 
@@ -153,57 +154,5 @@ public class MazifyActivityViewModel extends ViewModel {
                 creatorHeight,
                 startPoint.getRadius())
                 .generate(8);
-    }
-
-    class PathGeneratorRunnable implements Runnable {
-
-        public PathGeneratorRunnable() {
-        }
-
-        @Override
-        public void run() {
-            try {
-                getPathsFromSurfaces(rigidSurfaces);
-            } catch (Throwable t) {
-                Log.d(LOG_TAG, "Error generating paths");
-            }
-        }
-
-        private void getPathsFromSurfaces(List<ContourList> rigidSurfaces) {
-            final ArrayList<Path> paths = new ArrayList<>();
-            for (ContourList surface : rigidSurfaces) {
-                List<PointF> polyPoints = surface.getContourList();
-                Path wallPath = new Path();
-                wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
-                for (int j = 1; j < polyPoints.size(); j++) {
-                    PointF p = polyPoints.get(j);
-                    wallPath.lineTo(p.x, p.y);
-                }
-                wallPath.close();
-                paths.add(wallPath);
-            }
-            pathLiveData.postValue(paths);
-        }
-    }
-
-    class ImageGeneratorRunnable implements Runnable {
-
-        Mat frame;
-
-        public ImageGeneratorRunnable(Mat frame) {
-            this.frame = frame;
-        }
-
-        @Override
-        public void run() {
-            try {
-                Log.d(LOG_TAG, "FRAME: " + frame.height() + " " + frame.width());
-                Log.d(LOG_TAG, "BITMAP: " + mExtraContourBitmap.getHeight() + " " + mExtraContourBitmap.getWidth());
-                Utils.matToBitmap(frame, mExtraContourBitmap, true);
-                MazeRepository.generateImage(mExtraContourBitmap, maze);
-            } catch (Throwable t) {
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        }
     }
 }

@@ -38,10 +38,6 @@ public class DrawMazeView extends SurfaceView implements Runnable {
     private PointMarker focusedPoint;
     private SurfaceHolder mSurfaceHolder;
 
-    //Animation
-    private static final int ANIMATION_DURATION = 200;
-    private static final int ANIMATION_DELAY = 1000;
-
     //Graphics
     private Paint paint;
     private float radius;

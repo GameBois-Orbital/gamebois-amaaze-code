@@ -25,7 +25,7 @@ public class ViewMazeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_maze2);
+        setContentView(R.layout.activity_view_maze);
         //Set the toolbar and enable up navigation
         mToolbar = findViewById(R.id.view_toolbar);
         setSupportActionBar(mToolbar);

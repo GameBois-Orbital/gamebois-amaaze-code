@@ -7,15 +7,23 @@ import java.util.List;
 
 public class Node {
 
+    public final int x, y;
+
     public static final String LOG_TAG = Node.class.getSimpleName();
-    private final int x, y;
-    public float globalGoal;
-    public float localGoal;
+    public float globalGoal = Integer.MAX_VALUE;
+    public float localGoal = Integer.MAX_VALUE;
+    private Node parent = null;
     List<Node> neighbours = new ArrayList<>();
-    Node parent = null;
+    private boolean isObstacleComputed = false;
     private boolean isObstacle = false;
+    private Status status = Status.UNVISITED;
     private boolean isVisited = false;
     private Path cell;
+
+    public void setObstacle(boolean isObstacle) {
+        this.isObstacleComputed = true;
+        this.isObstacle = isObstacle;
+    }
 
     /**
      * Sets the coordinates of the top right corner of the cell
@@ -32,12 +40,8 @@ public class Node {
         return isObstacle;
     }
 
-    public void setObstacle(List<Path> walls) {
-//        for (wall : walls) {
-//
-//        }
-
-        isObstacle = false;
+    public Path getCell() {
+        return this.cell;
     }
 
     public boolean isVisited() {
@@ -58,11 +62,35 @@ public class Node {
 //        Log.d(LOG_TAG, "I'm the node at " + leftCoord + ", " + topCoord);
     }
 
+    public Node getParent() {
+        return parent;
+    }
+
     @Override
     public String toString() {
         return "Node{" +
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    public boolean isObstacleComputed() {
+        return isObstacleComputed;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public enum Status {
+        START, END, UNVISITED, VISITED, FRONTIER
     }
 }

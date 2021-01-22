@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,6 +118,13 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
                          float creatorHeight,
                          float creatorWidth,
                          ArrayList<PointF> wormholes);
+
+        void onSolveClick(String mazeID,
+                          List<Float> startPoint,
+                          List<Float> endPoint,
+                          float radius,
+                          float creatorHeight,
+                          float creatorWidth);
     }
 
     public class MazeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -125,7 +133,8 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
         //TODO: Add other views
         private final TextView mazeTitle;
         private final ImageView mazeImage;
-        private final TextView playButton;
+        private final Button playButton;
+        private final Button solveButton;
         private final View cardView;
         private OnPlayListener onPlayListener;
 
@@ -135,9 +144,11 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
             mazeTitle = itemView.findViewById(R.id.mazeTitle);
             mazeImage = itemView.findViewById(R.id.mazeImage);
             playButton = itemView.findViewById(R.id.playButton);
+            solveButton = itemView.findViewById(R.id.solveButton);
             cardView = itemView.findViewById(R.id.card);
             playButton.setOnClickListener(this);
-            cardView.setOnClickListener(this);
+            solveButton.setOnClickListener(this);
+
             this.mAdapter = adapter;
         }
 
@@ -153,9 +164,9 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
         @Override
         public void onClick(View v) {
             int clickID = v.getId();
-            if (clickID == R.id.playButton || clickID == R.id.card) {
-                int pos = getAdapterPosition();
-                Maze m = mazeList.get(pos);
+            int pos = getAdapterPosition();
+            Maze m = mazeList.get(pos);
+            if (clickID == R.id.playButton) {
                 onPlayListener.onPlayClick(m.getUniqueID(),
                         m.getStartPoint(),
                         m.getEndPoint(),
@@ -163,6 +174,13 @@ public class ViewMazesAdapter extends RecyclerView.Adapter<ViewMazesAdapter.Maze
                         m.getCreatorHeight(),
                         m.getCreatorWidth(),
                         m.getWormholeCentres());
+            } else if (clickID == R.id.solveButton) {
+                onPlayListener.onSolveClick(m.getUniqueID(),
+                        m.getStartPoint(),
+                        m.getEndPoint(),
+                        m.getCreatorRadius(),
+                        m.getCreatorHeight(),
+                        m.getCreatorWidth());
             }
         }
     }

@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".view.findpaths.SolveActivity"
+            android:screenOrientation="sensorLandscape"></activity>
+        <activity
             android:name=".view.highscore.EndGameActivity"
             android:label="Scores"
             android:parentActivityName=".view.MainActivity" />
@@ -35,10 +38,11 @@
             android:name=".view.viewmaze.ViewMazeActivity"
             android:label="@string/view_maze_title"
             android:parentActivityName=".view.MainActivity" />
-        <activity android:name=".view.GameActivity"
+        <activity
+            android:name=".view.GameActivity"
             android:label="Game Activity"
             android:parentActivityName=".view.MainActivity"
-            android:screenOrientation="sensorLandscape"/>
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".view.createmaze.MazifyActivity"
             android:label="@string/activity_camera_capture_name"
