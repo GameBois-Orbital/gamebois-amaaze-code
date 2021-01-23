@@ -60,26 +60,12 @@ public class SetStartFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-//    private void getWidthAndHeight(final DrawMazeView drawMazeView) {
-//        final ViewTreeObserver obs = drawMazeView.getViewTreeObserver();
-//
-//        obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                height = drawMazeView.getHeight();
-//                width = drawMazeView.getWidth();
-//                mViewModel.setParams(height, width);
-//                drawMazeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//            }
-//        });
-//    }
-
     private void initialiseSlider() {
         sizeSlider.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
                 if (fromUser) {
-                    drawMazeView.setPointsRadius((float) value);
+                    drawMazeView.setPointsRadius(value);
                 }
             }
         });

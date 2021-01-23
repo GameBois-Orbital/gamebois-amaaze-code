@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,18 +27,12 @@ public class LoadingFragment extends Fragment {
     private TextView info;
     private ProgressBar progressBar;
     private SolveMazeView solveMazeView;
-
     private SolveActivityViewModel mViewModel;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    //Post livedata for paths
-    //Preprocess maze
-    //Display all obstacle nodes as blue
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,6 +42,7 @@ public class LoadingFragment extends Fragment {
         info = view.findViewById(R.id.infoText);
         progressBar = view.findViewById(R.id.progressBar);
         solveMazeView = view.findViewById(R.id.solve_maze_view);
+        getWidthAndHeight(solveMazeView);
         return view;
     }
 
@@ -58,12 +54,25 @@ public class LoadingFragment extends Fragment {
         setUpGraph();
     }
 
+    private void getWidthAndHeight(final SolveMazeView solveMazeView) {
+        final ViewTreeObserver obs = solveMazeView.getViewTreeObserver();
+
+        obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mViewModel.setScreenHeight(solveMazeView.getHeight());
+                mViewModel.setScreenWidth(solveMazeView.getWidth());
+                mViewModel.setRigidsurfaces();
+                solveMazeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+    }
+
     private void loadContoursFromDatabase() {
         mViewModel.areSurfacesRetrieved.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean areSurfacesRetrieved) {
                 if (areSurfacesRetrieved) {
-                    mViewModel.setPaths();
                     info.setText(R.string.loading_generating_paths);
                 }
             }
@@ -78,7 +87,6 @@ public class LoadingFragment extends Fragment {
                 if (pathList != null) {
                     info.setText(R.string.loading_initialise_pathfinding);
                     solveMazeView.setPaths(pathList);
-                    mViewModel.setGrid();
                 }
             }
         });

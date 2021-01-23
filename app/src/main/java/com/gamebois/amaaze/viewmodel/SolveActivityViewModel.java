@@ -9,9 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.gamebois.amaaze.model.ContourList;
-import com.gamebois.amaaze.model.imageprocessing.PathGeneratorRunnable;
-import com.gamebois.amaaze.model.pathfinding.MazeSolverRunnable;
-import com.gamebois.amaaze.model.pathfinding.Node;
+import com.gamebois.amaaze.model.pathfinding.PathFinder;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,15 +20,17 @@ import java.util.List;
 
 public class SolveActivityViewModel extends ViewModel {
     public static final String LOG_TAG = SolveActivityViewModel.class.getSimpleName();
-    public MutableLiveData<Node[]> gridLiveData = new MutableLiveData<>();
+    public MutableLiveData<PathFinder> pathFinder = new MutableLiveData<>();
+    protected List<ContourList> rigidsurfaces = new ArrayList<>();
     public MutableLiveData<Boolean> areSurfacesRetrieved = new MutableLiveData<>(false);
-    List<ContourList> rigidsurfaces = new ArrayList<>();
-    private String ID;
-    private PointF startPoint;
-    private PointF endPoint;
-    private float radius;
-    private float height;
-    private float width;
+    protected String ID;
+    protected PointF startPoint;
+    protected PointF endPoint;
+    protected float radius;
+    protected float height;
+    protected float width;
+    protected float screenWidth;
+    protected float screenHeight;
     private MutableLiveData<List<Path>> pathLiveData = new MutableLiveData<>();
 
     public List<ContourList> getRigidsurfaces() {
@@ -49,6 +49,7 @@ public class SolveActivityViewModel extends ViewModel {
                     public void onSuccess(QuerySnapshot documentSnapshots) {
                         rigidsurfaces = documentSnapshots.toObjects(ContourList.class);
                         areSurfacesRetrieved.postValue(true);
+                        setPathFinder();
                         Log.d(LOG_TAG, "rigid" + rigidsurfaces.toString());
                     }
                 });
@@ -94,6 +95,14 @@ public class SolveActivityViewModel extends ViewModel {
         this.height = height;
     }
 
+    public void setScreenHeight(float height) {
+        this.screenHeight = height;
+    }
+
+    public void setScreenWidth(float width) {
+        this.screenWidth = width;
+    }
+
     public float getWidth() {
         return width;
     }
@@ -102,42 +111,83 @@ public class SolveActivityViewModel extends ViewModel {
         this.width = width;
     }
 
-    public void setPaths() {
-        PathGeneratorRunnable pathRunnable = new PathGeneratorRunnable(rigidsurfaces, pathLiveData);
-        new Thread(pathRunnable).start();
+    public void setPathFinder() {
+        MazeSolverRunnable runnable = new MazeSolverRunnable();
+        new Thread(runnable).start();
     }
 
-    public void setGrid() {
-        MazeSolverRunnable mazeRunnable = new MazeSolverRunnable(height, width, pathLiveData,
-                startPoint, endPoint, gridLiveData);
-        new Thread(mazeRunnable).start();
-    }
-
-    public LiveData<Node[]> getGrid() {
-        return gridLiveData;
+    public LiveData<PathFinder> getPathFinder() {
+        return pathFinder;
     }
 
     public LiveData<List<Path>> getPaths() {
         return pathLiveData;
     }
 
+    class MazeSolverRunnable implements Runnable {
+
+        float scale;
+        float xOffset;
+        float yOffset;
+        PathFinder pf;
+
+        public MazeSolverRunnable() {
+            pf = new PathFinder(Math.round(height),
+                    Math.round(width),
+                    startPoint,
+                    endPoint);
+            scale = Math.min(screenWidth / width, screenHeight / height);
+            xOffset = (float) ((screenWidth - width * scale) / 2.0);
+            yOffset = (float) ((screenHeight - height * scale) / 2.0);
+        }
+
+
+        @Override
+        public void run() {
+            try {
+                getPathsFromSurfaces(rigidsurfaces);
+                pf.setUpGraph();
+                pathFinder.postValue(pf);
+            } catch (Throwable t) {
+                Log.d("MazeRunnable", "Error generating paths");
+            }
+        }
+
+        private void getPathsFromSurfaces(List<ContourList> rigidSurfaces) {
+            final ArrayList<Path> paths = new ArrayList<>();
+            for (ContourList surface : rigidSurfaces) {
+                List<PointF> polyPoints = surface.getContourList();
+                PointF firstPoint = polyPoints.get(0);
+                shift(firstPoint);
+                addToGrid(firstPoint);
+                Path wallPath = new Path();
+                wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
+                for (int j = 1; j < polyPoints.size(); j++) {
+                    PointF p = polyPoints.get(j);
+                    shift(p);
+                    addToGrid(p);
+                    wallPath.lineTo(p.x, p.y);
+                }
+                wallPath.close();
+                paths.add(wallPath);
+            }
+            pathLiveData.postValue(paths);
+        }
+
+        private void shift(PointF point) {
+            point.set(point.x * scale + xOffset, point.y * scale + yOffset);
+        }
+
+        private void addToGrid(PointF point) {
+            int arrayPos = pf.getPosAt(Math.round(point.x), Math.round(point.y));
+            if (pf.nodes[arrayPos] == null) {
+                pf.createNodeAt(arrayPos);
+            }
+            pf.nodes[arrayPos].setObstacle(true);
+        }
+    }
+
 }
 
-//    class ConcurrentRunnable implements Runnable {
-//
-//        private final Runnable first;
-//        private final Runnable second;
-//
-//        public ConcurrentRunnable(Runnable first, Runnable second)
-//        {
-//            this.first = first;
-//            this.second = second;
-//        }
-//
-//        @Override
-//        public void run()
-//        {
-//            first.run();
-//            second.run();
-//        }
-//    }
+
+

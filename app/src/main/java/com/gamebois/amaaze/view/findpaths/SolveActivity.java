@@ -30,6 +30,5 @@ public class SolveActivity extends AppCompatActivity {
         mViewModel.setRadius(b.getFloat(ViewMazeFragment.MAZE_RADIUS));
         mViewModel.setHeight(b.getFloat(ViewMazeFragment.CREATOR_HEIGHT));
         mViewModel.setWidth(b.getFloat(ViewMazeFragment.CREATOR_WIDTH));
-        mViewModel.setRigidsurfaces();
     }
 }

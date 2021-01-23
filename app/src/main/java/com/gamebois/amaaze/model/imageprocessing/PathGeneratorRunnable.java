@@ -48,6 +48,6 @@ public class PathGeneratorRunnable implements Runnable {
             wallPath.close();
             paths.add(wallPath);
         }
-//        pathLiveData.postValue(paths);
+        pathLiveData.postValue(paths);
     }
 }

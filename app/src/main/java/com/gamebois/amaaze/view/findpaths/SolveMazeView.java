@@ -97,25 +97,20 @@ public class SolveMazeView extends SurfaceView implements Runnable {
     public void setGrid(Node[] grid) {
         Log.d(TAG, "setGrid called");
         this.nodes = grid;
-        invalidate();
+//        invalidate();
     }
 
-    private void initialisePaths(Canvas canvas, Bitmap mContourBitmap) {
-        Log.d(TAG, "initialisePaths called");
+    private void initialisePathsAndGrid(Canvas canvas, Bitmap mContourBitmap) {
         canvas.drawBitmap(mContourBitmap, 0, 0, null);
         canvas.drawColor(WHITE);
         if (paths != null) {
             for (Path path : paths) {
                 canvas.drawPath(path, paint);
-                Log.d(TAG, "Drawing paths..");
             }
         }
-    }
-
-    private void initialiseGrid(Canvas canvas) {
         if (nodes != null) {
             for (Node node : nodes) {
-                canvas.drawPath(node.getCell(), getPaint(node.getStatus()));
+                canvas.drawPath(node.getCell(), paint);
             }
         }
     }
@@ -163,15 +158,13 @@ public class SolveMazeView extends SurfaceView implements Runnable {
     @Override
     public void run() {
         Canvas canvas;
-        boolean surfaceLocked = false;
         while (mRunning) {
             if (mSurfaceHolder.getSurface().isValid()) {
                 Log.d(TAG, "run called");
                 try {
                     canvas = mSurfaceHolder.lockCanvas();
                     canvas.save();
-                    initialisePaths(canvas, mContourBitmap);
-                    initialiseGrid(canvas);
+                    initialisePathsAndGrid(canvas, mContourBitmap);
                     canvas.restore();
                     mSurfaceHolder.unlockCanvasAndPost(canvas);
                 } catch (Exception e) {
