@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gamebois.amaaze.R;
-import com.gamebois.amaaze.model.pathfinding.Node;
+import com.gamebois.amaaze.model.pathfinding.PathFinder;
 import com.gamebois.amaaze.viewmodel.SolveActivityViewModel;
 
 import java.util.List;
@@ -93,11 +93,11 @@ public class LoadingFragment extends Fragment {
     }
 
     private void setUpGraph() {
-        mViewModel.getGrid().observe(getViewLifecycleOwner(), new Observer<Node[]>() {
+        mViewModel.getPathFinder().observe(getViewLifecycleOwner(), new Observer<PathFinder>() {
             @Override
-            public void onChanged(Node[] nodes) {
-                if (nodes != null) {
-                    solveMazeView.setGrid(nodes);
+            public void onChanged(PathFinder pf) {
+                if (pf != null) {
+                    pf.findPaths();
                     progressBar.setVisibility(View.GONE);
                     info.setVisibility(View.GONE);
                 }

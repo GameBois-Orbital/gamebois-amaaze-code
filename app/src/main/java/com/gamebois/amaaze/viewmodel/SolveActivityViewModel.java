@@ -179,11 +179,12 @@ public class SolveActivityViewModel extends ViewModel {
         }
 
         private void addToGrid(PointF point) {
-            int arrayPos = pf.getPosAt(Math.round(point.x), Math.round(point.y));
-            if (pf.nodes[arrayPos] == null) {
-                pf.createNodeAt(arrayPos);
+            int xArrPos = pf.getXPosAt(Math.round(point.x));
+            int yArrPos = pf.getYPosAt(Math.round(point.y));
+            if (pf.nodes[xArrPos][yArrPos] == null) {
+                pf.createNodeAt(xArrPos, yArrPos);
             }
-            pf.nodes[arrayPos].setObstacle(true);
+            pf.nodes[xArrPos][yArrPos].setObstacle(true);
         }
     }
 

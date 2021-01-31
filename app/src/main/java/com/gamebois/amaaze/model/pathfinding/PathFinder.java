@@ -3,6 +3,7 @@ package com.gamebois.amaaze.model.pathfinding;
 import android.graphics.PointF;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -13,11 +14,11 @@ public class PathFinder {
 
     private final int screenHeight;
     private final int screenWidth;
-    private final int numNodes;
-    public Node[] nodes;
-    private List<PointF> successfulPath = null;
+    public Node[][] nodes;
+    private List<PointF> successfulPath = new ArrayList<>();
     private int cellSize = 20;
     private int rowLength;
+    private int columnLength;
     private PointF startCoords;
     private PointF endCoords;
     private float straightDist = 1.0f;
@@ -29,40 +30,27 @@ public class PathFinder {
     public PathFinder(int screenHeight, int screenWidth, PointF start, PointF end) {
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
-        this.numNodes = (screenHeight / cellSize) * (screenWidth / cellSize);
-        this.nodes = new Node[numNodes];
+        this.rowLength = screenWidth / cellSize; //Number of columns (horizontal length)
+        this.columnLength = screenHeight / cellSize; //Number of rows (vertical length)
+        this.nodes = new Node[rowLength][columnLength];
         this.startCoords = start;
         this.endCoords = end;
-        this.rowLength = screenWidth / cellSize;
     }
 
     public void setUpGraph() {
         //Initialise nodes with paths
         for (int y = 0; y < screenHeight; y += cellSize) {
             for (int x = 0; x < screenWidth; x += cellSize) {
-                int arrayPos = getPosAt(x, y);
-                int abovePos = getPosAbove(arrayPos);
-                int leftPos = getPosToLeft(arrayPos);
-                int diagonalLeftPos = getPosAbove(arrayPos) - 1;
-                int diagonalRightPos = getPosAbove(arrayPos) + 1;
-
-
-                // Log.d(LOG_TAG, String.valueOf(arrayPos));
-                // Log.d(LOG_TAG, String.valueOf(abovePos));
-                // Log.d(LOG_TAG, String.valueOf(leftPos));
-
-                //Add current node to array
-                Node toAdd = new Node(x, y);
-                toAdd.setCell(cellSize);
-                nodes[arrayPos] = toAdd;
-//                Log.d(LOG_TAG, toAdd.toString());
-                if (!toAdd.isObstacle()) {
-                    addNeighbours(toAdd, abovePos, abovePos >= 0);
-                    addNeighbours(toAdd, leftPos, leftPos >= 0);
-                    addNeighbours(toAdd, diagonalLeftPos,
-                            diagonalLeftPos >= 0 && (diagonalLeftPos + 1) % rowLength != 0);
-                    addNeighbours(toAdd, diagonalRightPos,
-                            diagonalRightPos >= 0 && diagonalRightPos % rowLength != 0);
+                int yArrPos = y / cellSize;
+                int xArrPos = x / cellSize;
+                if (nodes[xArrPos][yArrPos] != null) {
+                    //Add current node to array
+                    Node toAdd = new Node(x, y);
+                    toAdd.setCell(cellSize);
+                    nodes[xArrPos][yArrPos] = toAdd;
+                    if (!toAdd.isObstacle()) {
+                        addNeighbours(toAdd, xArrPos, yArrPos);
+                    }
                 }
             }
         }
@@ -91,7 +79,7 @@ public class PathFinder {
         while (!frontier.isEmpty()) {
             Log.d(LOG_TAG, "ITER1");
             Node current = frontier.poll();
-            if (current == end || contains(end.x, end.y, current)) {
+            if (current == end) {
                 Log.d(LOG_TAG, "Ended");
                 Node previous = end.getParent();
                 while (previous != start) {
@@ -110,7 +98,6 @@ public class PathFinder {
             current.setStatus(Node.Status.VISITED);
             for (Node neighbour : current.neighbours) {
                 if (!neighbour.isObstacle()) {
-
                     if (!neighbour.isVisited()) {
                         frontier.add(neighbour);
                         neighbour.setStatus(Node.Status.FRONTIER);
@@ -125,27 +112,46 @@ public class PathFinder {
                 }
 
             }
-            notifyObservers();
+//            notifyObservers();
         }
 
         return false;
     }
 
-    private void addNeighbours(Node toAdd, int neighbourPosition, boolean boundaryCondition) {
-        if (boundaryCondition) {
-            Node neighbour = nodes[neighbourPosition];
-            if (!neighbour.isObstacle()) {
-                toAdd.neighbours.add(neighbour);
-                neighbour.neighbours.add(toAdd);
-            }
+    private void addNeighbours(Node toAdd, int xArrPos, int yArrPos) {
+        if (xArrPos > 0) {
+            //Left neighbour exists
+            addNeighbours(toAdd, nodes[xArrPos - 1][yArrPos]);
+        }
+
+        if (yArrPos > 0) {
+            //Above neighbour exists
+            addNeighbours(toAdd, nodes[xArrPos][yArrPos - 1]);
+        }
+
+        if (xArrPos > 0 && yArrPos > 0) {
+            //Diagonal left neighbour exists
+            addNeighbours(toAdd, nodes[xArrPos - 1][yArrPos - 1]);
+        }
+
+        if (xArrPos < rowLength - 1 && yArrPos > 0) {
+            //Diagonal right neighbour exists
+            addNeighbours(toAdd, nodes[xArrPos + 1][yArrPos - 1]);
         }
     }
 
-    public boolean contains(int pointX, int pointY, Node n) {
-        boolean withinX = pointX >= n.x && pointX <= n.x + cellSize;
-        boolean withinY = pointY >= n.y && pointY <= n.y + cellSize;
-        return withinX && withinY;
+    private void addNeighbours(Node toAdd, Node neighbour) {
+        if (!neighbour.isObstacle()) {
+            toAdd.neighbours.add(neighbour);
+            neighbour.neighbours.add(toAdd);
+        }
     }
+
+//    public boolean contains(int pointX, int pointY, Node n) {
+//        boolean withinX = pointX >= n.x && pointX <= n.x + cellSize;
+//        boolean withinY = pointY >= n.y && pointY <= n.y + cellSize;
+//        return withinX && withinY;
+//    }
 
     private float getDistance(Node current, Node neighbour) {
         int dX = Math.abs(current.x - neighbour.x);
@@ -160,8 +166,8 @@ public class PathFinder {
     }
 
     private void setStartAndEnd() {
-        this.start = nodes[getPosAt(Math.round(startCoords.x), Math.round(startCoords.y))];
-        this.end = nodes[getPosAt(Math.round(endCoords.x), Math.round(endCoords.y))];
+        this.start = nodes[getXPosAt(Math.round(startCoords.x))][getYPosAt(Math.round(startCoords.y))];
+        this.end = nodes[getXPosAt(Math.round(endCoords.x))][getYPosAt(Math.round(endCoords.y))];
         start.setStatus(Node.Status.START);
         end.setStatus(Node.Status.END);
     }
@@ -170,37 +176,20 @@ public class PathFinder {
      * Maps Android screen coordinates to Node in array
      *
      * @param x x coordinate of top right corner of cell
-     * @param y y coordinate of top right corner of cell
-     * @return Corresponding Node in array
+     * @return Corresponding x position in array
      */
-    public int getPosAt(int x, int y) {
-        int row = y / cellSize;
-        int column = x / cellSize;
-        int arrayPos = cellSize * row + column;
-//        Log.d(LOG_TAG, "Cell at " + x + ", " + y + " is " + arrayPos);
-        return arrayPos;
+    public int getXPosAt(int x) {
+        return x / cellSize;
     }
 
-    public void createNodeAt(int arrayPos) {
-        int row = arrayPos / rowLength;
-        int column = arrayPos - row;
-        nodes[arrayPos] = new Node(column * cellSize, row * cellSize);
+    public int getYPosAt(int y) {
+        return y / cellSize;
     }
 
-    private int getPosBelow(int arrayPos) {
-        return arrayPos + rowLength;
-    }
-
-    private int getPosAbove(int arrayPos) {
-        return arrayPos - rowLength;
-    }
-
-    private int getPosToLeft(int arrayPos) {
-        return arrayPos - 1;
-    }
-
-    private int getPosToRight(int arrayPos) {
-        return arrayPos + 1;
+    public void createNodeAt(int xValue, int yValue) {
+        int x = xValue * cellSize;
+        int y = yValue * cellSize;
+        nodes[xValue][yValue] = new Node(x, y);
     }
 
     public void subscribeToNodes(MazeObserver observer) {
