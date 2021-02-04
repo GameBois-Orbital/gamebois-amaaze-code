@@ -16,7 +16,7 @@ public class PathFinder {
     private final int screenWidth;
     public Node[][] nodes;
     private List<PointF> successfulPath = new ArrayList<>();
-    private int cellSize = 20;
+    private int cellSize = 10;
     private int rowLength;
     private int columnLength;
     private PointF startCoords;
@@ -25,14 +25,13 @@ public class PathFinder {
     private float diagonalDist = 1.414f;
     private Node start;
     private Node end;
-    private MazeObserver mazeObserver;
 
     public PathFinder(int screenHeight, int screenWidth, PointF start, PointF end) {
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
         this.rowLength = screenWidth / cellSize; //Number of columns (horizontal length)
         this.columnLength = screenHeight / cellSize; //Number of rows (vertical length)
-        this.nodes = new Node[rowLength][columnLength];
+        this.nodes = new Node[rowLength + 1][columnLength + 1];
         this.startCoords = start;
         this.endCoords = end;
     }
@@ -40,10 +39,11 @@ public class PathFinder {
     public void setUpGraph() {
         //Initialise nodes with paths
         for (int y = 0; y < screenHeight; y += cellSize) {
+            Log.d(LOG_TAG, "Iter " + y);
             for (int x = 0; x < screenWidth; x += cellSize) {
                 int yArrPos = y / cellSize;
                 int xArrPos = x / cellSize;
-                if (nodes[xArrPos][yArrPos] != null) {
+                if (nodes[xArrPos][yArrPos] == null) {
                     //Add current node to array
                     Node toAdd = new Node(x, y);
                     toAdd.setCell(cellSize);
@@ -56,15 +56,15 @@ public class PathFinder {
         }
 
 //        Test
-//        Node one = nodes[0];
-//        Node two = nodes[2];
-//        Log.d(LOG_TAG, "I'm printing the neighbours of the first node now");
-//        for (Node neighbour : one.neighbours) {
-//            Log.d(LOG_TAG, "Neighbour: " + neighbour.toString());
-//        }
+        Node one = nodes[0][0];
+        Node two = nodes[1][0];
+        Log.d(LOG_TAG, "I'm printing the neighbours of the first node now");
+        for (Node neighbour : one.neighbours) {
+            Log.d(LOG_TAG, "Neighbour: " + neighbour.toString());
+        }
     }
 
-    public boolean findPaths() {
+    public List<PointF> findPaths() {
         setStartAndEnd();
 
         //Set the local and global value of the start node
@@ -77,8 +77,10 @@ public class PathFinder {
         frontier.add(start);
 
         while (!frontier.isEmpty()) {
+
             Log.d(LOG_TAG, "ITER1");
             Node current = frontier.poll();
+
             if (current == end) {
                 Log.d(LOG_TAG, "Ended");
                 Node previous = end.getParent();
@@ -87,7 +89,7 @@ public class PathFinder {
                     successfulPath.add(new PointF(previous.x, previous.y));
                     previous = previous.getParent();
                 }
-                return true;
+                break;
             }
 
             if (current.isVisited()) {
@@ -112,10 +114,9 @@ public class PathFinder {
                 }
 
             }
-//            notifyObservers();
         }
 
-        return false;
+        return successfulPath;
     }
 
     private void addNeighbours(Node toAdd, int xArrPos, int yArrPos) {
@@ -147,11 +148,6 @@ public class PathFinder {
         }
     }
 
-//    public boolean contains(int pointX, int pointY, Node n) {
-//        boolean withinX = pointX >= n.x && pointX <= n.x + cellSize;
-//        boolean withinY = pointY >= n.y && pointY <= n.y + cellSize;
-//        return withinX && withinY;
-//    }
 
     private float getDistance(Node current, Node neighbour) {
         int dX = Math.abs(current.x - neighbour.x);
@@ -190,16 +186,6 @@ public class PathFinder {
         int x = xValue * cellSize;
         int y = yValue * cellSize;
         nodes[xValue][yValue] = new Node(x, y);
-    }
-
-    public void subscribeToNodes(MazeObserver observer) {
-        this.mazeObserver = observer;
-    }
-
-    private void notifyObservers() {
-        if (mazeObserver != null) {
-            mazeObserver.updateNodes();
-        }
     }
 }
 

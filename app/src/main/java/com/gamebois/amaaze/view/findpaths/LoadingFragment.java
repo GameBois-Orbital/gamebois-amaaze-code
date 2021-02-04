@@ -97,9 +97,25 @@ public class LoadingFragment extends Fragment {
             @Override
             public void onChanged(PathFinder pf) {
                 if (pf != null) {
-                    pf.findPaths();
                     progressBar.setVisibility(View.GONE);
-                    info.setVisibility(View.GONE);
+                    info.setText(R.string.maze_running_text);
+                    waitForSolution();
+                }
+            }
+        });
+    }
+
+    private void waitForSolution() {
+        mViewModel.getSolutionLiveData().observe(getViewLifecycleOwner(), new Observer<Path>() {
+            @Override
+            public void onChanged(Path nodes) {
+                if (nodes != null) {
+                    if (nodes.isEmpty()) {
+                        info.setText(R.string.path_not_found);
+                    } else {
+                        info.setText(R.string.path_found);
+                        solveMazeView.setSolution(nodes);
+                    }
                 }
             }
         });

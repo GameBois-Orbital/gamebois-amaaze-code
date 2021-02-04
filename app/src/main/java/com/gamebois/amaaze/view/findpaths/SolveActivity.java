@@ -28,7 +28,7 @@ public class SolveActivity extends AppCompatActivity {
         mViewModel.setStartPoint(new PointF(startPoint.get(0), startPoint.get(1)));
         mViewModel.setEndPoint(new PointF(endPoint.get(0), endPoint.get(1)));
         mViewModel.setRadius(b.getFloat(ViewMazeFragment.MAZE_RADIUS));
-        mViewModel.setHeight(b.getFloat(ViewMazeFragment.CREATOR_HEIGHT));
-        mViewModel.setWidth(b.getFloat(ViewMazeFragment.CREATOR_WIDTH));
+        mViewModel.setMazeHeight(b.getFloat(ViewMazeFragment.CREATOR_HEIGHT));
+        mViewModel.setMazeWidth(b.getFloat(ViewMazeFragment.CREATOR_WIDTH));
     }
 }

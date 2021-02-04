@@ -13,7 +13,6 @@ import android.view.SurfaceView;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.gamebois.amaaze.R;
-import com.gamebois.amaaze.model.pathfinding.Node;
 import com.gamebois.amaaze.model.pathfinding.Node.Status;
 
 import java.util.List;
@@ -43,7 +42,7 @@ public class SolveMazeView extends SurfaceView implements Runnable {
     //Drawing paths
     private int mDrawColour;
     private List<Path> paths;
-    private Node[] nodes;
+    private Path solutionPath;
 
     public SolveMazeView(Context context) {
         this(context, null);
@@ -72,7 +71,8 @@ public class SolveMazeView extends SurfaceView implements Runnable {
         gridPaint.setColor(mDrawColour);
         gridPaint.setAntiAlias(true);
         gridPaint.setDither(true);
-        gridPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        gridPaint.setStyle(Paint.Style.STROKE);
+        gridPaint.setStrokeWidth(10);
 
     }
 
@@ -94,11 +94,11 @@ public class SolveMazeView extends SurfaceView implements Runnable {
         invalidate();
     }
 
-    public void setGrid(Node[] grid) {
-        Log.d(TAG, "setGrid called");
-        this.nodes = grid;
-//        invalidate();
+    public void setSolution(Path solutionPath) {
+        this.solutionPath = solutionPath;
+        invalidate();
     }
+
 
     private void initialisePathsAndGrid(Canvas canvas, Bitmap mContourBitmap) {
         canvas.drawBitmap(mContourBitmap, 0, 0, null);
@@ -108,10 +108,8 @@ public class SolveMazeView extends SurfaceView implements Runnable {
                 canvas.drawPath(path, paint);
             }
         }
-        if (nodes != null) {
-            for (Node node : nodes) {
-                canvas.drawPath(node.getCell(), paint);
-            }
+        if (solutionPath != null) {
+            canvas.drawPath(solutionPath, gridPaint);
         }
     }
 

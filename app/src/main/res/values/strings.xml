@@ -29,4 +29,7 @@
     <string name="loading_generating_paths">Generating paths...</string>
     <string name="loading_initialise_pathfinding">Initialising pathfinding grid...</string>
     <string name="retrieving_maze">Retrieving maze...</string>
+    <string name="maze_running_text">Running algorithm...</string>
+    <string name="path_not_found">Not solvable without wormholes!</string>
+    <string name="path_found">Solvable without wormholes!</string>
 </resources>

@@ -19,22 +19,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SolveActivityViewModel extends ViewModel {
+
     public static final String LOG_TAG = SolveActivityViewModel.class.getSimpleName();
-    public MutableLiveData<PathFinder> pathFinder = new MutableLiveData<>();
-    protected List<ContourList> rigidsurfaces = new ArrayList<>();
+
+    //LiveData variables to be observed in view layer
     public MutableLiveData<Boolean> areSurfacesRetrieved = new MutableLiveData<>(false);
+    //Maze attributes
+    protected List<ContourList> rigidsurfaces = new ArrayList<>();
+    protected float mazeHeight;
+    protected float mazeWidth;
+    private MutableLiveData<List<Path>> pathLiveData = new MutableLiveData<>();
     protected String ID;
     protected PointF startPoint;
     protected PointF endPoint;
     protected float radius;
-    protected float height;
-    protected float width;
+    private MutableLiveData<PathFinder> pathFinder = new MutableLiveData<>();
+    private MutableLiveData<Path> solutionLiveData = new MutableLiveData<>();
     protected float screenWidth;
     protected float screenHeight;
-    private MutableLiveData<List<Path>> pathLiveData = new MutableLiveData<>();
 
-    public List<ContourList> getRigidsurfaces() {
-        return rigidsurfaces;
+    //Getters and setters for maze attributes
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public void setStartPoint(PointF startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public void setEndPoint(PointF endPoint) {
+        this.endPoint = endPoint;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
+
+    public void setMazeHeight(float mazeHeight) {
+        this.mazeHeight = mazeHeight;
+    }
+
+    public void setMazeWidth(float mazeWidth) {
+        this.mazeWidth = mazeWidth;
+    }
+
+    public void setScreenHeight(float height) {
+        this.screenHeight = height;
+    }
+
+    public void setScreenWidth(float width) {
+        this.screenWidth = width;
     }
 
     public void setRigidsurfaces() {
@@ -55,62 +94,6 @@ public class SolveActivityViewModel extends ViewModel {
                 });
     }
 
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
-    public PointF getStartPoint() {
-        return startPoint;
-    }
-
-    public void setStartPoint(PointF startPoint) {
-        this.startPoint = startPoint;
-    }
-
-    public PointF getEndPoint() {
-        return endPoint;
-    }
-
-    public void setEndPoint(PointF endPoint) {
-        this.endPoint = endPoint;
-    }
-
-    public float getRadius() {
-        return radius;
-    }
-
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
-    }
-
-    public void setScreenHeight(float height) {
-        this.screenHeight = height;
-    }
-
-    public void setScreenWidth(float width) {
-        this.screenWidth = width;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
     public void setPathFinder() {
         MazeSolverRunnable runnable = new MazeSolverRunnable();
         new Thread(runnable).start();
@@ -124,6 +107,24 @@ public class SolveActivityViewModel extends ViewModel {
         return pathLiveData;
     }
 
+    public MutableLiveData<Path> getSolutionLiveData() {
+        return solutionLiveData;
+    }
+
+    public Path generateClosedPath(List<PointF> polyPoints) {
+        Path wallPath = new Path();
+        if (!polyPoints.isEmpty()) {
+            PointF firstPoint = polyPoints.get(0);
+            wallPath.moveTo(polyPoints.get(0).x, polyPoints.get(0).y);
+            for (int j = 1; j < polyPoints.size(); j++) {
+                PointF p = polyPoints.get(j);
+                wallPath.lineTo(p.x, p.y);
+            }
+            wallPath.close();
+        }
+        return wallPath;
+    }
+
     class MazeSolverRunnable implements Runnable {
 
         float scale;
@@ -132,13 +133,13 @@ public class SolveActivityViewModel extends ViewModel {
         PathFinder pf;
 
         public MazeSolverRunnable() {
-            pf = new PathFinder(Math.round(height),
-                    Math.round(width),
+            pf = new PathFinder(Math.round(mazeHeight),
+                    Math.round(mazeWidth),
                     startPoint,
                     endPoint);
-            scale = Math.min(screenWidth / width, screenHeight / height);
-            xOffset = (float) ((screenWidth - width * scale) / 2.0);
-            yOffset = (float) ((screenHeight - height * scale) / 2.0);
+            scale = Math.min(screenWidth / mazeWidth, screenHeight / mazeHeight);
+            xOffset = (float) ((screenWidth - mazeWidth * scale) / 2.0);
+            yOffset = (float) ((screenHeight - mazeHeight * scale) / 2.0);
         }
 
 
@@ -148,8 +149,9 @@ public class SolveActivityViewModel extends ViewModel {
                 getPathsFromSurfaces(rigidsurfaces);
                 pf.setUpGraph();
                 pathFinder.postValue(pf);
+                solutionLiveData.postValue(generateClosedPath(pf.findPaths()));
             } catch (Throwable t) {
-                Log.d("MazeRunnable", "Error generating paths");
+                Log.d("MazeRunnable", t.getMessage());
             }
         }
 
@@ -168,7 +170,6 @@ public class SolveActivityViewModel extends ViewModel {
                     addToGrid(p);
                     wallPath.lineTo(p.x, p.y);
                 }
-                wallPath.close();
                 paths.add(wallPath);
             }
             pathLiveData.postValue(paths);
